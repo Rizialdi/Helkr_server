@@ -13,5 +13,6 @@ export default gql`
   }
   type Mutation {
     enregistrement(nom: String!, prenom: String!, numero: String!): User!
+    verification(numero: String!): User!
   }
 `

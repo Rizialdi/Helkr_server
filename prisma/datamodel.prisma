@@ -1,0 +1,6 @@
+type User {
+  id: ID! @id
+  nom: String!
+  prenom: String!
+  numero: String! @unique
+}
