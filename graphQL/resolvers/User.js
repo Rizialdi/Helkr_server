@@ -13,8 +13,7 @@ export default {
     // TODO projection efficiently get the field asked for
     // TODO implement pagination
     users: async (parent, args, context, info) => {
-      const users = await context.prisma.users()
-      return users
+      return context.prisma.users()
     }
   },
   Mutation: {
@@ -39,6 +38,12 @@ export default {
         token,
         user
       }
+    }
+  },
+  User: {
+    offerings: async (parent, args, { prisma }, info) => {
+      const offerings = await prisma.user({ id: parent.id }).offerings()
+      return offerings
     }
   }
 }

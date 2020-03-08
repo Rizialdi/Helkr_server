@@ -4,4 +4,14 @@ type User {
   prenom: String!
   numero: String! @unique
   createdAt: DateTime! @createdAt
+  offerings: [Offering!]! @relation(link: INLINE)
+}
+type Offering {
+  id: ID! @id
+  type: String!
+  category: String!
+  description: String!
+  author: User! 
+  createdAt: DateTime! @createdAt
+  updatedAt: DateTime! @updatedAt
 }
