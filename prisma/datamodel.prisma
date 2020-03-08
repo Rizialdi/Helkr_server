@@ -3,4 +3,5 @@ type User {
   nom: String!
   prenom: String!
   numero: String! @unique
+  createdAt: DateTime! @createdAt
 }

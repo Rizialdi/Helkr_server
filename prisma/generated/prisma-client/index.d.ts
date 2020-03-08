@@ -109,7 +109,9 @@ export type UserOrderByInput =
   | "prenom_ASC"
   | "prenom_DESC"
   | "numero_ASC"
-  | "numero_DESC";
+  | "numero_DESC"
+  | "createdAt_ASC"
+  | "createdAt_DESC";
 
 export type MutationType = "CREATED" | "UPDATED" | "DELETED";
 
@@ -175,6 +177,14 @@ export interface UserWhereInput {
   numero_not_starts_with?: Maybe<String>;
   numero_ends_with?: Maybe<String>;
   numero_not_ends_with?: Maybe<String>;
+  createdAt?: Maybe<DateTimeInput>;
+  createdAt_not?: Maybe<DateTimeInput>;
+  createdAt_in?: Maybe<DateTimeInput[] | DateTimeInput>;
+  createdAt_not_in?: Maybe<DateTimeInput[] | DateTimeInput>;
+  createdAt_lt?: Maybe<DateTimeInput>;
+  createdAt_lte?: Maybe<DateTimeInput>;
+  createdAt_gt?: Maybe<DateTimeInput>;
+  createdAt_gte?: Maybe<DateTimeInput>;
   AND?: Maybe<UserWhereInput[] | UserWhereInput>;
 }
 
@@ -215,6 +225,7 @@ export interface User {
   nom: String;
   prenom: String;
   numero: String;
+  createdAt: DateTimeOutput;
 }
 
 export interface UserPromise extends Promise<User>, Fragmentable {
@@ -222,6 +233,7 @@ export interface UserPromise extends Promise<User>, Fragmentable {
   nom: () => Promise<String>;
   prenom: () => Promise<String>;
   numero: () => Promise<String>;
+  createdAt: () => Promise<DateTimeOutput>;
 }
 
 export interface UserSubscription
@@ -231,6 +243,7 @@ export interface UserSubscription
   nom: () => Promise<AsyncIterator<String>>;
   prenom: () => Promise<AsyncIterator<String>>;
   numero: () => Promise<AsyncIterator<String>>;
+  createdAt: () => Promise<AsyncIterator<DateTimeOutput>>;
 }
 
 export interface UserNullablePromise
@@ -240,6 +253,7 @@ export interface UserNullablePromise
   nom: () => Promise<String>;
   prenom: () => Promise<String>;
   numero: () => Promise<String>;
+  createdAt: () => Promise<DateTimeOutput>;
 }
 
 export interface UserConnection {
@@ -365,6 +379,7 @@ export interface UserPreviousValues {
   nom: String;
   prenom: String;
   numero: String;
+  createdAt: DateTimeOutput;
 }
 
 export interface UserPreviousValuesPromise
@@ -374,6 +389,7 @@ export interface UserPreviousValuesPromise
   nom: () => Promise<String>;
   prenom: () => Promise<String>;
   numero: () => Promise<String>;
+  createdAt: () => Promise<DateTimeOutput>;
 }
 
 export interface UserPreviousValuesSubscription
@@ -383,6 +399,7 @@ export interface UserPreviousValuesSubscription
   nom: () => Promise<AsyncIterator<String>>;
   prenom: () => Promise<AsyncIterator<String>>;
   numero: () => Promise<AsyncIterator<String>>;
+  createdAt: () => Promise<AsyncIterator<DateTimeOutput>>;
 }
 
 /*
@@ -395,6 +412,16 @@ export type ID_Output = string;
 The `String` scalar type represents textual data, represented as UTF-8 character sequences. The String type is most often used by GraphQL to represent free-form human-readable text.
 */
 export type String = string;
+
+/*
+DateTime scalar input type, allowing Date
+*/
+export type DateTimeInput = Date | string;
+
+/*
+DateTime scalar output type, which is always a string
+*/
+export type DateTimeOutput = string;
 
 /*
 The `Int` scalar type represents non-fractional signed whole numeric values. Int can represent values between -(2^31) and 2^31 - 1.

@@ -11,6 +11,8 @@ type BatchPayload {
   count: Long!
 }
 
+scalar DateTime
+
 scalar Long
 
 type Mutation {
@@ -55,6 +57,7 @@ type User {
   nom: String!
   prenom: String!
   numero: String!
+  createdAt: DateTime!
 }
 
 type UserConnection {
@@ -84,6 +87,8 @@ enum UserOrderByInput {
   prenom_DESC
   numero_ASC
   numero_DESC
+  createdAt_ASC
+  createdAt_DESC
 }
 
 type UserPreviousValues {
@@ -91,6 +96,7 @@ type UserPreviousValues {
   nom: String!
   prenom: String!
   numero: String!
+  createdAt: DateTime!
 }
 
 type UserSubscriptionPayload {
@@ -178,6 +184,14 @@ input UserWhereInput {
   numero_not_starts_with: String
   numero_ends_with: String
   numero_not_ends_with: String
+  createdAt: DateTime
+  createdAt_not: DateTime
+  createdAt_in: [DateTime!]
+  createdAt_not_in: [DateTime!]
+  createdAt_lt: DateTime
+  createdAt_lte: DateTime
+  createdAt_gt: DateTime
+  createdAt_gte: DateTime
   AND: [UserWhereInput!]
 }
 
