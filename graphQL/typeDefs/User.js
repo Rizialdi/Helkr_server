@@ -1,8 +1,8 @@
-import { gql } from 'apollo-server-express'
+import gql from 'graphql-tag'
 
 export default gql`
   type Query {
-    user(_id: ID!): User #pas obigatoire si invalid id fourni
+    user(numero: String!): User! #pas obigatoire si invalid num fourni
     users: [User!]!
   }
   type Mutation {
