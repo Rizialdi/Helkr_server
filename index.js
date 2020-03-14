@@ -4,7 +4,7 @@ import bodyParser from 'body-parser'
 import { GraphQLServer } from 'graphql-yoga'
 import { typeDefs, resolvers } from './graphQL'
 import { prisma } from './prisma/generated/prisma-client'
-require('custom-env').env('prod')
+require('custom-env').env('dev')
 
 const { MESSAGEBIRD_API_KEY } = process.env
 const messagebird = require('messagebird')(MESSAGEBIRD_API_KEY)
