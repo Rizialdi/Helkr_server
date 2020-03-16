@@ -4,9 +4,9 @@ import bodyParser from 'body-parser'
 import { GraphQLServer } from 'graphql-yoga'
 import { typeDefs, resolvers } from './graphQL'
 import { prisma } from './prisma/generated/prisma-client'
-require('custom-env').env('dev')
+require('custom-env').env('prod')
 
-const { MESSAGEBIRD_API_KEY } = process.env
+const { MESSAGEBIRD_API_KEY, NUMERO } = process.env
 const messagebird = require('messagebird')(MESSAGEBIRD_API_KEY)
 
 const graphqlserver = new GraphQLServer({
@@ -28,22 +28,10 @@ graphqlserver.express.use(bodyParser.json())
 
 graphqlserver.express.disable('x-powered-by')
 
-graphqlserver.express.post('/api/v1/enregistrement', (req, res) => {
-  const { nom, prenom, numero } = req.body
-  messagebird.messages.create({
-    originator: 'Yoko App',
-    recipients: [numero],
-    body: `Ton nom ${nom} et prenom ${prenom}`
-  }, (error, response) => {
-    if (error) return res.send(error)
-    return res.send(response)
-  })
-})
-
 graphqlserver.express.post('/api/v1/register-step1', (req, res) => {
   let { numero } = req.body
-  // TODO chaange this number
-  numero = '+33780813564'
+  // TODO change this number
+  numero = `${NUMERO}`
   messagebird.verify
     .create(
       numero, {
