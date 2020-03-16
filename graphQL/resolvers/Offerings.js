@@ -4,7 +4,6 @@ export default {
   Query: {
     offeringsUser: async (parent, { numero }, context, info) => {
       const user = await context.prisma.user({ numero })
-      console.log(user.id)
       return context.prisma.offering({ author: user.id })
     },
     offerings: async (parent, args, context, info) => {
