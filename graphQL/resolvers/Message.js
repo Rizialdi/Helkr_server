@@ -9,14 +9,32 @@ export default {
     }
   },
   Mutation: {
-    createMessage: async (parent, { channelId, text }, context, info) => {
+    createMessage: async (parent, { recipient, text }, context, info) => {
+      const sentBy = getUserId(context)
+      const results = await context.prisma.channels({ where: { AND: [{ users_some: { id: sentBy } }, { users_some: { id: recipient } }] } })
+
+      if (results[0]) {
+        try {
+          const channelId = results[0].id
+          const message = await context.prisma.createMessage({ channel: { connect: { id: channelId } }, text, sentBy: { connect: { id: sentBy } } })
+          if (!message) return false
+          return true
+        } catch (error) {
+          throw new Error('La creation du message a echoue')
+        }
+      }
+
       try {
-        const userId = getUserId(context)
-        const message = await context.prisma.createMessage({ channel: { connect: { id: channelId } }, text, sentBy: { connect: { id: userId } } })
+        const channel = await context.prisma.createChannel({ users: { connect: [{ id: recipient }, { id: sentBy }] } })
+        if (!channel) {
+          throw new Error('La creation de Channel a echoue')
+        }
+        const channelId = channel.id
+        const message = await context.prisma.createMessage({ channel: { connect: { id: channelId } }, text, sentBy: { connect: { id: sentBy } } })
         if (!message) return false
         return true
       } catch (error) {
-        throw new Error('La creation du message a echoue')
+        throw new Error('La creation de Channel ou de message a echoue')
       }
     }
   },

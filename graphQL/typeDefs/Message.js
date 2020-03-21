@@ -5,7 +5,7 @@ export default gql`
     messages(channelId: String!): [Message!]!
   }
   type Mutation {
-    createMessage(channelId: String!, text: String!): Boolean!
+    createMessage(recipient: String!, text: String!): Boolean!
   }
   type Message {
     id: ID!
