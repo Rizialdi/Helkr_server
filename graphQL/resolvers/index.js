@@ -2,8 +2,10 @@
 import { mergeResolvers } from 'merge-graphql-schemas'
 
 import User from './User'
-import Offerings from './Offerings'
+import Offering from './Offering'
+import Channel from './Channel'
+import Message from './Message'
 
-const resolvers = [User, Offerings]
+const resolvers = [User, Offering, Channel, Message]
 
 export default mergeResolvers(resolvers)

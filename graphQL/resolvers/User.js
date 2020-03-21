@@ -44,6 +44,10 @@ export default {
     offerings: async (parent, args, { prisma }, info) => {
       const offerings = await prisma.user({ id: parent.id }).offerings()
       return offerings
+    },
+    channels: async (parent, args, { prisma }, info) => {
+      const channels = await prisma.user({ id: parent.id }).channels()
+      return channels
     }
   }
 }

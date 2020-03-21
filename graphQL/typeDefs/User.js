@@ -15,7 +15,7 @@ export default gql`
     prenom: String!
     numero: String!
     offerings: [Offering!]!
-    messages: [Message!]!
+    channels: [Channel!]!
   }
   type AuthPayload {
   token: String

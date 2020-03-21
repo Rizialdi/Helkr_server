@@ -6,7 +6,7 @@ export default gql`
     channels: [Channel!]!
   }
   type Mutation {
-    createChannel(sentBy: String!, receivedBy: String!): channelResponse!
+    createChannel(recipient: String!): channelResponse!
   }
   type Channel {
     id: ID!
