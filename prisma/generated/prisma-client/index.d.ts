@@ -326,7 +326,7 @@ export interface UserWhereInput {
   createdAt_gt?: Maybe<DateTimeInput>;
   createdAt_gte?: Maybe<DateTimeInput>;
   offerings_some?: Maybe<OfferingWhereInput>;
-  channel_some?: Maybe<ChannelWhereInput>;
+  channels_some?: Maybe<ChannelWhereInput>;
   AND?: Maybe<UserWhereInput[] | UserWhereInput>;
 }
 
@@ -492,18 +492,18 @@ export type UserWhereUniqueInput = AtLeastOne<{
 
 export interface ChannelCreateInput {
   id?: Maybe<ID_Input>;
-  users?: Maybe<UserCreateManyWithoutChannelInput>;
+  users?: Maybe<UserCreateManyWithoutChannelsInput>;
   messages?: Maybe<MessageCreateManyWithoutChannelInput>;
 }
 
-export interface UserCreateManyWithoutChannelInput {
+export interface UserCreateManyWithoutChannelsInput {
   create?: Maybe<
-    UserCreateWithoutChannelInput[] | UserCreateWithoutChannelInput
+    UserCreateWithoutChannelsInput[] | UserCreateWithoutChannelsInput
   >;
   connect?: Maybe<UserWhereUniqueInput[] | UserWhereUniqueInput>;
 }
 
-export interface UserCreateWithoutChannelInput {
+export interface UserCreateWithoutChannelsInput {
   id?: Maybe<ID_Input>;
   nom: String;
   prenom: String;
@@ -549,7 +549,7 @@ export interface UserCreateInput {
   prenom: String;
   numero: String;
   offerings?: Maybe<OfferingCreateManyWithoutAuthorInput>;
-  channel?: Maybe<ChannelCreateManyWithoutUsersInput>;
+  channels?: Maybe<ChannelCreateManyWithoutUsersInput>;
 }
 
 export interface ChannelCreateManyWithoutUsersInput {
@@ -565,25 +565,25 @@ export interface ChannelCreateWithoutUsersInput {
 }
 
 export interface ChannelUpdateInput {
-  users?: Maybe<UserUpdateManyWithoutChannelInput>;
+  users?: Maybe<UserUpdateManyWithoutChannelsInput>;
   messages?: Maybe<MessageUpdateManyWithoutChannelInput>;
 }
 
-export interface UserUpdateManyWithoutChannelInput {
+export interface UserUpdateManyWithoutChannelsInput {
   create?: Maybe<
-    UserCreateWithoutChannelInput[] | UserCreateWithoutChannelInput
+    UserCreateWithoutChannelsInput[] | UserCreateWithoutChannelsInput
   >;
   delete?: Maybe<UserWhereUniqueInput[] | UserWhereUniqueInput>;
   connect?: Maybe<UserWhereUniqueInput[] | UserWhereUniqueInput>;
   set?: Maybe<UserWhereUniqueInput[] | UserWhereUniqueInput>;
   disconnect?: Maybe<UserWhereUniqueInput[] | UserWhereUniqueInput>;
   update?: Maybe<
-    | UserUpdateWithWhereUniqueWithoutChannelInput[]
-    | UserUpdateWithWhereUniqueWithoutChannelInput
+    | UserUpdateWithWhereUniqueWithoutChannelsInput[]
+    | UserUpdateWithWhereUniqueWithoutChannelsInput
   >;
   upsert?: Maybe<
-    | UserUpsertWithWhereUniqueWithoutChannelInput[]
-    | UserUpsertWithWhereUniqueWithoutChannelInput
+    | UserUpsertWithWhereUniqueWithoutChannelsInput[]
+    | UserUpsertWithWhereUniqueWithoutChannelsInput
   >;
   deleteMany?: Maybe<UserScalarWhereInput[] | UserScalarWhereInput>;
   updateMany?: Maybe<
@@ -591,12 +591,12 @@ export interface UserUpdateManyWithoutChannelInput {
   >;
 }
 
-export interface UserUpdateWithWhereUniqueWithoutChannelInput {
+export interface UserUpdateWithWhereUniqueWithoutChannelsInput {
   where: UserWhereUniqueInput;
-  data: UserUpdateWithoutChannelDataInput;
+  data: UserUpdateWithoutChannelsDataInput;
 }
 
-export interface UserUpdateWithoutChannelDataInput {
+export interface UserUpdateWithoutChannelsDataInput {
   nom?: Maybe<String>;
   prenom?: Maybe<String>;
   numero?: Maybe<String>;
@@ -732,10 +732,10 @@ export interface OfferingUpdateManyDataInput {
   description?: Maybe<String>;
 }
 
-export interface UserUpsertWithWhereUniqueWithoutChannelInput {
+export interface UserUpsertWithWhereUniqueWithoutChannelsInput {
   where: UserWhereUniqueInput;
-  update: UserUpdateWithoutChannelDataInput;
-  create: UserCreateWithoutChannelInput;
+  update: UserUpdateWithoutChannelsDataInput;
+  create: UserCreateWithoutChannelsInput;
 }
 
 export interface UserScalarWhereInput {
@@ -864,7 +864,7 @@ export interface UserUpdateDataInput {
   prenom?: Maybe<String>;
   numero?: Maybe<String>;
   offerings?: Maybe<OfferingUpdateManyWithoutAuthorInput>;
-  channel?: Maybe<ChannelUpdateManyWithoutUsersInput>;
+  channels?: Maybe<ChannelUpdateManyWithoutUsersInput>;
 }
 
 export interface ChannelUpdateManyWithoutUsersInput {
@@ -1005,7 +1005,7 @@ export interface ChannelCreateOneWithoutMessagesInput {
 
 export interface ChannelCreateWithoutMessagesInput {
   id?: Maybe<ID_Input>;
-  users?: Maybe<UserCreateManyWithoutChannelInput>;
+  users?: Maybe<UserCreateManyWithoutChannelsInput>;
 }
 
 export interface MessageUpdateInput {
@@ -1022,7 +1022,7 @@ export interface ChannelUpdateOneRequiredWithoutMessagesInput {
 }
 
 export interface ChannelUpdateWithoutMessagesDataInput {
-  users?: Maybe<UserUpdateManyWithoutChannelInput>;
+  users?: Maybe<UserUpdateManyWithoutChannelsInput>;
 }
 
 export interface ChannelUpsertWithoutMessagesInput {
@@ -1052,7 +1052,7 @@ export interface UserCreateWithoutOfferingsInput {
   nom: String;
   prenom: String;
   numero: String;
-  channel?: Maybe<ChannelCreateManyWithoutUsersInput>;
+  channels?: Maybe<ChannelCreateManyWithoutUsersInput>;
 }
 
 export interface OfferingUpdateInput {
@@ -1073,7 +1073,7 @@ export interface UserUpdateWithoutOfferingsDataInput {
   nom?: Maybe<String>;
   prenom?: Maybe<String>;
   numero?: Maybe<String>;
-  channel?: Maybe<ChannelUpdateManyWithoutUsersInput>;
+  channels?: Maybe<ChannelUpdateManyWithoutUsersInput>;
 }
 
 export interface UserUpsertWithoutOfferingsInput {
@@ -1092,7 +1092,7 @@ export interface UserUpdateInput {
   prenom?: Maybe<String>;
   numero?: Maybe<String>;
   offerings?: Maybe<OfferingUpdateManyWithoutAuthorInput>;
-  channel?: Maybe<ChannelUpdateManyWithoutUsersInput>;
+  channels?: Maybe<ChannelUpdateManyWithoutUsersInput>;
 }
 
 export interface UserUpdateManyMutationInput {
@@ -1244,7 +1244,7 @@ export interface UserPromise extends Promise<User>, Fragmentable {
     first?: Int;
     last?: Int;
   }) => T;
-  channel: <T = FragmentableArray<Channel>>(args?: {
+  channels: <T = FragmentableArray<Channel>>(args?: {
     where?: ChannelWhereInput;
     orderBy?: ChannelOrderByInput;
     skip?: Int;
@@ -1272,7 +1272,7 @@ export interface UserSubscription
     first?: Int;
     last?: Int;
   }) => T;
-  channel: <T = Promise<AsyncIterator<ChannelSubscription>>>(args?: {
+  channels: <T = Promise<AsyncIterator<ChannelSubscription>>>(args?: {
     where?: ChannelWhereInput;
     orderBy?: ChannelOrderByInput;
     skip?: Int;
@@ -1300,7 +1300,7 @@ export interface UserNullablePromise
     first?: Int;
     last?: Int;
   }) => T;
-  channel: <T = FragmentableArray<Channel>>(args?: {
+  channels: <T = FragmentableArray<Channel>>(args?: {
     where?: ChannelWhereInput;
     orderBy?: ChannelOrderByInput;
     skip?: Int;

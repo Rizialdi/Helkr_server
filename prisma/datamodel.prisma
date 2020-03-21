@@ -5,7 +5,7 @@ type User {
   numero: String! @unique
   createdAt: DateTime! @createdAt
   offerings: [Offering!]! @relation(link: INLINE)
-  channel: [Channel!]! @relation(link: INLINE)
+  channels: [Channel!]! @relation(link: INLINE)
 }
 type Offering {
   id: ID! @id
