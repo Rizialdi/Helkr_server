@@ -3,7 +3,15 @@ module.exports = {
   // Please don't change this file manually but run `prisma generate` to update it.
   // For more information, please read the docs: https://www.prisma.io/docs/prisma-client/
 
-/* GraphQL */ `type AggregateOffering {
+/* GraphQL */ `type AggregateChannel {
+  count: Int!
+}
+
+type AggregateMessage {
+  count: Int!
+}
+
+type AggregateOffering {
   count: Int!
 }
 
@@ -15,11 +23,404 @@ type BatchPayload {
   count: Long!
 }
 
+type Channel {
+  id: ID!
+  users(where: UserWhereInput, orderBy: UserOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [User!]
+  messages(where: MessageWhereInput, orderBy: MessageOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Message!]
+  createdAt: DateTime!
+}
+
+type ChannelConnection {
+  pageInfo: PageInfo!
+  edges: [ChannelEdge]!
+  aggregate: AggregateChannel!
+}
+
+input ChannelCreateInput {
+  id: ID
+  users: UserCreateManyWithoutChannelInput
+  messages: MessageCreateManyWithoutChannelInput
+}
+
+input ChannelCreateManyWithoutUsersInput {
+  create: [ChannelCreateWithoutUsersInput!]
+  connect: [ChannelWhereUniqueInput!]
+}
+
+input ChannelCreateOneWithoutMessagesInput {
+  create: ChannelCreateWithoutMessagesInput
+  connect: ChannelWhereUniqueInput
+}
+
+input ChannelCreateWithoutMessagesInput {
+  id: ID
+  users: UserCreateManyWithoutChannelInput
+}
+
+input ChannelCreateWithoutUsersInput {
+  id: ID
+  messages: MessageCreateManyWithoutChannelInput
+}
+
+type ChannelEdge {
+  node: Channel!
+  cursor: String!
+}
+
+enum ChannelOrderByInput {
+  id_ASC
+  id_DESC
+  createdAt_ASC
+  createdAt_DESC
+}
+
+type ChannelPreviousValues {
+  id: ID!
+  createdAt: DateTime!
+}
+
+input ChannelScalarWhereInput {
+  id: ID
+  id_not: ID
+  id_in: [ID!]
+  id_not_in: [ID!]
+  id_lt: ID
+  id_lte: ID
+  id_gt: ID
+  id_gte: ID
+  id_contains: ID
+  id_not_contains: ID
+  id_starts_with: ID
+  id_not_starts_with: ID
+  id_ends_with: ID
+  id_not_ends_with: ID
+  createdAt: DateTime
+  createdAt_not: DateTime
+  createdAt_in: [DateTime!]
+  createdAt_not_in: [DateTime!]
+  createdAt_lt: DateTime
+  createdAt_lte: DateTime
+  createdAt_gt: DateTime
+  createdAt_gte: DateTime
+  AND: [ChannelScalarWhereInput!]
+  OR: [ChannelScalarWhereInput!]
+  NOT: [ChannelScalarWhereInput!]
+}
+
+type ChannelSubscriptionPayload {
+  mutation: MutationType!
+  node: Channel
+  updatedFields: [String!]
+  previousValues: ChannelPreviousValues
+}
+
+input ChannelSubscriptionWhereInput {
+  mutation_in: [MutationType!]
+  updatedFields_contains: String
+  updatedFields_contains_every: [String!]
+  updatedFields_contains_some: [String!]
+  node: ChannelWhereInput
+  AND: [ChannelSubscriptionWhereInput!]
+}
+
+input ChannelUpdateInput {
+  users: UserUpdateManyWithoutChannelInput
+  messages: MessageUpdateManyWithoutChannelInput
+}
+
+input ChannelUpdateManyWithoutUsersInput {
+  create: [ChannelCreateWithoutUsersInput!]
+  delete: [ChannelWhereUniqueInput!]
+  connect: [ChannelWhereUniqueInput!]
+  set: [ChannelWhereUniqueInput!]
+  disconnect: [ChannelWhereUniqueInput!]
+  update: [ChannelUpdateWithWhereUniqueWithoutUsersInput!]
+  upsert: [ChannelUpsertWithWhereUniqueWithoutUsersInput!]
+  deleteMany: [ChannelScalarWhereInput!]
+}
+
+input ChannelUpdateOneRequiredWithoutMessagesInput {
+  create: ChannelCreateWithoutMessagesInput
+  update: ChannelUpdateWithoutMessagesDataInput
+  upsert: ChannelUpsertWithoutMessagesInput
+  connect: ChannelWhereUniqueInput
+}
+
+input ChannelUpdateWithoutMessagesDataInput {
+  users: UserUpdateManyWithoutChannelInput
+}
+
+input ChannelUpdateWithoutUsersDataInput {
+  messages: MessageUpdateManyWithoutChannelInput
+}
+
+input ChannelUpdateWithWhereUniqueWithoutUsersInput {
+  where: ChannelWhereUniqueInput!
+  data: ChannelUpdateWithoutUsersDataInput!
+}
+
+input ChannelUpsertWithoutMessagesInput {
+  update: ChannelUpdateWithoutMessagesDataInput!
+  create: ChannelCreateWithoutMessagesInput!
+}
+
+input ChannelUpsertWithWhereUniqueWithoutUsersInput {
+  where: ChannelWhereUniqueInput!
+  update: ChannelUpdateWithoutUsersDataInput!
+  create: ChannelCreateWithoutUsersInput!
+}
+
+input ChannelWhereInput {
+  id: ID
+  id_not: ID
+  id_in: [ID!]
+  id_not_in: [ID!]
+  id_lt: ID
+  id_lte: ID
+  id_gt: ID
+  id_gte: ID
+  id_contains: ID
+  id_not_contains: ID
+  id_starts_with: ID
+  id_not_starts_with: ID
+  id_ends_with: ID
+  id_not_ends_with: ID
+  users_some: UserWhereInput
+  messages_some: MessageWhereInput
+  createdAt: DateTime
+  createdAt_not: DateTime
+  createdAt_in: [DateTime!]
+  createdAt_not_in: [DateTime!]
+  createdAt_lt: DateTime
+  createdAt_lte: DateTime
+  createdAt_gt: DateTime
+  createdAt_gte: DateTime
+  AND: [ChannelWhereInput!]
+}
+
+input ChannelWhereUniqueInput {
+  id: ID
+}
+
 scalar DateTime
 
 scalar Long
 
+type Message {
+  id: ID!
+  text: String!
+  sentBy: User!
+  channel: Channel!
+  createdAt: DateTime!
+}
+
+type MessageConnection {
+  pageInfo: PageInfo!
+  edges: [MessageEdge]!
+  aggregate: AggregateMessage!
+}
+
+input MessageCreateInput {
+  id: ID
+  text: String!
+  sentBy: UserCreateOneInput!
+  channel: ChannelCreateOneWithoutMessagesInput!
+}
+
+input MessageCreateManyWithoutChannelInput {
+  create: [MessageCreateWithoutChannelInput!]
+  connect: [MessageWhereUniqueInput!]
+}
+
+input MessageCreateWithoutChannelInput {
+  id: ID
+  text: String!
+  sentBy: UserCreateOneInput!
+}
+
+type MessageEdge {
+  node: Message!
+  cursor: String!
+}
+
+enum MessageOrderByInput {
+  id_ASC
+  id_DESC
+  text_ASC
+  text_DESC
+  createdAt_ASC
+  createdAt_DESC
+}
+
+type MessagePreviousValues {
+  id: ID!
+  text: String!
+  createdAt: DateTime!
+}
+
+input MessageScalarWhereInput {
+  id: ID
+  id_not: ID
+  id_in: [ID!]
+  id_not_in: [ID!]
+  id_lt: ID
+  id_lte: ID
+  id_gt: ID
+  id_gte: ID
+  id_contains: ID
+  id_not_contains: ID
+  id_starts_with: ID
+  id_not_starts_with: ID
+  id_ends_with: ID
+  id_not_ends_with: ID
+  text: String
+  text_not: String
+  text_in: [String!]
+  text_not_in: [String!]
+  text_lt: String
+  text_lte: String
+  text_gt: String
+  text_gte: String
+  text_contains: String
+  text_not_contains: String
+  text_starts_with: String
+  text_not_starts_with: String
+  text_ends_with: String
+  text_not_ends_with: String
+  createdAt: DateTime
+  createdAt_not: DateTime
+  createdAt_in: [DateTime!]
+  createdAt_not_in: [DateTime!]
+  createdAt_lt: DateTime
+  createdAt_lte: DateTime
+  createdAt_gt: DateTime
+  createdAt_gte: DateTime
+  AND: [MessageScalarWhereInput!]
+  OR: [MessageScalarWhereInput!]
+  NOT: [MessageScalarWhereInput!]
+}
+
+type MessageSubscriptionPayload {
+  mutation: MutationType!
+  node: Message
+  updatedFields: [String!]
+  previousValues: MessagePreviousValues
+}
+
+input MessageSubscriptionWhereInput {
+  mutation_in: [MutationType!]
+  updatedFields_contains: String
+  updatedFields_contains_every: [String!]
+  updatedFields_contains_some: [String!]
+  node: MessageWhereInput
+  AND: [MessageSubscriptionWhereInput!]
+}
+
+input MessageUpdateInput {
+  text: String
+  sentBy: UserUpdateOneRequiredInput
+  channel: ChannelUpdateOneRequiredWithoutMessagesInput
+}
+
+input MessageUpdateManyDataInput {
+  text: String
+}
+
+input MessageUpdateManyMutationInput {
+  text: String
+}
+
+input MessageUpdateManyWithoutChannelInput {
+  create: [MessageCreateWithoutChannelInput!]
+  delete: [MessageWhereUniqueInput!]
+  connect: [MessageWhereUniqueInput!]
+  set: [MessageWhereUniqueInput!]
+  disconnect: [MessageWhereUniqueInput!]
+  update: [MessageUpdateWithWhereUniqueWithoutChannelInput!]
+  upsert: [MessageUpsertWithWhereUniqueWithoutChannelInput!]
+  deleteMany: [MessageScalarWhereInput!]
+  updateMany: [MessageUpdateManyWithWhereNestedInput!]
+}
+
+input MessageUpdateManyWithWhereNestedInput {
+  where: MessageScalarWhereInput!
+  data: MessageUpdateManyDataInput!
+}
+
+input MessageUpdateWithoutChannelDataInput {
+  text: String
+  sentBy: UserUpdateOneRequiredInput
+}
+
+input MessageUpdateWithWhereUniqueWithoutChannelInput {
+  where: MessageWhereUniqueInput!
+  data: MessageUpdateWithoutChannelDataInput!
+}
+
+input MessageUpsertWithWhereUniqueWithoutChannelInput {
+  where: MessageWhereUniqueInput!
+  update: MessageUpdateWithoutChannelDataInput!
+  create: MessageCreateWithoutChannelInput!
+}
+
+input MessageWhereInput {
+  id: ID
+  id_not: ID
+  id_in: [ID!]
+  id_not_in: [ID!]
+  id_lt: ID
+  id_lte: ID
+  id_gt: ID
+  id_gte: ID
+  id_contains: ID
+  id_not_contains: ID
+  id_starts_with: ID
+  id_not_starts_with: ID
+  id_ends_with: ID
+  id_not_ends_with: ID
+  text: String
+  text_not: String
+  text_in: [String!]
+  text_not_in: [String!]
+  text_lt: String
+  text_lte: String
+  text_gt: String
+  text_gte: String
+  text_contains: String
+  text_not_contains: String
+  text_starts_with: String
+  text_not_starts_with: String
+  text_ends_with: String
+  text_not_ends_with: String
+  sentBy: UserWhereInput
+  channel: ChannelWhereInput
+  createdAt: DateTime
+  createdAt_not: DateTime
+  createdAt_in: [DateTime!]
+  createdAt_not_in: [DateTime!]
+  createdAt_lt: DateTime
+  createdAt_lte: DateTime
+  createdAt_gt: DateTime
+  createdAt_gte: DateTime
+  AND: [MessageWhereInput!]
+}
+
+input MessageWhereUniqueInput {
+  id: ID
+}
+
 type Mutation {
+  createChannel(data: ChannelCreateInput!): Channel!
+  updateChannel(data: ChannelUpdateInput!, where: ChannelWhereUniqueInput!): Channel
+  upsertChannel(where: ChannelWhereUniqueInput!, create: ChannelCreateInput!, update: ChannelUpdateInput!): Channel!
+  deleteChannel(where: ChannelWhereUniqueInput!): Channel
+  deleteManyChannels(where: ChannelWhereInput): BatchPayload!
+  createMessage(data: MessageCreateInput!): Message!
+  updateMessage(data: MessageUpdateInput!, where: MessageWhereUniqueInput!): Message
+  updateManyMessages(data: MessageUpdateManyMutationInput!, where: MessageWhereInput): BatchPayload!
+  upsertMessage(where: MessageWhereUniqueInput!, create: MessageCreateInput!, update: MessageUpdateInput!): Message!
+  deleteMessage(where: MessageWhereUniqueInput!): Message
+  deleteManyMessages(where: MessageWhereInput): BatchPayload!
   createOffering(data: OfferingCreateInput!): Offering!
   updateOffering(data: OfferingUpdateInput!, where: OfferingWhereUniqueInput!): Offering
   updateManyOfferings(data: OfferingUpdateManyMutationInput!, where: OfferingWhereInput): BatchPayload!
@@ -345,6 +746,12 @@ type PageInfo {
 }
 
 type Query {
+  channel(where: ChannelWhereUniqueInput!): Channel
+  channels(where: ChannelWhereInput, orderBy: ChannelOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Channel]!
+  channelsConnection(where: ChannelWhereInput, orderBy: ChannelOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): ChannelConnection!
+  message(where: MessageWhereUniqueInput!): Message
+  messages(where: MessageWhereInput, orderBy: MessageOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Message]!
+  messagesConnection(where: MessageWhereInput, orderBy: MessageOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): MessageConnection!
   offering(where: OfferingWhereUniqueInput!): Offering
   offerings(where: OfferingWhereInput, orderBy: OfferingOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Offering]!
   offeringsConnection(where: OfferingWhereInput, orderBy: OfferingOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): OfferingConnection!
@@ -355,6 +762,8 @@ type Query {
 }
 
 type Subscription {
+  channel(where: ChannelSubscriptionWhereInput): ChannelSubscriptionPayload
+  message(where: MessageSubscriptionWhereInput): MessageSubscriptionPayload
   offering(where: OfferingSubscriptionWhereInput): OfferingSubscriptionPayload
   user(where: UserSubscriptionWhereInput): UserSubscriptionPayload
 }
@@ -366,6 +775,7 @@ type User {
   numero: String!
   createdAt: DateTime!
   offerings(where: OfferingWhereInput, orderBy: OfferingOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Offering!]
+  channel(where: ChannelWhereInput, orderBy: ChannelOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Channel!]
 }
 
 type UserConnection {
@@ -380,6 +790,17 @@ input UserCreateInput {
   prenom: String!
   numero: String!
   offerings: OfferingCreateManyWithoutAuthorInput
+  channel: ChannelCreateManyWithoutUsersInput
+}
+
+input UserCreateManyWithoutChannelInput {
+  create: [UserCreateWithoutChannelInput!]
+  connect: [UserWhereUniqueInput!]
+}
+
+input UserCreateOneInput {
+  create: UserCreateInput
+  connect: UserWhereUniqueInput
 }
 
 input UserCreateOneWithoutOfferingsInput {
@@ -387,11 +808,20 @@ input UserCreateOneWithoutOfferingsInput {
   connect: UserWhereUniqueInput
 }
 
+input UserCreateWithoutChannelInput {
+  id: ID
+  nom: String!
+  prenom: String!
+  numero: String!
+  offerings: OfferingCreateManyWithoutAuthorInput
+}
+
 input UserCreateWithoutOfferingsInput {
   id: ID
   nom: String!
   prenom: String!
   numero: String!
+  channel: ChannelCreateManyWithoutUsersInput
 }
 
 type UserEdge {
@@ -420,6 +850,76 @@ type UserPreviousValues {
   createdAt: DateTime!
 }
 
+input UserScalarWhereInput {
+  id: ID
+  id_not: ID
+  id_in: [ID!]
+  id_not_in: [ID!]
+  id_lt: ID
+  id_lte: ID
+  id_gt: ID
+  id_gte: ID
+  id_contains: ID
+  id_not_contains: ID
+  id_starts_with: ID
+  id_not_starts_with: ID
+  id_ends_with: ID
+  id_not_ends_with: ID
+  nom: String
+  nom_not: String
+  nom_in: [String!]
+  nom_not_in: [String!]
+  nom_lt: String
+  nom_lte: String
+  nom_gt: String
+  nom_gte: String
+  nom_contains: String
+  nom_not_contains: String
+  nom_starts_with: String
+  nom_not_starts_with: String
+  nom_ends_with: String
+  nom_not_ends_with: String
+  prenom: String
+  prenom_not: String
+  prenom_in: [String!]
+  prenom_not_in: [String!]
+  prenom_lt: String
+  prenom_lte: String
+  prenom_gt: String
+  prenom_gte: String
+  prenom_contains: String
+  prenom_not_contains: String
+  prenom_starts_with: String
+  prenom_not_starts_with: String
+  prenom_ends_with: String
+  prenom_not_ends_with: String
+  numero: String
+  numero_not: String
+  numero_in: [String!]
+  numero_not_in: [String!]
+  numero_lt: String
+  numero_lte: String
+  numero_gt: String
+  numero_gte: String
+  numero_contains: String
+  numero_not_contains: String
+  numero_starts_with: String
+  numero_not_starts_with: String
+  numero_ends_with: String
+  numero_not_ends_with: String
+  createdAt: DateTime
+  createdAt_not: DateTime
+  createdAt_in: [DateTime!]
+  createdAt_not_in: [DateTime!]
+  createdAt_lt: DateTime
+  createdAt_lte: DateTime
+  createdAt_gt: DateTime
+  createdAt_gte: DateTime
+  AND: [UserScalarWhereInput!]
+  OR: [UserScalarWhereInput!]
+  NOT: [UserScalarWhereInput!]
+}
+
 type UserSubscriptionPayload {
   mutation: MutationType!
   node: User
@@ -436,17 +936,56 @@ input UserSubscriptionWhereInput {
   AND: [UserSubscriptionWhereInput!]
 }
 
+input UserUpdateDataInput {
+  nom: String
+  prenom: String
+  numero: String
+  offerings: OfferingUpdateManyWithoutAuthorInput
+  channel: ChannelUpdateManyWithoutUsersInput
+}
+
 input UserUpdateInput {
   nom: String
   prenom: String
   numero: String
   offerings: OfferingUpdateManyWithoutAuthorInput
+  channel: ChannelUpdateManyWithoutUsersInput
+}
+
+input UserUpdateManyDataInput {
+  nom: String
+  prenom: String
+  numero: String
 }
 
 input UserUpdateManyMutationInput {
   nom: String
   prenom: String
   numero: String
+}
+
+input UserUpdateManyWithoutChannelInput {
+  create: [UserCreateWithoutChannelInput!]
+  delete: [UserWhereUniqueInput!]
+  connect: [UserWhereUniqueInput!]
+  set: [UserWhereUniqueInput!]
+  disconnect: [UserWhereUniqueInput!]
+  update: [UserUpdateWithWhereUniqueWithoutChannelInput!]
+  upsert: [UserUpsertWithWhereUniqueWithoutChannelInput!]
+  deleteMany: [UserScalarWhereInput!]
+  updateMany: [UserUpdateManyWithWhereNestedInput!]
+}
+
+input UserUpdateManyWithWhereNestedInput {
+  where: UserScalarWhereInput!
+  data: UserUpdateManyDataInput!
+}
+
+input UserUpdateOneRequiredInput {
+  create: UserCreateInput
+  update: UserUpdateDataInput
+  upsert: UserUpsertNestedInput
+  connect: UserWhereUniqueInput
 }
 
 input UserUpdateOneRequiredWithoutOfferingsInput {
@@ -456,15 +995,39 @@ input UserUpdateOneRequiredWithoutOfferingsInput {
   connect: UserWhereUniqueInput
 }
 
+input UserUpdateWithoutChannelDataInput {
+  nom: String
+  prenom: String
+  numero: String
+  offerings: OfferingUpdateManyWithoutAuthorInput
+}
+
 input UserUpdateWithoutOfferingsDataInput {
   nom: String
   prenom: String
   numero: String
+  channel: ChannelUpdateManyWithoutUsersInput
+}
+
+input UserUpdateWithWhereUniqueWithoutChannelInput {
+  where: UserWhereUniqueInput!
+  data: UserUpdateWithoutChannelDataInput!
+}
+
+input UserUpsertNestedInput {
+  update: UserUpdateDataInput!
+  create: UserCreateInput!
 }
 
 input UserUpsertWithoutOfferingsInput {
   update: UserUpdateWithoutOfferingsDataInput!
   create: UserCreateWithoutOfferingsInput!
+}
+
+input UserUpsertWithWhereUniqueWithoutChannelInput {
+  where: UserWhereUniqueInput!
+  update: UserUpdateWithoutChannelDataInput!
+  create: UserCreateWithoutChannelInput!
 }
 
 input UserWhereInput {
@@ -533,6 +1096,7 @@ input UserWhereInput {
   createdAt_gt: DateTime
   createdAt_gte: DateTime
   offerings_some: OfferingWhereInput
+  channel_some: ChannelWhereInput
   AND: [UserWhereInput!]
 }
 

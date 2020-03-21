@@ -5,6 +5,7 @@ type User {
   numero: String! @unique
   createdAt: DateTime! @createdAt
   offerings: [Offering!]! @relation(link: INLINE)
+  channel: [Channel!]! @relation(link: INLINE)
 }
 type Offering {
   id: ID! @id
@@ -14,4 +15,17 @@ type Offering {
   author: User! 
   createdAt: DateTime! @createdAt
   updatedAt: DateTime! @updatedAt
+}
+type Channel {
+  id: ID! @id
+  users: [User!]!
+  messages: [Message!]! @relation(link: INLINE)
+  createdAt: DateTime! @createdAt
+}
+type Message {
+  id: ID! @id
+  text: String!
+  sentBy: User! @relation(link: INLINE)
+  channel: Channel!
+  createdAt: DateTime! @createdAt
 }

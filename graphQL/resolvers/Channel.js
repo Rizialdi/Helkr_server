@@ -15,7 +15,8 @@ export default {
     createChannel: async (parent, { recipient }, context, info) => {
       try {
         const sentBy = getUserId(context)
-        const channel = await context.prisma.createChannel({ recipient, sentBy })
+        const channel = await context.prisma.createChannel({ users: { connect: [{ id: recipient }, { id: sentBy }] } })
+
         if (!channel) {
           return {
             success: false,

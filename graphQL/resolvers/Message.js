@@ -11,8 +11,8 @@ export default {
   Mutation: {
     createMessage: async (parent, { channelId, text }, context, info) => {
       try {
-        const sentBy = getUserId(context)
-        const message = await context.prisma.createMessage({ channelId, sentBy, text })
+        const userId = getUserId(context)
+        const message = await context.prisma.createMessage({ channel: { connect: { id: channelId } }, text, sentBy: { connect: { id: userId } } })
         if (!message) return false
         return true
       } catch (error) {

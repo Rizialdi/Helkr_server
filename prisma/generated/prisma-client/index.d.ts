@@ -16,6 +16,8 @@ export type AtLeastOne<T, U = { [K in keyof T]: Pick<T, K> }> = Partial<T> &
 export type Maybe<T> = T | undefined | null;
 
 export interface Exists {
+  channel: (where?: ChannelWhereInput) => Promise<boolean>;
+  message: (where?: MessageWhereInput) => Promise<boolean>;
   offering: (where?: OfferingWhereInput) => Promise<boolean>;
   user: (where?: UserWhereInput) => Promise<boolean>;
 }
@@ -39,6 +41,44 @@ export interface Prisma {
    * Queries
    */
 
+  channel: (where: ChannelWhereUniqueInput) => ChannelNullablePromise;
+  channels: (args?: {
+    where?: ChannelWhereInput;
+    orderBy?: ChannelOrderByInput;
+    skip?: Int;
+    after?: String;
+    before?: String;
+    first?: Int;
+    last?: Int;
+  }) => FragmentableArray<Channel>;
+  channelsConnection: (args?: {
+    where?: ChannelWhereInput;
+    orderBy?: ChannelOrderByInput;
+    skip?: Int;
+    after?: String;
+    before?: String;
+    first?: Int;
+    last?: Int;
+  }) => ChannelConnectionPromise;
+  message: (where: MessageWhereUniqueInput) => MessageNullablePromise;
+  messages: (args?: {
+    where?: MessageWhereInput;
+    orderBy?: MessageOrderByInput;
+    skip?: Int;
+    after?: String;
+    before?: String;
+    first?: Int;
+    last?: Int;
+  }) => FragmentableArray<Message>;
+  messagesConnection: (args?: {
+    where?: MessageWhereInput;
+    orderBy?: MessageOrderByInput;
+    skip?: Int;
+    after?: String;
+    before?: String;
+    first?: Int;
+    last?: Int;
+  }) => MessageConnectionPromise;
   offering: (where: OfferingWhereUniqueInput) => OfferingNullablePromise;
   offerings: (args?: {
     where?: OfferingWhereInput;
@@ -83,6 +123,34 @@ export interface Prisma {
    * Mutations
    */
 
+  createChannel: (data: ChannelCreateInput) => ChannelPromise;
+  updateChannel: (args: {
+    data: ChannelUpdateInput;
+    where: ChannelWhereUniqueInput;
+  }) => ChannelPromise;
+  upsertChannel: (args: {
+    where: ChannelWhereUniqueInput;
+    create: ChannelCreateInput;
+    update: ChannelUpdateInput;
+  }) => ChannelPromise;
+  deleteChannel: (where: ChannelWhereUniqueInput) => ChannelPromise;
+  deleteManyChannels: (where?: ChannelWhereInput) => BatchPayloadPromise;
+  createMessage: (data: MessageCreateInput) => MessagePromise;
+  updateMessage: (args: {
+    data: MessageUpdateInput;
+    where: MessageWhereUniqueInput;
+  }) => MessagePromise;
+  updateManyMessages: (args: {
+    data: MessageUpdateManyMutationInput;
+    where?: MessageWhereInput;
+  }) => BatchPayloadPromise;
+  upsertMessage: (args: {
+    where: MessageWhereUniqueInput;
+    create: MessageCreateInput;
+    update: MessageUpdateInput;
+  }) => MessagePromise;
+  deleteMessage: (where: MessageWhereUniqueInput) => MessagePromise;
+  deleteManyMessages: (where?: MessageWhereInput) => BatchPayloadPromise;
   createOffering: (data: OfferingCreateInput) => OfferingPromise;
   updateOffering: (args: {
     data: OfferingUpdateInput;
@@ -124,6 +192,12 @@ export interface Prisma {
 }
 
 export interface Subscription {
+  channel: (
+    where?: ChannelSubscriptionWhereInput
+  ) => ChannelSubscriptionPayloadSubscription;
+  message: (
+    where?: MessageSubscriptionWhereInput
+  ) => MessageSubscriptionPayloadSubscription;
   offering: (
     where?: OfferingSubscriptionWhereInput
   ) => OfferingSubscriptionPayloadSubscription;
@@ -140,6 +214,18 @@ export interface ClientConstructor<T> {
  * Types
  */
 
+export type UserOrderByInput =
+  | "id_ASC"
+  | "id_DESC"
+  | "nom_ASC"
+  | "nom_DESC"
+  | "prenom_ASC"
+  | "prenom_DESC"
+  | "numero_ASC"
+  | "numero_DESC"
+  | "createdAt_ASC"
+  | "createdAt_DESC";
+
 export type OfferingOrderByInput =
   | "id_ASC"
   | "id_DESC"
@@ -154,23 +240,95 @@ export type OfferingOrderByInput =
   | "updatedAt_ASC"
   | "updatedAt_DESC";
 
-export type UserOrderByInput =
+export type ChannelOrderByInput =
   | "id_ASC"
   | "id_DESC"
-  | "nom_ASC"
-  | "nom_DESC"
-  | "prenom_ASC"
-  | "prenom_DESC"
-  | "numero_ASC"
-  | "numero_DESC"
+  | "createdAt_ASC"
+  | "createdAt_DESC";
+
+export type MessageOrderByInput =
+  | "id_ASC"
+  | "id_DESC"
+  | "text_ASC"
+  | "text_DESC"
   | "createdAt_ASC"
   | "createdAt_DESC";
 
 export type MutationType = "CREATED" | "UPDATED" | "DELETED";
 
-export type OfferingWhereUniqueInput = AtLeastOne<{
+export type ChannelWhereUniqueInput = AtLeastOne<{
   id: Maybe<ID_Input>;
 }>;
+
+export interface UserWhereInput {
+  id?: Maybe<ID_Input>;
+  id_not?: Maybe<ID_Input>;
+  id_in?: Maybe<ID_Input[] | ID_Input>;
+  id_not_in?: Maybe<ID_Input[] | ID_Input>;
+  id_lt?: Maybe<ID_Input>;
+  id_lte?: Maybe<ID_Input>;
+  id_gt?: Maybe<ID_Input>;
+  id_gte?: Maybe<ID_Input>;
+  id_contains?: Maybe<ID_Input>;
+  id_not_contains?: Maybe<ID_Input>;
+  id_starts_with?: Maybe<ID_Input>;
+  id_not_starts_with?: Maybe<ID_Input>;
+  id_ends_with?: Maybe<ID_Input>;
+  id_not_ends_with?: Maybe<ID_Input>;
+  nom?: Maybe<String>;
+  nom_not?: Maybe<String>;
+  nom_in?: Maybe<String[] | String>;
+  nom_not_in?: Maybe<String[] | String>;
+  nom_lt?: Maybe<String>;
+  nom_lte?: Maybe<String>;
+  nom_gt?: Maybe<String>;
+  nom_gte?: Maybe<String>;
+  nom_contains?: Maybe<String>;
+  nom_not_contains?: Maybe<String>;
+  nom_starts_with?: Maybe<String>;
+  nom_not_starts_with?: Maybe<String>;
+  nom_ends_with?: Maybe<String>;
+  nom_not_ends_with?: Maybe<String>;
+  prenom?: Maybe<String>;
+  prenom_not?: Maybe<String>;
+  prenom_in?: Maybe<String[] | String>;
+  prenom_not_in?: Maybe<String[] | String>;
+  prenom_lt?: Maybe<String>;
+  prenom_lte?: Maybe<String>;
+  prenom_gt?: Maybe<String>;
+  prenom_gte?: Maybe<String>;
+  prenom_contains?: Maybe<String>;
+  prenom_not_contains?: Maybe<String>;
+  prenom_starts_with?: Maybe<String>;
+  prenom_not_starts_with?: Maybe<String>;
+  prenom_ends_with?: Maybe<String>;
+  prenom_not_ends_with?: Maybe<String>;
+  numero?: Maybe<String>;
+  numero_not?: Maybe<String>;
+  numero_in?: Maybe<String[] | String>;
+  numero_not_in?: Maybe<String[] | String>;
+  numero_lt?: Maybe<String>;
+  numero_lte?: Maybe<String>;
+  numero_gt?: Maybe<String>;
+  numero_gte?: Maybe<String>;
+  numero_contains?: Maybe<String>;
+  numero_not_contains?: Maybe<String>;
+  numero_starts_with?: Maybe<String>;
+  numero_not_starts_with?: Maybe<String>;
+  numero_ends_with?: Maybe<String>;
+  numero_not_ends_with?: Maybe<String>;
+  createdAt?: Maybe<DateTimeInput>;
+  createdAt_not?: Maybe<DateTimeInput>;
+  createdAt_in?: Maybe<DateTimeInput[] | DateTimeInput>;
+  createdAt_not_in?: Maybe<DateTimeInput[] | DateTimeInput>;
+  createdAt_lt?: Maybe<DateTimeInput>;
+  createdAt_lte?: Maybe<DateTimeInput>;
+  createdAt_gt?: Maybe<DateTimeInput>;
+  createdAt_gte?: Maybe<DateTimeInput>;
+  offerings_some?: Maybe<OfferingWhereInput>;
+  channel_some?: Maybe<ChannelWhereInput>;
+  AND?: Maybe<UserWhereInput[] | UserWhereInput>;
+}
 
 export interface OfferingWhereInput {
   id?: Maybe<ID_Input>;
@@ -249,7 +407,7 @@ export interface OfferingWhereInput {
   AND?: Maybe<OfferingWhereInput[] | OfferingWhereInput>;
 }
 
-export interface UserWhereInput {
+export interface ChannelWhereInput {
   id?: Maybe<ID_Input>;
   id_not?: Maybe<ID_Input>;
   id_in?: Maybe<ID_Input[] | ID_Input>;
@@ -264,48 +422,8 @@ export interface UserWhereInput {
   id_not_starts_with?: Maybe<ID_Input>;
   id_ends_with?: Maybe<ID_Input>;
   id_not_ends_with?: Maybe<ID_Input>;
-  nom?: Maybe<String>;
-  nom_not?: Maybe<String>;
-  nom_in?: Maybe<String[] | String>;
-  nom_not_in?: Maybe<String[] | String>;
-  nom_lt?: Maybe<String>;
-  nom_lte?: Maybe<String>;
-  nom_gt?: Maybe<String>;
-  nom_gte?: Maybe<String>;
-  nom_contains?: Maybe<String>;
-  nom_not_contains?: Maybe<String>;
-  nom_starts_with?: Maybe<String>;
-  nom_not_starts_with?: Maybe<String>;
-  nom_ends_with?: Maybe<String>;
-  nom_not_ends_with?: Maybe<String>;
-  prenom?: Maybe<String>;
-  prenom_not?: Maybe<String>;
-  prenom_in?: Maybe<String[] | String>;
-  prenom_not_in?: Maybe<String[] | String>;
-  prenom_lt?: Maybe<String>;
-  prenom_lte?: Maybe<String>;
-  prenom_gt?: Maybe<String>;
-  prenom_gte?: Maybe<String>;
-  prenom_contains?: Maybe<String>;
-  prenom_not_contains?: Maybe<String>;
-  prenom_starts_with?: Maybe<String>;
-  prenom_not_starts_with?: Maybe<String>;
-  prenom_ends_with?: Maybe<String>;
-  prenom_not_ends_with?: Maybe<String>;
-  numero?: Maybe<String>;
-  numero_not?: Maybe<String>;
-  numero_in?: Maybe<String[] | String>;
-  numero_not_in?: Maybe<String[] | String>;
-  numero_lt?: Maybe<String>;
-  numero_lte?: Maybe<String>;
-  numero_gt?: Maybe<String>;
-  numero_gte?: Maybe<String>;
-  numero_contains?: Maybe<String>;
-  numero_not_contains?: Maybe<String>;
-  numero_starts_with?: Maybe<String>;
-  numero_not_starts_with?: Maybe<String>;
-  numero_ends_with?: Maybe<String>;
-  numero_not_ends_with?: Maybe<String>;
+  users_some?: Maybe<UserWhereInput>;
+  messages_some?: Maybe<MessageWhereInput>;
   createdAt?: Maybe<DateTimeInput>;
   createdAt_not?: Maybe<DateTimeInput>;
   createdAt_in?: Maybe<DateTimeInput[] | DateTimeInput>;
@@ -314,67 +432,78 @@ export interface UserWhereInput {
   createdAt_lte?: Maybe<DateTimeInput>;
   createdAt_gt?: Maybe<DateTimeInput>;
   createdAt_gte?: Maybe<DateTimeInput>;
-  offerings_some?: Maybe<OfferingWhereInput>;
-  AND?: Maybe<UserWhereInput[] | UserWhereInput>;
+  AND?: Maybe<ChannelWhereInput[] | ChannelWhereInput>;
 }
+
+export interface MessageWhereInput {
+  id?: Maybe<ID_Input>;
+  id_not?: Maybe<ID_Input>;
+  id_in?: Maybe<ID_Input[] | ID_Input>;
+  id_not_in?: Maybe<ID_Input[] | ID_Input>;
+  id_lt?: Maybe<ID_Input>;
+  id_lte?: Maybe<ID_Input>;
+  id_gt?: Maybe<ID_Input>;
+  id_gte?: Maybe<ID_Input>;
+  id_contains?: Maybe<ID_Input>;
+  id_not_contains?: Maybe<ID_Input>;
+  id_starts_with?: Maybe<ID_Input>;
+  id_not_starts_with?: Maybe<ID_Input>;
+  id_ends_with?: Maybe<ID_Input>;
+  id_not_ends_with?: Maybe<ID_Input>;
+  text?: Maybe<String>;
+  text_not?: Maybe<String>;
+  text_in?: Maybe<String[] | String>;
+  text_not_in?: Maybe<String[] | String>;
+  text_lt?: Maybe<String>;
+  text_lte?: Maybe<String>;
+  text_gt?: Maybe<String>;
+  text_gte?: Maybe<String>;
+  text_contains?: Maybe<String>;
+  text_not_contains?: Maybe<String>;
+  text_starts_with?: Maybe<String>;
+  text_not_starts_with?: Maybe<String>;
+  text_ends_with?: Maybe<String>;
+  text_not_ends_with?: Maybe<String>;
+  sentBy?: Maybe<UserWhereInput>;
+  channel?: Maybe<ChannelWhereInput>;
+  createdAt?: Maybe<DateTimeInput>;
+  createdAt_not?: Maybe<DateTimeInput>;
+  createdAt_in?: Maybe<DateTimeInput[] | DateTimeInput>;
+  createdAt_not_in?: Maybe<DateTimeInput[] | DateTimeInput>;
+  createdAt_lt?: Maybe<DateTimeInput>;
+  createdAt_lte?: Maybe<DateTimeInput>;
+  createdAt_gt?: Maybe<DateTimeInput>;
+  createdAt_gte?: Maybe<DateTimeInput>;
+  AND?: Maybe<MessageWhereInput[] | MessageWhereInput>;
+}
+
+export type MessageWhereUniqueInput = AtLeastOne<{
+  id: Maybe<ID_Input>;
+}>;
+
+export type OfferingWhereUniqueInput = AtLeastOne<{
+  id: Maybe<ID_Input>;
+}>;
 
 export type UserWhereUniqueInput = AtLeastOne<{
   id: Maybe<ID_Input>;
   numero?: Maybe<String>;
 }>;
 
-export interface OfferingCreateInput {
+export interface ChannelCreateInput {
   id?: Maybe<ID_Input>;
-  type: String;
-  category: String;
-  description: String;
-  author: UserCreateOneWithoutOfferingsInput;
+  users?: Maybe<UserCreateManyWithoutChannelInput>;
+  messages?: Maybe<MessageCreateManyWithoutChannelInput>;
 }
 
-export interface UserCreateOneWithoutOfferingsInput {
-  create?: Maybe<UserCreateWithoutOfferingsInput>;
-  connect?: Maybe<UserWhereUniqueInput>;
+export interface UserCreateManyWithoutChannelInput {
+  create?: Maybe<
+    UserCreateWithoutChannelInput[] | UserCreateWithoutChannelInput
+  >;
+  connect?: Maybe<UserWhereUniqueInput[] | UserWhereUniqueInput>;
 }
 
-export interface UserCreateWithoutOfferingsInput {
-  id?: Maybe<ID_Input>;
-  nom: String;
-  prenom: String;
-  numero: String;
-}
-
-export interface OfferingUpdateInput {
-  type?: Maybe<String>;
-  category?: Maybe<String>;
-  description?: Maybe<String>;
-  author?: Maybe<UserUpdateOneRequiredWithoutOfferingsInput>;
-}
-
-export interface UserUpdateOneRequiredWithoutOfferingsInput {
-  create?: Maybe<UserCreateWithoutOfferingsInput>;
-  update?: Maybe<UserUpdateWithoutOfferingsDataInput>;
-  upsert?: Maybe<UserUpsertWithoutOfferingsInput>;
-  connect?: Maybe<UserWhereUniqueInput>;
-}
-
-export interface UserUpdateWithoutOfferingsDataInput {
-  nom?: Maybe<String>;
-  prenom?: Maybe<String>;
-  numero?: Maybe<String>;
-}
-
-export interface UserUpsertWithoutOfferingsInput {
-  update: UserUpdateWithoutOfferingsDataInput;
-  create: UserCreateWithoutOfferingsInput;
-}
-
-export interface OfferingUpdateManyMutationInput {
-  type?: Maybe<String>;
-  category?: Maybe<String>;
-  description?: Maybe<String>;
-}
-
-export interface UserCreateInput {
+export interface UserCreateWithoutChannelInput {
   id?: Maybe<ID_Input>;
   nom: String;
   prenom: String;
@@ -396,7 +525,78 @@ export interface OfferingCreateWithoutAuthorInput {
   description: String;
 }
 
-export interface UserUpdateInput {
+export interface MessageCreateManyWithoutChannelInput {
+  create?: Maybe<
+    MessageCreateWithoutChannelInput[] | MessageCreateWithoutChannelInput
+  >;
+  connect?: Maybe<MessageWhereUniqueInput[] | MessageWhereUniqueInput>;
+}
+
+export interface MessageCreateWithoutChannelInput {
+  id?: Maybe<ID_Input>;
+  text: String;
+  sentBy: UserCreateOneInput;
+}
+
+export interface UserCreateOneInput {
+  create?: Maybe<UserCreateInput>;
+  connect?: Maybe<UserWhereUniqueInput>;
+}
+
+export interface UserCreateInput {
+  id?: Maybe<ID_Input>;
+  nom: String;
+  prenom: String;
+  numero: String;
+  offerings?: Maybe<OfferingCreateManyWithoutAuthorInput>;
+  channel?: Maybe<ChannelCreateManyWithoutUsersInput>;
+}
+
+export interface ChannelCreateManyWithoutUsersInput {
+  create?: Maybe<
+    ChannelCreateWithoutUsersInput[] | ChannelCreateWithoutUsersInput
+  >;
+  connect?: Maybe<ChannelWhereUniqueInput[] | ChannelWhereUniqueInput>;
+}
+
+export interface ChannelCreateWithoutUsersInput {
+  id?: Maybe<ID_Input>;
+  messages?: Maybe<MessageCreateManyWithoutChannelInput>;
+}
+
+export interface ChannelUpdateInput {
+  users?: Maybe<UserUpdateManyWithoutChannelInput>;
+  messages?: Maybe<MessageUpdateManyWithoutChannelInput>;
+}
+
+export interface UserUpdateManyWithoutChannelInput {
+  create?: Maybe<
+    UserCreateWithoutChannelInput[] | UserCreateWithoutChannelInput
+  >;
+  delete?: Maybe<UserWhereUniqueInput[] | UserWhereUniqueInput>;
+  connect?: Maybe<UserWhereUniqueInput[] | UserWhereUniqueInput>;
+  set?: Maybe<UserWhereUniqueInput[] | UserWhereUniqueInput>;
+  disconnect?: Maybe<UserWhereUniqueInput[] | UserWhereUniqueInput>;
+  update?: Maybe<
+    | UserUpdateWithWhereUniqueWithoutChannelInput[]
+    | UserUpdateWithWhereUniqueWithoutChannelInput
+  >;
+  upsert?: Maybe<
+    | UserUpsertWithWhereUniqueWithoutChannelInput[]
+    | UserUpsertWithWhereUniqueWithoutChannelInput
+  >;
+  deleteMany?: Maybe<UserScalarWhereInput[] | UserScalarWhereInput>;
+  updateMany?: Maybe<
+    UserUpdateManyWithWhereNestedInput[] | UserUpdateManyWithWhereNestedInput
+  >;
+}
+
+export interface UserUpdateWithWhereUniqueWithoutChannelInput {
+  where: UserWhereUniqueInput;
+  data: UserUpdateWithoutChannelDataInput;
+}
+
+export interface UserUpdateWithoutChannelDataInput {
   nom?: Maybe<String>;
   prenom?: Maybe<String>;
   numero?: Maybe<String>;
@@ -532,10 +732,391 @@ export interface OfferingUpdateManyDataInput {
   description?: Maybe<String>;
 }
 
+export interface UserUpsertWithWhereUniqueWithoutChannelInput {
+  where: UserWhereUniqueInput;
+  update: UserUpdateWithoutChannelDataInput;
+  create: UserCreateWithoutChannelInput;
+}
+
+export interface UserScalarWhereInput {
+  id?: Maybe<ID_Input>;
+  id_not?: Maybe<ID_Input>;
+  id_in?: Maybe<ID_Input[] | ID_Input>;
+  id_not_in?: Maybe<ID_Input[] | ID_Input>;
+  id_lt?: Maybe<ID_Input>;
+  id_lte?: Maybe<ID_Input>;
+  id_gt?: Maybe<ID_Input>;
+  id_gte?: Maybe<ID_Input>;
+  id_contains?: Maybe<ID_Input>;
+  id_not_contains?: Maybe<ID_Input>;
+  id_starts_with?: Maybe<ID_Input>;
+  id_not_starts_with?: Maybe<ID_Input>;
+  id_ends_with?: Maybe<ID_Input>;
+  id_not_ends_with?: Maybe<ID_Input>;
+  nom?: Maybe<String>;
+  nom_not?: Maybe<String>;
+  nom_in?: Maybe<String[] | String>;
+  nom_not_in?: Maybe<String[] | String>;
+  nom_lt?: Maybe<String>;
+  nom_lte?: Maybe<String>;
+  nom_gt?: Maybe<String>;
+  nom_gte?: Maybe<String>;
+  nom_contains?: Maybe<String>;
+  nom_not_contains?: Maybe<String>;
+  nom_starts_with?: Maybe<String>;
+  nom_not_starts_with?: Maybe<String>;
+  nom_ends_with?: Maybe<String>;
+  nom_not_ends_with?: Maybe<String>;
+  prenom?: Maybe<String>;
+  prenom_not?: Maybe<String>;
+  prenom_in?: Maybe<String[] | String>;
+  prenom_not_in?: Maybe<String[] | String>;
+  prenom_lt?: Maybe<String>;
+  prenom_lte?: Maybe<String>;
+  prenom_gt?: Maybe<String>;
+  prenom_gte?: Maybe<String>;
+  prenom_contains?: Maybe<String>;
+  prenom_not_contains?: Maybe<String>;
+  prenom_starts_with?: Maybe<String>;
+  prenom_not_starts_with?: Maybe<String>;
+  prenom_ends_with?: Maybe<String>;
+  prenom_not_ends_with?: Maybe<String>;
+  numero?: Maybe<String>;
+  numero_not?: Maybe<String>;
+  numero_in?: Maybe<String[] | String>;
+  numero_not_in?: Maybe<String[] | String>;
+  numero_lt?: Maybe<String>;
+  numero_lte?: Maybe<String>;
+  numero_gt?: Maybe<String>;
+  numero_gte?: Maybe<String>;
+  numero_contains?: Maybe<String>;
+  numero_not_contains?: Maybe<String>;
+  numero_starts_with?: Maybe<String>;
+  numero_not_starts_with?: Maybe<String>;
+  numero_ends_with?: Maybe<String>;
+  numero_not_ends_with?: Maybe<String>;
+  createdAt?: Maybe<DateTimeInput>;
+  createdAt_not?: Maybe<DateTimeInput>;
+  createdAt_in?: Maybe<DateTimeInput[] | DateTimeInput>;
+  createdAt_not_in?: Maybe<DateTimeInput[] | DateTimeInput>;
+  createdAt_lt?: Maybe<DateTimeInput>;
+  createdAt_lte?: Maybe<DateTimeInput>;
+  createdAt_gt?: Maybe<DateTimeInput>;
+  createdAt_gte?: Maybe<DateTimeInput>;
+  AND?: Maybe<UserScalarWhereInput[] | UserScalarWhereInput>;
+  OR?: Maybe<UserScalarWhereInput[] | UserScalarWhereInput>;
+  NOT?: Maybe<UserScalarWhereInput[] | UserScalarWhereInput>;
+}
+
+export interface UserUpdateManyWithWhereNestedInput {
+  where: UserScalarWhereInput;
+  data: UserUpdateManyDataInput;
+}
+
+export interface UserUpdateManyDataInput {
+  nom?: Maybe<String>;
+  prenom?: Maybe<String>;
+  numero?: Maybe<String>;
+}
+
+export interface MessageUpdateManyWithoutChannelInput {
+  create?: Maybe<
+    MessageCreateWithoutChannelInput[] | MessageCreateWithoutChannelInput
+  >;
+  delete?: Maybe<MessageWhereUniqueInput[] | MessageWhereUniqueInput>;
+  connect?: Maybe<MessageWhereUniqueInput[] | MessageWhereUniqueInput>;
+  set?: Maybe<MessageWhereUniqueInput[] | MessageWhereUniqueInput>;
+  disconnect?: Maybe<MessageWhereUniqueInput[] | MessageWhereUniqueInput>;
+  update?: Maybe<
+    | MessageUpdateWithWhereUniqueWithoutChannelInput[]
+    | MessageUpdateWithWhereUniqueWithoutChannelInput
+  >;
+  upsert?: Maybe<
+    | MessageUpsertWithWhereUniqueWithoutChannelInput[]
+    | MessageUpsertWithWhereUniqueWithoutChannelInput
+  >;
+  deleteMany?: Maybe<MessageScalarWhereInput[] | MessageScalarWhereInput>;
+  updateMany?: Maybe<
+    | MessageUpdateManyWithWhereNestedInput[]
+    | MessageUpdateManyWithWhereNestedInput
+  >;
+}
+
+export interface MessageUpdateWithWhereUniqueWithoutChannelInput {
+  where: MessageWhereUniqueInput;
+  data: MessageUpdateWithoutChannelDataInput;
+}
+
+export interface MessageUpdateWithoutChannelDataInput {
+  text?: Maybe<String>;
+  sentBy?: Maybe<UserUpdateOneRequiredInput>;
+}
+
+export interface UserUpdateOneRequiredInput {
+  create?: Maybe<UserCreateInput>;
+  update?: Maybe<UserUpdateDataInput>;
+  upsert?: Maybe<UserUpsertNestedInput>;
+  connect?: Maybe<UserWhereUniqueInput>;
+}
+
+export interface UserUpdateDataInput {
+  nom?: Maybe<String>;
+  prenom?: Maybe<String>;
+  numero?: Maybe<String>;
+  offerings?: Maybe<OfferingUpdateManyWithoutAuthorInput>;
+  channel?: Maybe<ChannelUpdateManyWithoutUsersInput>;
+}
+
+export interface ChannelUpdateManyWithoutUsersInput {
+  create?: Maybe<
+    ChannelCreateWithoutUsersInput[] | ChannelCreateWithoutUsersInput
+  >;
+  delete?: Maybe<ChannelWhereUniqueInput[] | ChannelWhereUniqueInput>;
+  connect?: Maybe<ChannelWhereUniqueInput[] | ChannelWhereUniqueInput>;
+  set?: Maybe<ChannelWhereUniqueInput[] | ChannelWhereUniqueInput>;
+  disconnect?: Maybe<ChannelWhereUniqueInput[] | ChannelWhereUniqueInput>;
+  update?: Maybe<
+    | ChannelUpdateWithWhereUniqueWithoutUsersInput[]
+    | ChannelUpdateWithWhereUniqueWithoutUsersInput
+  >;
+  upsert?: Maybe<
+    | ChannelUpsertWithWhereUniqueWithoutUsersInput[]
+    | ChannelUpsertWithWhereUniqueWithoutUsersInput
+  >;
+  deleteMany?: Maybe<ChannelScalarWhereInput[] | ChannelScalarWhereInput>;
+}
+
+export interface ChannelUpdateWithWhereUniqueWithoutUsersInput {
+  where: ChannelWhereUniqueInput;
+  data: ChannelUpdateWithoutUsersDataInput;
+}
+
+export interface ChannelUpdateWithoutUsersDataInput {
+  messages?: Maybe<MessageUpdateManyWithoutChannelInput>;
+}
+
+export interface ChannelUpsertWithWhereUniqueWithoutUsersInput {
+  where: ChannelWhereUniqueInput;
+  update: ChannelUpdateWithoutUsersDataInput;
+  create: ChannelCreateWithoutUsersInput;
+}
+
+export interface ChannelScalarWhereInput {
+  id?: Maybe<ID_Input>;
+  id_not?: Maybe<ID_Input>;
+  id_in?: Maybe<ID_Input[] | ID_Input>;
+  id_not_in?: Maybe<ID_Input[] | ID_Input>;
+  id_lt?: Maybe<ID_Input>;
+  id_lte?: Maybe<ID_Input>;
+  id_gt?: Maybe<ID_Input>;
+  id_gte?: Maybe<ID_Input>;
+  id_contains?: Maybe<ID_Input>;
+  id_not_contains?: Maybe<ID_Input>;
+  id_starts_with?: Maybe<ID_Input>;
+  id_not_starts_with?: Maybe<ID_Input>;
+  id_ends_with?: Maybe<ID_Input>;
+  id_not_ends_with?: Maybe<ID_Input>;
+  createdAt?: Maybe<DateTimeInput>;
+  createdAt_not?: Maybe<DateTimeInput>;
+  createdAt_in?: Maybe<DateTimeInput[] | DateTimeInput>;
+  createdAt_not_in?: Maybe<DateTimeInput[] | DateTimeInput>;
+  createdAt_lt?: Maybe<DateTimeInput>;
+  createdAt_lte?: Maybe<DateTimeInput>;
+  createdAt_gt?: Maybe<DateTimeInput>;
+  createdAt_gte?: Maybe<DateTimeInput>;
+  AND?: Maybe<ChannelScalarWhereInput[] | ChannelScalarWhereInput>;
+  OR?: Maybe<ChannelScalarWhereInput[] | ChannelScalarWhereInput>;
+  NOT?: Maybe<ChannelScalarWhereInput[] | ChannelScalarWhereInput>;
+}
+
+export interface UserUpsertNestedInput {
+  update: UserUpdateDataInput;
+  create: UserCreateInput;
+}
+
+export interface MessageUpsertWithWhereUniqueWithoutChannelInput {
+  where: MessageWhereUniqueInput;
+  update: MessageUpdateWithoutChannelDataInput;
+  create: MessageCreateWithoutChannelInput;
+}
+
+export interface MessageScalarWhereInput {
+  id?: Maybe<ID_Input>;
+  id_not?: Maybe<ID_Input>;
+  id_in?: Maybe<ID_Input[] | ID_Input>;
+  id_not_in?: Maybe<ID_Input[] | ID_Input>;
+  id_lt?: Maybe<ID_Input>;
+  id_lte?: Maybe<ID_Input>;
+  id_gt?: Maybe<ID_Input>;
+  id_gte?: Maybe<ID_Input>;
+  id_contains?: Maybe<ID_Input>;
+  id_not_contains?: Maybe<ID_Input>;
+  id_starts_with?: Maybe<ID_Input>;
+  id_not_starts_with?: Maybe<ID_Input>;
+  id_ends_with?: Maybe<ID_Input>;
+  id_not_ends_with?: Maybe<ID_Input>;
+  text?: Maybe<String>;
+  text_not?: Maybe<String>;
+  text_in?: Maybe<String[] | String>;
+  text_not_in?: Maybe<String[] | String>;
+  text_lt?: Maybe<String>;
+  text_lte?: Maybe<String>;
+  text_gt?: Maybe<String>;
+  text_gte?: Maybe<String>;
+  text_contains?: Maybe<String>;
+  text_not_contains?: Maybe<String>;
+  text_starts_with?: Maybe<String>;
+  text_not_starts_with?: Maybe<String>;
+  text_ends_with?: Maybe<String>;
+  text_not_ends_with?: Maybe<String>;
+  createdAt?: Maybe<DateTimeInput>;
+  createdAt_not?: Maybe<DateTimeInput>;
+  createdAt_in?: Maybe<DateTimeInput[] | DateTimeInput>;
+  createdAt_not_in?: Maybe<DateTimeInput[] | DateTimeInput>;
+  createdAt_lt?: Maybe<DateTimeInput>;
+  createdAt_lte?: Maybe<DateTimeInput>;
+  createdAt_gt?: Maybe<DateTimeInput>;
+  createdAt_gte?: Maybe<DateTimeInput>;
+  AND?: Maybe<MessageScalarWhereInput[] | MessageScalarWhereInput>;
+  OR?: Maybe<MessageScalarWhereInput[] | MessageScalarWhereInput>;
+  NOT?: Maybe<MessageScalarWhereInput[] | MessageScalarWhereInput>;
+}
+
+export interface MessageUpdateManyWithWhereNestedInput {
+  where: MessageScalarWhereInput;
+  data: MessageUpdateManyDataInput;
+}
+
+export interface MessageUpdateManyDataInput {
+  text?: Maybe<String>;
+}
+
+export interface MessageCreateInput {
+  id?: Maybe<ID_Input>;
+  text: String;
+  sentBy: UserCreateOneInput;
+  channel: ChannelCreateOneWithoutMessagesInput;
+}
+
+export interface ChannelCreateOneWithoutMessagesInput {
+  create?: Maybe<ChannelCreateWithoutMessagesInput>;
+  connect?: Maybe<ChannelWhereUniqueInput>;
+}
+
+export interface ChannelCreateWithoutMessagesInput {
+  id?: Maybe<ID_Input>;
+  users?: Maybe<UserCreateManyWithoutChannelInput>;
+}
+
+export interface MessageUpdateInput {
+  text?: Maybe<String>;
+  sentBy?: Maybe<UserUpdateOneRequiredInput>;
+  channel?: Maybe<ChannelUpdateOneRequiredWithoutMessagesInput>;
+}
+
+export interface ChannelUpdateOneRequiredWithoutMessagesInput {
+  create?: Maybe<ChannelCreateWithoutMessagesInput>;
+  update?: Maybe<ChannelUpdateWithoutMessagesDataInput>;
+  upsert?: Maybe<ChannelUpsertWithoutMessagesInput>;
+  connect?: Maybe<ChannelWhereUniqueInput>;
+}
+
+export interface ChannelUpdateWithoutMessagesDataInput {
+  users?: Maybe<UserUpdateManyWithoutChannelInput>;
+}
+
+export interface ChannelUpsertWithoutMessagesInput {
+  update: ChannelUpdateWithoutMessagesDataInput;
+  create: ChannelCreateWithoutMessagesInput;
+}
+
+export interface MessageUpdateManyMutationInput {
+  text?: Maybe<String>;
+}
+
+export interface OfferingCreateInput {
+  id?: Maybe<ID_Input>;
+  type: String;
+  category: String;
+  description: String;
+  author: UserCreateOneWithoutOfferingsInput;
+}
+
+export interface UserCreateOneWithoutOfferingsInput {
+  create?: Maybe<UserCreateWithoutOfferingsInput>;
+  connect?: Maybe<UserWhereUniqueInput>;
+}
+
+export interface UserCreateWithoutOfferingsInput {
+  id?: Maybe<ID_Input>;
+  nom: String;
+  prenom: String;
+  numero: String;
+  channel?: Maybe<ChannelCreateManyWithoutUsersInput>;
+}
+
+export interface OfferingUpdateInput {
+  type?: Maybe<String>;
+  category?: Maybe<String>;
+  description?: Maybe<String>;
+  author?: Maybe<UserUpdateOneRequiredWithoutOfferingsInput>;
+}
+
+export interface UserUpdateOneRequiredWithoutOfferingsInput {
+  create?: Maybe<UserCreateWithoutOfferingsInput>;
+  update?: Maybe<UserUpdateWithoutOfferingsDataInput>;
+  upsert?: Maybe<UserUpsertWithoutOfferingsInput>;
+  connect?: Maybe<UserWhereUniqueInput>;
+}
+
+export interface UserUpdateWithoutOfferingsDataInput {
+  nom?: Maybe<String>;
+  prenom?: Maybe<String>;
+  numero?: Maybe<String>;
+  channel?: Maybe<ChannelUpdateManyWithoutUsersInput>;
+}
+
+export interface UserUpsertWithoutOfferingsInput {
+  update: UserUpdateWithoutOfferingsDataInput;
+  create: UserCreateWithoutOfferingsInput;
+}
+
+export interface OfferingUpdateManyMutationInput {
+  type?: Maybe<String>;
+  category?: Maybe<String>;
+  description?: Maybe<String>;
+}
+
+export interface UserUpdateInput {
+  nom?: Maybe<String>;
+  prenom?: Maybe<String>;
+  numero?: Maybe<String>;
+  offerings?: Maybe<OfferingUpdateManyWithoutAuthorInput>;
+  channel?: Maybe<ChannelUpdateManyWithoutUsersInput>;
+}
+
 export interface UserUpdateManyMutationInput {
   nom?: Maybe<String>;
   prenom?: Maybe<String>;
   numero?: Maybe<String>;
+}
+
+export interface ChannelSubscriptionWhereInput {
+  mutation_in?: Maybe<MutationType[] | MutationType>;
+  updatedFields_contains?: Maybe<String>;
+  updatedFields_contains_every?: Maybe<String[] | String>;
+  updatedFields_contains_some?: Maybe<String[] | String>;
+  node?: Maybe<ChannelWhereInput>;
+  AND?: Maybe<ChannelSubscriptionWhereInput[] | ChannelSubscriptionWhereInput>;
+}
+
+export interface MessageSubscriptionWhereInput {
+  mutation_in?: Maybe<MutationType[] | MutationType>;
+  updatedFields_contains?: Maybe<String>;
+  updatedFields_contains_every?: Maybe<String[] | String>;
+  updatedFields_contains_some?: Maybe<String[] | String>;
+  node?: Maybe<MessageWhereInput>;
+  AND?: Maybe<MessageSubscriptionWhereInput[] | MessageSubscriptionWhereInput>;
 }
 
 export interface OfferingSubscriptionWhereInput {
@@ -560,6 +1141,174 @@ export interface UserSubscriptionWhereInput {
 
 export interface NodeNode {
   id: ID_Output;
+}
+
+export interface Channel {
+  id: ID_Output;
+  createdAt: DateTimeOutput;
+}
+
+export interface ChannelPromise extends Promise<Channel>, Fragmentable {
+  id: () => Promise<ID_Output>;
+  users: <T = FragmentableArray<User>>(args?: {
+    where?: UserWhereInput;
+    orderBy?: UserOrderByInput;
+    skip?: Int;
+    after?: String;
+    before?: String;
+    first?: Int;
+    last?: Int;
+  }) => T;
+  messages: <T = FragmentableArray<Message>>(args?: {
+    where?: MessageWhereInput;
+    orderBy?: MessageOrderByInput;
+    skip?: Int;
+    after?: String;
+    before?: String;
+    first?: Int;
+    last?: Int;
+  }) => T;
+  createdAt: () => Promise<DateTimeOutput>;
+}
+
+export interface ChannelSubscription
+  extends Promise<AsyncIterator<Channel>>,
+    Fragmentable {
+  id: () => Promise<AsyncIterator<ID_Output>>;
+  users: <T = Promise<AsyncIterator<UserSubscription>>>(args?: {
+    where?: UserWhereInput;
+    orderBy?: UserOrderByInput;
+    skip?: Int;
+    after?: String;
+    before?: String;
+    first?: Int;
+    last?: Int;
+  }) => T;
+  messages: <T = Promise<AsyncIterator<MessageSubscription>>>(args?: {
+    where?: MessageWhereInput;
+    orderBy?: MessageOrderByInput;
+    skip?: Int;
+    after?: String;
+    before?: String;
+    first?: Int;
+    last?: Int;
+  }) => T;
+  createdAt: () => Promise<AsyncIterator<DateTimeOutput>>;
+}
+
+export interface ChannelNullablePromise
+  extends Promise<Channel | null>,
+    Fragmentable {
+  id: () => Promise<ID_Output>;
+  users: <T = FragmentableArray<User>>(args?: {
+    where?: UserWhereInput;
+    orderBy?: UserOrderByInput;
+    skip?: Int;
+    after?: String;
+    before?: String;
+    first?: Int;
+    last?: Int;
+  }) => T;
+  messages: <T = FragmentableArray<Message>>(args?: {
+    where?: MessageWhereInput;
+    orderBy?: MessageOrderByInput;
+    skip?: Int;
+    after?: String;
+    before?: String;
+    first?: Int;
+    last?: Int;
+  }) => T;
+  createdAt: () => Promise<DateTimeOutput>;
+}
+
+export interface User {
+  id: ID_Output;
+  nom: String;
+  prenom: String;
+  numero: String;
+  createdAt: DateTimeOutput;
+}
+
+export interface UserPromise extends Promise<User>, Fragmentable {
+  id: () => Promise<ID_Output>;
+  nom: () => Promise<String>;
+  prenom: () => Promise<String>;
+  numero: () => Promise<String>;
+  createdAt: () => Promise<DateTimeOutput>;
+  offerings: <T = FragmentableArray<Offering>>(args?: {
+    where?: OfferingWhereInput;
+    orderBy?: OfferingOrderByInput;
+    skip?: Int;
+    after?: String;
+    before?: String;
+    first?: Int;
+    last?: Int;
+  }) => T;
+  channel: <T = FragmentableArray<Channel>>(args?: {
+    where?: ChannelWhereInput;
+    orderBy?: ChannelOrderByInput;
+    skip?: Int;
+    after?: String;
+    before?: String;
+    first?: Int;
+    last?: Int;
+  }) => T;
+}
+
+export interface UserSubscription
+  extends Promise<AsyncIterator<User>>,
+    Fragmentable {
+  id: () => Promise<AsyncIterator<ID_Output>>;
+  nom: () => Promise<AsyncIterator<String>>;
+  prenom: () => Promise<AsyncIterator<String>>;
+  numero: () => Promise<AsyncIterator<String>>;
+  createdAt: () => Promise<AsyncIterator<DateTimeOutput>>;
+  offerings: <T = Promise<AsyncIterator<OfferingSubscription>>>(args?: {
+    where?: OfferingWhereInput;
+    orderBy?: OfferingOrderByInput;
+    skip?: Int;
+    after?: String;
+    before?: String;
+    first?: Int;
+    last?: Int;
+  }) => T;
+  channel: <T = Promise<AsyncIterator<ChannelSubscription>>>(args?: {
+    where?: ChannelWhereInput;
+    orderBy?: ChannelOrderByInput;
+    skip?: Int;
+    after?: String;
+    before?: String;
+    first?: Int;
+    last?: Int;
+  }) => T;
+}
+
+export interface UserNullablePromise
+  extends Promise<User | null>,
+    Fragmentable {
+  id: () => Promise<ID_Output>;
+  nom: () => Promise<String>;
+  prenom: () => Promise<String>;
+  numero: () => Promise<String>;
+  createdAt: () => Promise<DateTimeOutput>;
+  offerings: <T = FragmentableArray<Offering>>(args?: {
+    where?: OfferingWhereInput;
+    orderBy?: OfferingOrderByInput;
+    skip?: Int;
+    after?: String;
+    before?: String;
+    first?: Int;
+    last?: Int;
+  }) => T;
+  channel: <T = FragmentableArray<Channel>>(args?: {
+    where?: ChannelWhereInput;
+    orderBy?: ChannelOrderByInput;
+    skip?: Int;
+    after?: String;
+    before?: String;
+    first?: Int;
+    last?: Int;
+  }) => T;
 }
 
 export interface Offering {
@@ -605,88 +1354,59 @@ export interface OfferingNullablePromise
   updatedAt: () => Promise<DateTimeOutput>;
 }
 
-export interface User {
+export interface Message {
   id: ID_Output;
-  nom: String;
-  prenom: String;
-  numero: String;
+  text: String;
   createdAt: DateTimeOutput;
 }
 
-export interface UserPromise extends Promise<User>, Fragmentable {
+export interface MessagePromise extends Promise<Message>, Fragmentable {
   id: () => Promise<ID_Output>;
-  nom: () => Promise<String>;
-  prenom: () => Promise<String>;
-  numero: () => Promise<String>;
+  text: () => Promise<String>;
+  sentBy: <T = UserPromise>() => T;
+  channel: <T = ChannelPromise>() => T;
   createdAt: () => Promise<DateTimeOutput>;
-  offerings: <T = FragmentableArray<Offering>>(args?: {
-    where?: OfferingWhereInput;
-    orderBy?: OfferingOrderByInput;
-    skip?: Int;
-    after?: String;
-    before?: String;
-    first?: Int;
-    last?: Int;
-  }) => T;
 }
 
-export interface UserSubscription
-  extends Promise<AsyncIterator<User>>,
+export interface MessageSubscription
+  extends Promise<AsyncIterator<Message>>,
     Fragmentable {
   id: () => Promise<AsyncIterator<ID_Output>>;
-  nom: () => Promise<AsyncIterator<String>>;
-  prenom: () => Promise<AsyncIterator<String>>;
-  numero: () => Promise<AsyncIterator<String>>;
+  text: () => Promise<AsyncIterator<String>>;
+  sentBy: <T = UserSubscription>() => T;
+  channel: <T = ChannelSubscription>() => T;
   createdAt: () => Promise<AsyncIterator<DateTimeOutput>>;
-  offerings: <T = Promise<AsyncIterator<OfferingSubscription>>>(args?: {
-    where?: OfferingWhereInput;
-    orderBy?: OfferingOrderByInput;
-    skip?: Int;
-    after?: String;
-    before?: String;
-    first?: Int;
-    last?: Int;
-  }) => T;
 }
 
-export interface UserNullablePromise
-  extends Promise<User | null>,
+export interface MessageNullablePromise
+  extends Promise<Message | null>,
     Fragmentable {
   id: () => Promise<ID_Output>;
-  nom: () => Promise<String>;
-  prenom: () => Promise<String>;
-  numero: () => Promise<String>;
+  text: () => Promise<String>;
+  sentBy: <T = UserPromise>() => T;
+  channel: <T = ChannelPromise>() => T;
   createdAt: () => Promise<DateTimeOutput>;
-  offerings: <T = FragmentableArray<Offering>>(args?: {
-    where?: OfferingWhereInput;
-    orderBy?: OfferingOrderByInput;
-    skip?: Int;
-    after?: String;
-    before?: String;
-    first?: Int;
-    last?: Int;
-  }) => T;
 }
 
-export interface OfferingConnection {
+export interface ChannelConnection {
   pageInfo: PageInfo;
-  edges: OfferingEdge[];
+  edges: ChannelEdge[];
 }
 
-export interface OfferingConnectionPromise
-  extends Promise<OfferingConnection>,
+export interface ChannelConnectionPromise
+  extends Promise<ChannelConnection>,
     Fragmentable {
   pageInfo: <T = PageInfoPromise>() => T;
-  edges: <T = FragmentableArray<OfferingEdge>>() => T;
-  aggregate: <T = AggregateOfferingPromise>() => T;
+  edges: <T = FragmentableArray<ChannelEdge>>() => T;
+  aggregate: <T = AggregateChannelPromise>() => T;
 }
 
-export interface OfferingConnectionSubscription
-  extends Promise<AsyncIterator<OfferingConnection>>,
+export interface ChannelConnectionSubscription
+  extends Promise<AsyncIterator<ChannelConnection>>,
     Fragmentable {
   pageInfo: <T = PageInfoSubscription>() => T;
-  edges: <T = Promise<AsyncIterator<OfferingEdgeSubscription>>>() => T;
-  aggregate: <T = AggregateOfferingSubscription>() => T;
+  edges: <T = Promise<AsyncIterator<ChannelEdgeSubscription>>>() => T;
+  aggregate: <T = AggregateChannelSubscription>() => T;
 }
 
 export interface PageInfo {
@@ -710,6 +1430,114 @@ export interface PageInfoSubscription
   hasPreviousPage: () => Promise<AsyncIterator<Boolean>>;
   startCursor: () => Promise<AsyncIterator<String>>;
   endCursor: () => Promise<AsyncIterator<String>>;
+}
+
+export interface ChannelEdge {
+  node: Channel;
+  cursor: String;
+}
+
+export interface ChannelEdgePromise extends Promise<ChannelEdge>, Fragmentable {
+  node: <T = ChannelPromise>() => T;
+  cursor: () => Promise<String>;
+}
+
+export interface ChannelEdgeSubscription
+  extends Promise<AsyncIterator<ChannelEdge>>,
+    Fragmentable {
+  node: <T = ChannelSubscription>() => T;
+  cursor: () => Promise<AsyncIterator<String>>;
+}
+
+export interface AggregateChannel {
+  count: Int;
+}
+
+export interface AggregateChannelPromise
+  extends Promise<AggregateChannel>,
+    Fragmentable {
+  count: () => Promise<Int>;
+}
+
+export interface AggregateChannelSubscription
+  extends Promise<AsyncIterator<AggregateChannel>>,
+    Fragmentable {
+  count: () => Promise<AsyncIterator<Int>>;
+}
+
+export interface MessageConnection {
+  pageInfo: PageInfo;
+  edges: MessageEdge[];
+}
+
+export interface MessageConnectionPromise
+  extends Promise<MessageConnection>,
+    Fragmentable {
+  pageInfo: <T = PageInfoPromise>() => T;
+  edges: <T = FragmentableArray<MessageEdge>>() => T;
+  aggregate: <T = AggregateMessagePromise>() => T;
+}
+
+export interface MessageConnectionSubscription
+  extends Promise<AsyncIterator<MessageConnection>>,
+    Fragmentable {
+  pageInfo: <T = PageInfoSubscription>() => T;
+  edges: <T = Promise<AsyncIterator<MessageEdgeSubscription>>>() => T;
+  aggregate: <T = AggregateMessageSubscription>() => T;
+}
+
+export interface MessageEdge {
+  node: Message;
+  cursor: String;
+}
+
+export interface MessageEdgePromise extends Promise<MessageEdge>, Fragmentable {
+  node: <T = MessagePromise>() => T;
+  cursor: () => Promise<String>;
+}
+
+export interface MessageEdgeSubscription
+  extends Promise<AsyncIterator<MessageEdge>>,
+    Fragmentable {
+  node: <T = MessageSubscription>() => T;
+  cursor: () => Promise<AsyncIterator<String>>;
+}
+
+export interface AggregateMessage {
+  count: Int;
+}
+
+export interface AggregateMessagePromise
+  extends Promise<AggregateMessage>,
+    Fragmentable {
+  count: () => Promise<Int>;
+}
+
+export interface AggregateMessageSubscription
+  extends Promise<AsyncIterator<AggregateMessage>>,
+    Fragmentable {
+  count: () => Promise<AsyncIterator<Int>>;
+}
+
+export interface OfferingConnection {
+  pageInfo: PageInfo;
+  edges: OfferingEdge[];
+}
+
+export interface OfferingConnectionPromise
+  extends Promise<OfferingConnection>,
+    Fragmentable {
+  pageInfo: <T = PageInfoPromise>() => T;
+  edges: <T = FragmentableArray<OfferingEdge>>() => T;
+  aggregate: <T = AggregateOfferingPromise>() => T;
+}
+
+export interface OfferingConnectionSubscription
+  extends Promise<AsyncIterator<OfferingConnection>>,
+    Fragmentable {
+  pageInfo: <T = PageInfoSubscription>() => T;
+  edges: <T = Promise<AsyncIterator<OfferingEdgeSubscription>>>() => T;
+  aggregate: <T = AggregateOfferingSubscription>() => T;
 }
 
 export interface OfferingEdge {
@@ -815,6 +1643,97 @@ export interface BatchPayloadSubscription
   extends Promise<AsyncIterator<BatchPayload>>,
     Fragmentable {
   count: () => Promise<AsyncIterator<Long>>;
+}
+
+export interface ChannelSubscriptionPayload {
+  mutation: MutationType;
+  node: Channel;
+  updatedFields: String[];
+  previousValues: ChannelPreviousValues;
+}
+
+export interface ChannelSubscriptionPayloadPromise
+  extends Promise<ChannelSubscriptionPayload>,
+    Fragmentable {
+  mutation: () => Promise<MutationType>;
+  node: <T = ChannelPromise>() => T;
+  updatedFields: () => Promise<String[]>;
+  previousValues: <T = ChannelPreviousValuesPromise>() => T;
+}
+
+export interface ChannelSubscriptionPayloadSubscription
+  extends Promise<AsyncIterator<ChannelSubscriptionPayload>>,
+    Fragmentable {
+  mutation: () => Promise<AsyncIterator<MutationType>>;
+  node: <T = ChannelSubscription>() => T;
+  updatedFields: () => Promise<AsyncIterator<String[]>>;
+  previousValues: <T = ChannelPreviousValuesSubscription>() => T;
+}
+
+export interface ChannelPreviousValues {
+  id: ID_Output;
+  createdAt: DateTimeOutput;
+}
+
+export interface ChannelPreviousValuesPromise
+  extends Promise<ChannelPreviousValues>,
+    Fragmentable {
+  id: () => Promise<ID_Output>;
+  createdAt: () => Promise<DateTimeOutput>;
+}
+
+export interface ChannelPreviousValuesSubscription
+  extends Promise<AsyncIterator<ChannelPreviousValues>>,
+    Fragmentable {
+  id: () => Promise<AsyncIterator<ID_Output>>;
+  createdAt: () => Promise<AsyncIterator<DateTimeOutput>>;
+}
+
+export interface MessageSubscriptionPayload {
+  mutation: MutationType;
+  node: Message;
+  updatedFields: String[];
+  previousValues: MessagePreviousValues;
+}
+
+export interface MessageSubscriptionPayloadPromise
+  extends Promise<MessageSubscriptionPayload>,
+    Fragmentable {
+  mutation: () => Promise<MutationType>;
+  node: <T = MessagePromise>() => T;
+  updatedFields: () => Promise<String[]>;
+  previousValues: <T = MessagePreviousValuesPromise>() => T;
+}
+
+export interface MessageSubscriptionPayloadSubscription
+  extends Promise<AsyncIterator<MessageSubscriptionPayload>>,
+    Fragmentable {
+  mutation: () => Promise<AsyncIterator<MutationType>>;
+  node: <T = MessageSubscription>() => T;
+  updatedFields: () => Promise<AsyncIterator<String[]>>;
+  previousValues: <T = MessagePreviousValuesSubscription>() => T;
+}
+
+export interface MessagePreviousValues {
+  id: ID_Output;
+  text: String;
+  createdAt: DateTimeOutput;
+}
+
+export interface MessagePreviousValuesPromise
+  extends Promise<MessagePreviousValues>,
+    Fragmentable {
+  id: () => Promise<ID_Output>;
+  text: () => Promise<String>;
+  createdAt: () => Promise<DateTimeOutput>;
+}
+
+export interface MessagePreviousValuesSubscription
+  extends Promise<AsyncIterator<MessagePreviousValues>>,
+    Fragmentable {
+  id: () => Promise<AsyncIterator<ID_Output>>;
+  text: () => Promise<AsyncIterator<String>>;
+  createdAt: () => Promise<AsyncIterator<DateTimeOutput>>;
 }
 
 export interface OfferingSubscriptionPayload {
@@ -970,6 +1889,14 @@ export const models: Model[] = [
   },
   {
     name: "Offering",
+    embedded: false
+  },
+  {
+    name: "Channel",
+    embedded: false
+  },
+  {
+    name: "Message",
     embedded: false
   }
 ];
