@@ -9,13 +9,6 @@ export default gql`
     ajouter(type: String!, category: String!, description: String!): Offering!
     modifier(id: String!,description: String!): Offering!
   }
-  type User {
-    id: ID!
-    nom: String!
-    prenom: String!
-    numero: String!
-    offerings: [Offering!]!
-  }
   type Offering {
     id: ID!
     type: String!

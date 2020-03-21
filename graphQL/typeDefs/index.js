@@ -1,9 +1,11 @@
 import { mergeTypes } from 'merge-graphql-schemas'
 
 import User from './User'
-import Offerings from './Offerings'
+import Offering from './Offering'
+import Channel from './Channel'
+import Message from './Message'
 
-const typeDefs = [User, Offerings]
+const typeDefs = [User, Offering, Channel, Message]
 
 // NOTE: 2nd param is optional, and defaults to false
 // Only use if you have defined the same type multiple times in

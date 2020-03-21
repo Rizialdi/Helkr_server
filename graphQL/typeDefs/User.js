@@ -15,16 +15,10 @@ export default gql`
     prenom: String!
     numero: String!
     offerings: [Offering!]!
+    messages: [Message!]!
   }
   type AuthPayload {
   token: String
   user: User
-  }
-  type Offering {
-    id: ID!
-    type: String!
-    category: String!
-    description: String!
-    author: User!
   }
 `
