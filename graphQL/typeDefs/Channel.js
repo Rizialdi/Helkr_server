@@ -2,7 +2,7 @@ import gql from 'graphql-tag'
 
 export default gql`
   type Query {
-    channel(channelId: String!): Channel! 
+    channel(id: String!): Channel! 
     channels: [Channel!]!
   }
   type Mutation {

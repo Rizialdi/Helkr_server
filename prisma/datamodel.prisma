@@ -4,8 +4,9 @@ type User {
   prenom: String!
   numero: String! @unique
   createdAt: DateTime! @createdAt
-  offerings: [Offering!]! @relation(link: INLINE)
   channels: [Channel!]! @relation(link: INLINE)
+  offerings: [Offering!]! @relation(link: INLINE)
+  messages: [Message!]! @relation(link: INLINE)
 }
 type Offering {
   id: ID! @id
@@ -25,7 +26,7 @@ type Channel {
 type Message {
   id: ID! @id
   text: String!
-  sentBy: User! @relation(link: INLINE)
+  sentBy: User! 
   channel: Channel!
   createdAt: DateTime! @createdAt
 }

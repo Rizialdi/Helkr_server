@@ -3,7 +3,8 @@ import { getUserId } from './utils'
 export default {
   Query: {
     messages: async (parent, { channelId }, context, info) => {
-      const messages = await context.prisma.message({ channelId })
+      const results = await context.prisma.channels({ where: { id: channelId } }).messages()
+      const messages = results[0].messages
       if (!messages) return new Error('Aucun messages trouves')
       return messages
     }
@@ -12,6 +13,8 @@ export default {
     createMessage: async (parent, { recipient, text }, context, info) => {
       const sentBy = getUserId(context)
       const results = await context.prisma.channels({ where: { AND: [{ users_some: { id: sentBy } }, { users_some: { id: recipient } }] } })
+
+      if (sentBy === recipient) return false
 
       if (results[0]) {
         try {
@@ -39,15 +42,13 @@ export default {
     }
   },
   Message: {
-    channel: async (parent, args, { context }, info) => {
-      // TODO verifier channel() ?
-      const channel = await context.prisma.message({ id: parent.id }).channel()
-      return channel
+    channel: async (parent, args, { prisma }, info) => {
+      const channels = await prisma.channels({ where: { messages_some: { id: parent.id } } })
+      return channels
     },
-    sentBy: async (parent, args, { context }, info) => {
-      // TODO verifier user() ?
-      const user = await context.prisma.message({ id: parent.id }).user()
-      return user
+    sentBy: async (parent, args, { prisma }, info) => {
+      const sentBy = await prisma.users({ where: { messages_some: { id: parent.id } } })
+      return sentBy[0]
     }
   }
 }

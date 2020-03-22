@@ -2,8 +2,9 @@ import { getUserId } from './utils'
 
 export default {
   Query: {
-    channel: async (parent, { ChannelId }, context, info) => {
-      const channel = await context.prisma.channel({ id: ChannelId })
+    channel: async (parent, { id }, context, info) => {
+      console.log(id)
+      const channel = await context.prisma.channel({ id })
       if (!channel) return new Error('Chaine inexistante')
       return channel
     },
@@ -33,12 +34,12 @@ export default {
     }
   },
   Channel: {
-    messages: async (parent, args, { context }, info) => {
-      const messages = await context.prisma.channel({ id: parent.id }).messages()
+    messages: async (parent, args, { prisma }, info) => {
+      const messages = await prisma.messages({ where: { channel: { id: parent.id } } })
       return messages
     },
-    users: async (parent, args, { context }, info) => {
-      const users = await context.prisma.channel({ id: parent.id }).users()
+    users: async (parent, args, { prisma }, info) => {
+      const users = await prisma.users({ where: { channels_some: { id: parent.id } } })
       return users
     }
   }

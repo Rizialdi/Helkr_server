@@ -226,6 +226,12 @@ export type UserOrderByInput =
   | "createdAt_ASC"
   | "createdAt_DESC";
 
+export type ChannelOrderByInput =
+  | "id_ASC"
+  | "id_DESC"
+  | "createdAt_ASC"
+  | "createdAt_DESC";
+
 export type OfferingOrderByInput =
   | "id_ASC"
   | "id_DESC"
@@ -239,12 +245,6 @@ export type OfferingOrderByInput =
   | "createdAt_DESC"
   | "updatedAt_ASC"
   | "updatedAt_DESC";
-
-export type ChannelOrderByInput =
-  | "id_ASC"
-  | "id_DESC"
-  | "createdAt_ASC"
-  | "createdAt_DESC";
 
 export type MessageOrderByInput =
   | "id_ASC"
@@ -325,9 +325,80 @@ export interface UserWhereInput {
   createdAt_lte?: Maybe<DateTimeInput>;
   createdAt_gt?: Maybe<DateTimeInput>;
   createdAt_gte?: Maybe<DateTimeInput>;
-  offerings_some?: Maybe<OfferingWhereInput>;
   channels_some?: Maybe<ChannelWhereInput>;
+  offerings_some?: Maybe<OfferingWhereInput>;
+  messages_some?: Maybe<MessageWhereInput>;
   AND?: Maybe<UserWhereInput[] | UserWhereInput>;
+}
+
+export interface ChannelWhereInput {
+  id?: Maybe<ID_Input>;
+  id_not?: Maybe<ID_Input>;
+  id_in?: Maybe<ID_Input[] | ID_Input>;
+  id_not_in?: Maybe<ID_Input[] | ID_Input>;
+  id_lt?: Maybe<ID_Input>;
+  id_lte?: Maybe<ID_Input>;
+  id_gt?: Maybe<ID_Input>;
+  id_gte?: Maybe<ID_Input>;
+  id_contains?: Maybe<ID_Input>;
+  id_not_contains?: Maybe<ID_Input>;
+  id_starts_with?: Maybe<ID_Input>;
+  id_not_starts_with?: Maybe<ID_Input>;
+  id_ends_with?: Maybe<ID_Input>;
+  id_not_ends_with?: Maybe<ID_Input>;
+  users_some?: Maybe<UserWhereInput>;
+  messages_some?: Maybe<MessageWhereInput>;
+  createdAt?: Maybe<DateTimeInput>;
+  createdAt_not?: Maybe<DateTimeInput>;
+  createdAt_in?: Maybe<DateTimeInput[] | DateTimeInput>;
+  createdAt_not_in?: Maybe<DateTimeInput[] | DateTimeInput>;
+  createdAt_lt?: Maybe<DateTimeInput>;
+  createdAt_lte?: Maybe<DateTimeInput>;
+  createdAt_gt?: Maybe<DateTimeInput>;
+  createdAt_gte?: Maybe<DateTimeInput>;
+  AND?: Maybe<ChannelWhereInput[] | ChannelWhereInput>;
+}
+
+export interface MessageWhereInput {
+  id?: Maybe<ID_Input>;
+  id_not?: Maybe<ID_Input>;
+  id_in?: Maybe<ID_Input[] | ID_Input>;
+  id_not_in?: Maybe<ID_Input[] | ID_Input>;
+  id_lt?: Maybe<ID_Input>;
+  id_lte?: Maybe<ID_Input>;
+  id_gt?: Maybe<ID_Input>;
+  id_gte?: Maybe<ID_Input>;
+  id_contains?: Maybe<ID_Input>;
+  id_not_contains?: Maybe<ID_Input>;
+  id_starts_with?: Maybe<ID_Input>;
+  id_not_starts_with?: Maybe<ID_Input>;
+  id_ends_with?: Maybe<ID_Input>;
+  id_not_ends_with?: Maybe<ID_Input>;
+  text?: Maybe<String>;
+  text_not?: Maybe<String>;
+  text_in?: Maybe<String[] | String>;
+  text_not_in?: Maybe<String[] | String>;
+  text_lt?: Maybe<String>;
+  text_lte?: Maybe<String>;
+  text_gt?: Maybe<String>;
+  text_gte?: Maybe<String>;
+  text_contains?: Maybe<String>;
+  text_not_contains?: Maybe<String>;
+  text_starts_with?: Maybe<String>;
+  text_not_starts_with?: Maybe<String>;
+  text_ends_with?: Maybe<String>;
+  text_not_ends_with?: Maybe<String>;
+  sentBy?: Maybe<UserWhereInput>;
+  channel?: Maybe<ChannelWhereInput>;
+  createdAt?: Maybe<DateTimeInput>;
+  createdAt_not?: Maybe<DateTimeInput>;
+  createdAt_in?: Maybe<DateTimeInput[] | DateTimeInput>;
+  createdAt_not_in?: Maybe<DateTimeInput[] | DateTimeInput>;
+  createdAt_lt?: Maybe<DateTimeInput>;
+  createdAt_lte?: Maybe<DateTimeInput>;
+  createdAt_gt?: Maybe<DateTimeInput>;
+  createdAt_gte?: Maybe<DateTimeInput>;
+  AND?: Maybe<MessageWhereInput[] | MessageWhereInput>;
 }
 
 export interface OfferingWhereInput {
@@ -407,76 +478,6 @@ export interface OfferingWhereInput {
   AND?: Maybe<OfferingWhereInput[] | OfferingWhereInput>;
 }
 
-export interface ChannelWhereInput {
-  id?: Maybe<ID_Input>;
-  id_not?: Maybe<ID_Input>;
-  id_in?: Maybe<ID_Input[] | ID_Input>;
-  id_not_in?: Maybe<ID_Input[] | ID_Input>;
-  id_lt?: Maybe<ID_Input>;
-  id_lte?: Maybe<ID_Input>;
-  id_gt?: Maybe<ID_Input>;
-  id_gte?: Maybe<ID_Input>;
-  id_contains?: Maybe<ID_Input>;
-  id_not_contains?: Maybe<ID_Input>;
-  id_starts_with?: Maybe<ID_Input>;
-  id_not_starts_with?: Maybe<ID_Input>;
-  id_ends_with?: Maybe<ID_Input>;
-  id_not_ends_with?: Maybe<ID_Input>;
-  users_some?: Maybe<UserWhereInput>;
-  messages_some?: Maybe<MessageWhereInput>;
-  createdAt?: Maybe<DateTimeInput>;
-  createdAt_not?: Maybe<DateTimeInput>;
-  createdAt_in?: Maybe<DateTimeInput[] | DateTimeInput>;
-  createdAt_not_in?: Maybe<DateTimeInput[] | DateTimeInput>;
-  createdAt_lt?: Maybe<DateTimeInput>;
-  createdAt_lte?: Maybe<DateTimeInput>;
-  createdAt_gt?: Maybe<DateTimeInput>;
-  createdAt_gte?: Maybe<DateTimeInput>;
-  AND?: Maybe<ChannelWhereInput[] | ChannelWhereInput>;
-}
-
-export interface MessageWhereInput {
-  id?: Maybe<ID_Input>;
-  id_not?: Maybe<ID_Input>;
-  id_in?: Maybe<ID_Input[] | ID_Input>;
-  id_not_in?: Maybe<ID_Input[] | ID_Input>;
-  id_lt?: Maybe<ID_Input>;
-  id_lte?: Maybe<ID_Input>;
-  id_gt?: Maybe<ID_Input>;
-  id_gte?: Maybe<ID_Input>;
-  id_contains?: Maybe<ID_Input>;
-  id_not_contains?: Maybe<ID_Input>;
-  id_starts_with?: Maybe<ID_Input>;
-  id_not_starts_with?: Maybe<ID_Input>;
-  id_ends_with?: Maybe<ID_Input>;
-  id_not_ends_with?: Maybe<ID_Input>;
-  text?: Maybe<String>;
-  text_not?: Maybe<String>;
-  text_in?: Maybe<String[] | String>;
-  text_not_in?: Maybe<String[] | String>;
-  text_lt?: Maybe<String>;
-  text_lte?: Maybe<String>;
-  text_gt?: Maybe<String>;
-  text_gte?: Maybe<String>;
-  text_contains?: Maybe<String>;
-  text_not_contains?: Maybe<String>;
-  text_starts_with?: Maybe<String>;
-  text_not_starts_with?: Maybe<String>;
-  text_ends_with?: Maybe<String>;
-  text_not_ends_with?: Maybe<String>;
-  sentBy?: Maybe<UserWhereInput>;
-  channel?: Maybe<ChannelWhereInput>;
-  createdAt?: Maybe<DateTimeInput>;
-  createdAt_not?: Maybe<DateTimeInput>;
-  createdAt_in?: Maybe<DateTimeInput[] | DateTimeInput>;
-  createdAt_not_in?: Maybe<DateTimeInput[] | DateTimeInput>;
-  createdAt_lt?: Maybe<DateTimeInput>;
-  createdAt_lte?: Maybe<DateTimeInput>;
-  createdAt_gt?: Maybe<DateTimeInput>;
-  createdAt_gte?: Maybe<DateTimeInput>;
-  AND?: Maybe<MessageWhereInput[] | MessageWhereInput>;
-}
-
 export type MessageWhereUniqueInput = AtLeastOne<{
   id: Maybe<ID_Input>;
 }>;
@@ -509,6 +510,7 @@ export interface UserCreateWithoutChannelsInput {
   prenom: String;
   numero: String;
   offerings?: Maybe<OfferingCreateManyWithoutAuthorInput>;
+  messages?: Maybe<MessageCreateManyWithoutSentByInput>;
 }
 
 export interface OfferingCreateManyWithoutAuthorInput {
@@ -525,6 +527,29 @@ export interface OfferingCreateWithoutAuthorInput {
   description: String;
 }
 
+export interface MessageCreateManyWithoutSentByInput {
+  create?: Maybe<
+    MessageCreateWithoutSentByInput[] | MessageCreateWithoutSentByInput
+  >;
+  connect?: Maybe<MessageWhereUniqueInput[] | MessageWhereUniqueInput>;
+}
+
+export interface MessageCreateWithoutSentByInput {
+  id?: Maybe<ID_Input>;
+  text: String;
+  channel: ChannelCreateOneWithoutMessagesInput;
+}
+
+export interface ChannelCreateOneWithoutMessagesInput {
+  create?: Maybe<ChannelCreateWithoutMessagesInput>;
+  connect?: Maybe<ChannelWhereUniqueInput>;
+}
+
+export interface ChannelCreateWithoutMessagesInput {
+  id?: Maybe<ID_Input>;
+  users?: Maybe<UserCreateManyWithoutChannelsInput>;
+}
+
 export interface MessageCreateManyWithoutChannelInput {
   create?: Maybe<
     MessageCreateWithoutChannelInput[] | MessageCreateWithoutChannelInput
@@ -535,21 +560,21 @@ export interface MessageCreateManyWithoutChannelInput {
 export interface MessageCreateWithoutChannelInput {
   id?: Maybe<ID_Input>;
   text: String;
-  sentBy: UserCreateOneInput;
+  sentBy: UserCreateOneWithoutMessagesInput;
 }
 
-export interface UserCreateOneInput {
-  create?: Maybe<UserCreateInput>;
+export interface UserCreateOneWithoutMessagesInput {
+  create?: Maybe<UserCreateWithoutMessagesInput>;
   connect?: Maybe<UserWhereUniqueInput>;
 }
 
-export interface UserCreateInput {
+export interface UserCreateWithoutMessagesInput {
   id?: Maybe<ID_Input>;
   nom: String;
   prenom: String;
   numero: String;
-  offerings?: Maybe<OfferingCreateManyWithoutAuthorInput>;
   channels?: Maybe<ChannelCreateManyWithoutUsersInput>;
+  offerings?: Maybe<OfferingCreateManyWithoutAuthorInput>;
 }
 
 export interface ChannelCreateManyWithoutUsersInput {
@@ -601,6 +626,7 @@ export interface UserUpdateWithoutChannelsDataInput {
   prenom?: Maybe<String>;
   numero?: Maybe<String>;
   offerings?: Maybe<OfferingUpdateManyWithoutAuthorInput>;
+  messages?: Maybe<MessageUpdateManyWithoutSentByInput>;
 }
 
 export interface OfferingUpdateManyWithoutAuthorInput {
@@ -732,6 +758,112 @@ export interface OfferingUpdateManyDataInput {
   description?: Maybe<String>;
 }
 
+export interface MessageUpdateManyWithoutSentByInput {
+  create?: Maybe<
+    MessageCreateWithoutSentByInput[] | MessageCreateWithoutSentByInput
+  >;
+  delete?: Maybe<MessageWhereUniqueInput[] | MessageWhereUniqueInput>;
+  connect?: Maybe<MessageWhereUniqueInput[] | MessageWhereUniqueInput>;
+  set?: Maybe<MessageWhereUniqueInput[] | MessageWhereUniqueInput>;
+  disconnect?: Maybe<MessageWhereUniqueInput[] | MessageWhereUniqueInput>;
+  update?: Maybe<
+    | MessageUpdateWithWhereUniqueWithoutSentByInput[]
+    | MessageUpdateWithWhereUniqueWithoutSentByInput
+  >;
+  upsert?: Maybe<
+    | MessageUpsertWithWhereUniqueWithoutSentByInput[]
+    | MessageUpsertWithWhereUniqueWithoutSentByInput
+  >;
+  deleteMany?: Maybe<MessageScalarWhereInput[] | MessageScalarWhereInput>;
+  updateMany?: Maybe<
+    | MessageUpdateManyWithWhereNestedInput[]
+    | MessageUpdateManyWithWhereNestedInput
+  >;
+}
+
+export interface MessageUpdateWithWhereUniqueWithoutSentByInput {
+  where: MessageWhereUniqueInput;
+  data: MessageUpdateWithoutSentByDataInput;
+}
+
+export interface MessageUpdateWithoutSentByDataInput {
+  text?: Maybe<String>;
+  channel?: Maybe<ChannelUpdateOneRequiredWithoutMessagesInput>;
+}
+
+export interface ChannelUpdateOneRequiredWithoutMessagesInput {
+  create?: Maybe<ChannelCreateWithoutMessagesInput>;
+  update?: Maybe<ChannelUpdateWithoutMessagesDataInput>;
+  upsert?: Maybe<ChannelUpsertWithoutMessagesInput>;
+  connect?: Maybe<ChannelWhereUniqueInput>;
+}
+
+export interface ChannelUpdateWithoutMessagesDataInput {
+  users?: Maybe<UserUpdateManyWithoutChannelsInput>;
+}
+
+export interface ChannelUpsertWithoutMessagesInput {
+  update: ChannelUpdateWithoutMessagesDataInput;
+  create: ChannelCreateWithoutMessagesInput;
+}
+
+export interface MessageUpsertWithWhereUniqueWithoutSentByInput {
+  where: MessageWhereUniqueInput;
+  update: MessageUpdateWithoutSentByDataInput;
+  create: MessageCreateWithoutSentByInput;
+}
+
+export interface MessageScalarWhereInput {
+  id?: Maybe<ID_Input>;
+  id_not?: Maybe<ID_Input>;
+  id_in?: Maybe<ID_Input[] | ID_Input>;
+  id_not_in?: Maybe<ID_Input[] | ID_Input>;
+  id_lt?: Maybe<ID_Input>;
+  id_lte?: Maybe<ID_Input>;
+  id_gt?: Maybe<ID_Input>;
+  id_gte?: Maybe<ID_Input>;
+  id_contains?: Maybe<ID_Input>;
+  id_not_contains?: Maybe<ID_Input>;
+  id_starts_with?: Maybe<ID_Input>;
+  id_not_starts_with?: Maybe<ID_Input>;
+  id_ends_with?: Maybe<ID_Input>;
+  id_not_ends_with?: Maybe<ID_Input>;
+  text?: Maybe<String>;
+  text_not?: Maybe<String>;
+  text_in?: Maybe<String[] | String>;
+  text_not_in?: Maybe<String[] | String>;
+  text_lt?: Maybe<String>;
+  text_lte?: Maybe<String>;
+  text_gt?: Maybe<String>;
+  text_gte?: Maybe<String>;
+  text_contains?: Maybe<String>;
+  text_not_contains?: Maybe<String>;
+  text_starts_with?: Maybe<String>;
+  text_not_starts_with?: Maybe<String>;
+  text_ends_with?: Maybe<String>;
+  text_not_ends_with?: Maybe<String>;
+  createdAt?: Maybe<DateTimeInput>;
+  createdAt_not?: Maybe<DateTimeInput>;
+  createdAt_in?: Maybe<DateTimeInput[] | DateTimeInput>;
+  createdAt_not_in?: Maybe<DateTimeInput[] | DateTimeInput>;
+  createdAt_lt?: Maybe<DateTimeInput>;
+  createdAt_lte?: Maybe<DateTimeInput>;
+  createdAt_gt?: Maybe<DateTimeInput>;
+  createdAt_gte?: Maybe<DateTimeInput>;
+  AND?: Maybe<MessageScalarWhereInput[] | MessageScalarWhereInput>;
+  OR?: Maybe<MessageScalarWhereInput[] | MessageScalarWhereInput>;
+  NOT?: Maybe<MessageScalarWhereInput[] | MessageScalarWhereInput>;
+}
+
+export interface MessageUpdateManyWithWhereNestedInput {
+  where: MessageScalarWhereInput;
+  data: MessageUpdateManyDataInput;
+}
+
+export interface MessageUpdateManyDataInput {
+  text?: Maybe<String>;
+}
+
 export interface UserUpsertWithWhereUniqueWithoutChannelsInput {
   where: UserWhereUniqueInput;
   update: UserUpdateWithoutChannelsDataInput;
@@ -849,22 +981,22 @@ export interface MessageUpdateWithWhereUniqueWithoutChannelInput {
 
 export interface MessageUpdateWithoutChannelDataInput {
   text?: Maybe<String>;
-  sentBy?: Maybe<UserUpdateOneRequiredInput>;
+  sentBy?: Maybe<UserUpdateOneRequiredWithoutMessagesInput>;
 }
 
-export interface UserUpdateOneRequiredInput {
-  create?: Maybe<UserCreateInput>;
-  update?: Maybe<UserUpdateDataInput>;
-  upsert?: Maybe<UserUpsertNestedInput>;
+export interface UserUpdateOneRequiredWithoutMessagesInput {
+  create?: Maybe<UserCreateWithoutMessagesInput>;
+  update?: Maybe<UserUpdateWithoutMessagesDataInput>;
+  upsert?: Maybe<UserUpsertWithoutMessagesInput>;
   connect?: Maybe<UserWhereUniqueInput>;
 }
 
-export interface UserUpdateDataInput {
+export interface UserUpdateWithoutMessagesDataInput {
   nom?: Maybe<String>;
   prenom?: Maybe<String>;
   numero?: Maybe<String>;
-  offerings?: Maybe<OfferingUpdateManyWithoutAuthorInput>;
   channels?: Maybe<ChannelUpdateManyWithoutUsersInput>;
+  offerings?: Maybe<OfferingUpdateManyWithoutAuthorInput>;
 }
 
 export interface ChannelUpdateManyWithoutUsersInput {
@@ -929,9 +1061,9 @@ export interface ChannelScalarWhereInput {
   NOT?: Maybe<ChannelScalarWhereInput[] | ChannelScalarWhereInput>;
 }
 
-export interface UserUpsertNestedInput {
-  update: UserUpdateDataInput;
-  create: UserCreateInput;
+export interface UserUpsertWithoutMessagesInput {
+  update: UserUpdateWithoutMessagesDataInput;
+  create: UserCreateWithoutMessagesInput;
 }
 
 export interface MessageUpsertWithWhereUniqueWithoutChannelInput {
@@ -940,94 +1072,17 @@ export interface MessageUpsertWithWhereUniqueWithoutChannelInput {
   create: MessageCreateWithoutChannelInput;
 }
 
-export interface MessageScalarWhereInput {
-  id?: Maybe<ID_Input>;
-  id_not?: Maybe<ID_Input>;
-  id_in?: Maybe<ID_Input[] | ID_Input>;
-  id_not_in?: Maybe<ID_Input[] | ID_Input>;
-  id_lt?: Maybe<ID_Input>;
-  id_lte?: Maybe<ID_Input>;
-  id_gt?: Maybe<ID_Input>;
-  id_gte?: Maybe<ID_Input>;
-  id_contains?: Maybe<ID_Input>;
-  id_not_contains?: Maybe<ID_Input>;
-  id_starts_with?: Maybe<ID_Input>;
-  id_not_starts_with?: Maybe<ID_Input>;
-  id_ends_with?: Maybe<ID_Input>;
-  id_not_ends_with?: Maybe<ID_Input>;
-  text?: Maybe<String>;
-  text_not?: Maybe<String>;
-  text_in?: Maybe<String[] | String>;
-  text_not_in?: Maybe<String[] | String>;
-  text_lt?: Maybe<String>;
-  text_lte?: Maybe<String>;
-  text_gt?: Maybe<String>;
-  text_gte?: Maybe<String>;
-  text_contains?: Maybe<String>;
-  text_not_contains?: Maybe<String>;
-  text_starts_with?: Maybe<String>;
-  text_not_starts_with?: Maybe<String>;
-  text_ends_with?: Maybe<String>;
-  text_not_ends_with?: Maybe<String>;
-  createdAt?: Maybe<DateTimeInput>;
-  createdAt_not?: Maybe<DateTimeInput>;
-  createdAt_in?: Maybe<DateTimeInput[] | DateTimeInput>;
-  createdAt_not_in?: Maybe<DateTimeInput[] | DateTimeInput>;
-  createdAt_lt?: Maybe<DateTimeInput>;
-  createdAt_lte?: Maybe<DateTimeInput>;
-  createdAt_gt?: Maybe<DateTimeInput>;
-  createdAt_gte?: Maybe<DateTimeInput>;
-  AND?: Maybe<MessageScalarWhereInput[] | MessageScalarWhereInput>;
-  OR?: Maybe<MessageScalarWhereInput[] | MessageScalarWhereInput>;
-  NOT?: Maybe<MessageScalarWhereInput[] | MessageScalarWhereInput>;
-}
-
-export interface MessageUpdateManyWithWhereNestedInput {
-  where: MessageScalarWhereInput;
-  data: MessageUpdateManyDataInput;
-}
-
-export interface MessageUpdateManyDataInput {
-  text?: Maybe<String>;
-}
-
 export interface MessageCreateInput {
   id?: Maybe<ID_Input>;
   text: String;
-  sentBy: UserCreateOneInput;
+  sentBy: UserCreateOneWithoutMessagesInput;
   channel: ChannelCreateOneWithoutMessagesInput;
-}
-
-export interface ChannelCreateOneWithoutMessagesInput {
-  create?: Maybe<ChannelCreateWithoutMessagesInput>;
-  connect?: Maybe<ChannelWhereUniqueInput>;
-}
-
-export interface ChannelCreateWithoutMessagesInput {
-  id?: Maybe<ID_Input>;
-  users?: Maybe<UserCreateManyWithoutChannelsInput>;
 }
 
 export interface MessageUpdateInput {
   text?: Maybe<String>;
-  sentBy?: Maybe<UserUpdateOneRequiredInput>;
+  sentBy?: Maybe<UserUpdateOneRequiredWithoutMessagesInput>;
   channel?: Maybe<ChannelUpdateOneRequiredWithoutMessagesInput>;
-}
-
-export interface ChannelUpdateOneRequiredWithoutMessagesInput {
-  create?: Maybe<ChannelCreateWithoutMessagesInput>;
-  update?: Maybe<ChannelUpdateWithoutMessagesDataInput>;
-  upsert?: Maybe<ChannelUpsertWithoutMessagesInput>;
-  connect?: Maybe<ChannelWhereUniqueInput>;
-}
-
-export interface ChannelUpdateWithoutMessagesDataInput {
-  users?: Maybe<UserUpdateManyWithoutChannelsInput>;
-}
-
-export interface ChannelUpsertWithoutMessagesInput {
-  update: ChannelUpdateWithoutMessagesDataInput;
-  create: ChannelCreateWithoutMessagesInput;
 }
 
 export interface MessageUpdateManyMutationInput {
@@ -1053,6 +1108,7 @@ export interface UserCreateWithoutOfferingsInput {
   prenom: String;
   numero: String;
   channels?: Maybe<ChannelCreateManyWithoutUsersInput>;
+  messages?: Maybe<MessageCreateManyWithoutSentByInput>;
 }
 
 export interface OfferingUpdateInput {
@@ -1074,6 +1130,7 @@ export interface UserUpdateWithoutOfferingsDataInput {
   prenom?: Maybe<String>;
   numero?: Maybe<String>;
   channels?: Maybe<ChannelUpdateManyWithoutUsersInput>;
+  messages?: Maybe<MessageUpdateManyWithoutSentByInput>;
 }
 
 export interface UserUpsertWithoutOfferingsInput {
@@ -1087,12 +1144,23 @@ export interface OfferingUpdateManyMutationInput {
   description?: Maybe<String>;
 }
 
+export interface UserCreateInput {
+  id?: Maybe<ID_Input>;
+  nom: String;
+  prenom: String;
+  numero: String;
+  channels?: Maybe<ChannelCreateManyWithoutUsersInput>;
+  offerings?: Maybe<OfferingCreateManyWithoutAuthorInput>;
+  messages?: Maybe<MessageCreateManyWithoutSentByInput>;
+}
+
 export interface UserUpdateInput {
   nom?: Maybe<String>;
   prenom?: Maybe<String>;
   numero?: Maybe<String>;
-  offerings?: Maybe<OfferingUpdateManyWithoutAuthorInput>;
   channels?: Maybe<ChannelUpdateManyWithoutUsersInput>;
+  offerings?: Maybe<OfferingUpdateManyWithoutAuthorInput>;
+  messages?: Maybe<MessageUpdateManyWithoutSentByInput>;
 }
 
 export interface UserUpdateManyMutationInput {
@@ -1235,6 +1303,15 @@ export interface UserPromise extends Promise<User>, Fragmentable {
   prenom: () => Promise<String>;
   numero: () => Promise<String>;
   createdAt: () => Promise<DateTimeOutput>;
+  channels: <T = FragmentableArray<Channel>>(args?: {
+    where?: ChannelWhereInput;
+    orderBy?: ChannelOrderByInput;
+    skip?: Int;
+    after?: String;
+    before?: String;
+    first?: Int;
+    last?: Int;
+  }) => T;
   offerings: <T = FragmentableArray<Offering>>(args?: {
     where?: OfferingWhereInput;
     orderBy?: OfferingOrderByInput;
@@ -1244,9 +1321,9 @@ export interface UserPromise extends Promise<User>, Fragmentable {
     first?: Int;
     last?: Int;
   }) => T;
-  channels: <T = FragmentableArray<Channel>>(args?: {
-    where?: ChannelWhereInput;
-    orderBy?: ChannelOrderByInput;
+  messages: <T = FragmentableArray<Message>>(args?: {
+    where?: MessageWhereInput;
+    orderBy?: MessageOrderByInput;
     skip?: Int;
     after?: String;
     before?: String;
@@ -1263,6 +1340,15 @@ export interface UserSubscription
   prenom: () => Promise<AsyncIterator<String>>;
   numero: () => Promise<AsyncIterator<String>>;
   createdAt: () => Promise<AsyncIterator<DateTimeOutput>>;
+  channels: <T = Promise<AsyncIterator<ChannelSubscription>>>(args?: {
+    where?: ChannelWhereInput;
+    orderBy?: ChannelOrderByInput;
+    skip?: Int;
+    after?: String;
+    before?: String;
+    first?: Int;
+    last?: Int;
+  }) => T;
   offerings: <T = Promise<AsyncIterator<OfferingSubscription>>>(args?: {
     where?: OfferingWhereInput;
     orderBy?: OfferingOrderByInput;
@@ -1272,9 +1358,9 @@ export interface UserSubscription
     first?: Int;
     last?: Int;
   }) => T;
-  channels: <T = Promise<AsyncIterator<ChannelSubscription>>>(args?: {
-    where?: ChannelWhereInput;
-    orderBy?: ChannelOrderByInput;
+  messages: <T = Promise<AsyncIterator<MessageSubscription>>>(args?: {
+    where?: MessageWhereInput;
+    orderBy?: MessageOrderByInput;
     skip?: Int;
     after?: String;
     before?: String;
@@ -1291,6 +1377,15 @@ export interface UserNullablePromise
   prenom: () => Promise<String>;
   numero: () => Promise<String>;
   createdAt: () => Promise<DateTimeOutput>;
+  channels: <T = FragmentableArray<Channel>>(args?: {
+    where?: ChannelWhereInput;
+    orderBy?: ChannelOrderByInput;
+    skip?: Int;
+    after?: String;
+    before?: String;
+    first?: Int;
+    last?: Int;
+  }) => T;
   offerings: <T = FragmentableArray<Offering>>(args?: {
     where?: OfferingWhereInput;
     orderBy?: OfferingOrderByInput;
@@ -1300,9 +1395,9 @@ export interface UserNullablePromise
     first?: Int;
     last?: Int;
   }) => T;
-  channels: <T = FragmentableArray<Channel>>(args?: {
-    where?: ChannelWhereInput;
-    orderBy?: ChannelOrderByInput;
+  messages: <T = FragmentableArray<Message>>(args?: {
+    where?: MessageWhereInput;
+    orderBy?: MessageOrderByInput;
     skip?: Int;
     after?: String;
     before?: String;

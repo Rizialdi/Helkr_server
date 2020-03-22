@@ -46,7 +46,11 @@ export default {
       return offerings
     },
     channels: async (parent, args, { prisma }, info) => {
-      const channels = await prisma.user({ id: parent.id }).channels()
+      const channels = await prisma.channels({ where: { users_some: { id: parent.id } } })
+      return channels
+    },
+    messages: async (parent, args, { prisma }, info) => {
+      const channels = await prisma.messages({ where: { sentBy: { id: parent.id } } })
       return channels
     }
   }

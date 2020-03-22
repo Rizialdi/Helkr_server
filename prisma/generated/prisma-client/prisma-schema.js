@@ -223,7 +223,7 @@ type MessageConnection {
 input MessageCreateInput {
   id: ID
   text: String!
-  sentBy: UserCreateOneInput!
+  sentBy: UserCreateOneWithoutMessagesInput!
   channel: ChannelCreateOneWithoutMessagesInput!
 }
 
@@ -232,10 +232,21 @@ input MessageCreateManyWithoutChannelInput {
   connect: [MessageWhereUniqueInput!]
 }
 
+input MessageCreateManyWithoutSentByInput {
+  create: [MessageCreateWithoutSentByInput!]
+  connect: [MessageWhereUniqueInput!]
+}
+
 input MessageCreateWithoutChannelInput {
   id: ID
   text: String!
-  sentBy: UserCreateOneInput!
+  sentBy: UserCreateOneWithoutMessagesInput!
+}
+
+input MessageCreateWithoutSentByInput {
+  id: ID
+  text: String!
+  channel: ChannelCreateOneWithoutMessagesInput!
 }
 
 type MessageEdge {
@@ -318,7 +329,7 @@ input MessageSubscriptionWhereInput {
 
 input MessageUpdateInput {
   text: String
-  sentBy: UserUpdateOneRequiredInput
+  sentBy: UserUpdateOneRequiredWithoutMessagesInput
   channel: ChannelUpdateOneRequiredWithoutMessagesInput
 }
 
@@ -342,6 +353,18 @@ input MessageUpdateManyWithoutChannelInput {
   updateMany: [MessageUpdateManyWithWhereNestedInput!]
 }
 
+input MessageUpdateManyWithoutSentByInput {
+  create: [MessageCreateWithoutSentByInput!]
+  delete: [MessageWhereUniqueInput!]
+  connect: [MessageWhereUniqueInput!]
+  set: [MessageWhereUniqueInput!]
+  disconnect: [MessageWhereUniqueInput!]
+  update: [MessageUpdateWithWhereUniqueWithoutSentByInput!]
+  upsert: [MessageUpsertWithWhereUniqueWithoutSentByInput!]
+  deleteMany: [MessageScalarWhereInput!]
+  updateMany: [MessageUpdateManyWithWhereNestedInput!]
+}
+
 input MessageUpdateManyWithWhereNestedInput {
   where: MessageScalarWhereInput!
   data: MessageUpdateManyDataInput!
@@ -349,7 +372,12 @@ input MessageUpdateManyWithWhereNestedInput {
 
 input MessageUpdateWithoutChannelDataInput {
   text: String
-  sentBy: UserUpdateOneRequiredInput
+  sentBy: UserUpdateOneRequiredWithoutMessagesInput
+}
+
+input MessageUpdateWithoutSentByDataInput {
+  text: String
+  channel: ChannelUpdateOneRequiredWithoutMessagesInput
 }
 
 input MessageUpdateWithWhereUniqueWithoutChannelInput {
@@ -357,10 +385,21 @@ input MessageUpdateWithWhereUniqueWithoutChannelInput {
   data: MessageUpdateWithoutChannelDataInput!
 }
 
+input MessageUpdateWithWhereUniqueWithoutSentByInput {
+  where: MessageWhereUniqueInput!
+  data: MessageUpdateWithoutSentByDataInput!
+}
+
 input MessageUpsertWithWhereUniqueWithoutChannelInput {
   where: MessageWhereUniqueInput!
   update: MessageUpdateWithoutChannelDataInput!
   create: MessageCreateWithoutChannelInput!
+}
+
+input MessageUpsertWithWhereUniqueWithoutSentByInput {
+  where: MessageWhereUniqueInput!
+  update: MessageUpdateWithoutSentByDataInput!
+  create: MessageCreateWithoutSentByInput!
 }
 
 input MessageWhereInput {
@@ -774,8 +813,9 @@ type User {
   prenom: String!
   numero: String!
   createdAt: DateTime!
-  offerings(where: OfferingWhereInput, orderBy: OfferingOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Offering!]
   channels(where: ChannelWhereInput, orderBy: ChannelOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Channel!]
+  offerings(where: OfferingWhereInput, orderBy: OfferingOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Offering!]
+  messages(where: MessageWhereInput, orderBy: MessageOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Message!]
 }
 
 type UserConnection {
@@ -789,8 +829,9 @@ input UserCreateInput {
   nom: String!
   prenom: String!
   numero: String!
-  offerings: OfferingCreateManyWithoutAuthorInput
   channels: ChannelCreateManyWithoutUsersInput
+  offerings: OfferingCreateManyWithoutAuthorInput
+  messages: MessageCreateManyWithoutSentByInput
 }
 
 input UserCreateManyWithoutChannelsInput {
@@ -798,8 +839,8 @@ input UserCreateManyWithoutChannelsInput {
   connect: [UserWhereUniqueInput!]
 }
 
-input UserCreateOneInput {
-  create: UserCreateInput
+input UserCreateOneWithoutMessagesInput {
+  create: UserCreateWithoutMessagesInput
   connect: UserWhereUniqueInput
 }
 
@@ -814,6 +855,16 @@ input UserCreateWithoutChannelsInput {
   prenom: String!
   numero: String!
   offerings: OfferingCreateManyWithoutAuthorInput
+  messages: MessageCreateManyWithoutSentByInput
+}
+
+input UserCreateWithoutMessagesInput {
+  id: ID
+  nom: String!
+  prenom: String!
+  numero: String!
+  channels: ChannelCreateManyWithoutUsersInput
+  offerings: OfferingCreateManyWithoutAuthorInput
 }
 
 input UserCreateWithoutOfferingsInput {
@@ -822,6 +873,7 @@ input UserCreateWithoutOfferingsInput {
   prenom: String!
   numero: String!
   channels: ChannelCreateManyWithoutUsersInput
+  messages: MessageCreateManyWithoutSentByInput
 }
 
 type UserEdge {
@@ -936,20 +988,13 @@ input UserSubscriptionWhereInput {
   AND: [UserSubscriptionWhereInput!]
 }
 
-input UserUpdateDataInput {
-  nom: String
-  prenom: String
-  numero: String
-  offerings: OfferingUpdateManyWithoutAuthorInput
-  channels: ChannelUpdateManyWithoutUsersInput
-}
-
 input UserUpdateInput {
   nom: String
   prenom: String
   numero: String
-  offerings: OfferingUpdateManyWithoutAuthorInput
   channels: ChannelUpdateManyWithoutUsersInput
+  offerings: OfferingUpdateManyWithoutAuthorInput
+  messages: MessageUpdateManyWithoutSentByInput
 }
 
 input UserUpdateManyDataInput {
@@ -981,10 +1026,10 @@ input UserUpdateManyWithWhereNestedInput {
   data: UserUpdateManyDataInput!
 }
 
-input UserUpdateOneRequiredInput {
-  create: UserCreateInput
-  update: UserUpdateDataInput
-  upsert: UserUpsertNestedInput
+input UserUpdateOneRequiredWithoutMessagesInput {
+  create: UserCreateWithoutMessagesInput
+  update: UserUpdateWithoutMessagesDataInput
+  upsert: UserUpsertWithoutMessagesInput
   connect: UserWhereUniqueInput
 }
 
@@ -1000,6 +1045,15 @@ input UserUpdateWithoutChannelsDataInput {
   prenom: String
   numero: String
   offerings: OfferingUpdateManyWithoutAuthorInput
+  messages: MessageUpdateManyWithoutSentByInput
+}
+
+input UserUpdateWithoutMessagesDataInput {
+  nom: String
+  prenom: String
+  numero: String
+  channels: ChannelUpdateManyWithoutUsersInput
+  offerings: OfferingUpdateManyWithoutAuthorInput
 }
 
 input UserUpdateWithoutOfferingsDataInput {
@@ -1007,6 +1061,7 @@ input UserUpdateWithoutOfferingsDataInput {
   prenom: String
   numero: String
   channels: ChannelUpdateManyWithoutUsersInput
+  messages: MessageUpdateManyWithoutSentByInput
 }
 
 input UserUpdateWithWhereUniqueWithoutChannelsInput {
@@ -1014,9 +1069,9 @@ input UserUpdateWithWhereUniqueWithoutChannelsInput {
   data: UserUpdateWithoutChannelsDataInput!
 }
 
-input UserUpsertNestedInput {
-  update: UserUpdateDataInput!
-  create: UserCreateInput!
+input UserUpsertWithoutMessagesInput {
+  update: UserUpdateWithoutMessagesDataInput!
+  create: UserCreateWithoutMessagesInput!
 }
 
 input UserUpsertWithoutOfferingsInput {
@@ -1095,8 +1150,9 @@ input UserWhereInput {
   createdAt_lte: DateTime
   createdAt_gt: DateTime
   createdAt_gte: DateTime
-  offerings_some: OfferingWhereInput
   channels_some: ChannelWhereInput
+  offerings_some: OfferingWhereInput
+  messages_some: MessageWhereInput
   AND: [UserWhereInput!]
 }
 
