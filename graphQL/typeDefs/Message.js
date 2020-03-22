@@ -12,6 +12,6 @@ export default gql`
     text: String!
     sentBy: User!
     channel: Channel!
-    createAt: String!
+    createdAt: String!
   }
 `

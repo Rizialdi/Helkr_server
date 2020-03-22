@@ -1,6 +1,7 @@
 type User {
   id: ID! @id
   nom: String!
+  avatar: String
   prenom: String!
   numero: String! @unique
   createdAt: DateTime! @createdAt

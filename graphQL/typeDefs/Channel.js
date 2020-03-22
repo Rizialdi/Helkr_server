@@ -4,6 +4,7 @@ export default gql`
   type Query {
     channel(id: String!): Channel! 
     channels: [Channel!]!
+    recipientChannels: recipientChannelsResponse!
   }
   type Mutation {
     createChannel(recipient: String!): channelResponse!
@@ -16,5 +17,10 @@ export default gql`
   type channelResponse {
     success: Boolean!
     channel: Channel
+  }
+  type recipientChannelsResponse {
+    users: [User!]!,
+    channelIds: [String!]!
+    lastMessages: String!
   }
 `

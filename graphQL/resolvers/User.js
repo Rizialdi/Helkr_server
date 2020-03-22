@@ -15,7 +15,7 @@ export default {
     users: async (parent, args, context, info) => {
       return context.prisma.users()
     }
-  },
+  }, // TODO Update a User by adding an avatar
   Mutation: {
     enregistrement: async (parent, { nom, prenom, numero }, context, info) => {
       const user = await context.prisma.createUser({ nom, prenom, numero })

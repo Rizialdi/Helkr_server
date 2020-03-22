@@ -12,6 +12,7 @@ export default gql`
   type User {
     id: ID!
     nom: String!
+    avatar: String
     prenom: String!
     numero: String!
     offerings: [Offering!]!

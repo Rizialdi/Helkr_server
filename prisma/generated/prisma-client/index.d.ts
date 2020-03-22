@@ -219,6 +219,8 @@ export type UserOrderByInput =
   | "id_DESC"
   | "nom_ASC"
   | "nom_DESC"
+  | "avatar_ASC"
+  | "avatar_DESC"
   | "prenom_ASC"
   | "prenom_DESC"
   | "numero_ASC"
@@ -289,6 +291,20 @@ export interface UserWhereInput {
   nom_not_starts_with?: Maybe<String>;
   nom_ends_with?: Maybe<String>;
   nom_not_ends_with?: Maybe<String>;
+  avatar?: Maybe<String>;
+  avatar_not?: Maybe<String>;
+  avatar_in?: Maybe<String[] | String>;
+  avatar_not_in?: Maybe<String[] | String>;
+  avatar_lt?: Maybe<String>;
+  avatar_lte?: Maybe<String>;
+  avatar_gt?: Maybe<String>;
+  avatar_gte?: Maybe<String>;
+  avatar_contains?: Maybe<String>;
+  avatar_not_contains?: Maybe<String>;
+  avatar_starts_with?: Maybe<String>;
+  avatar_not_starts_with?: Maybe<String>;
+  avatar_ends_with?: Maybe<String>;
+  avatar_not_ends_with?: Maybe<String>;
   prenom?: Maybe<String>;
   prenom_not?: Maybe<String>;
   prenom_in?: Maybe<String[] | String>;
@@ -507,6 +523,7 @@ export interface UserCreateManyWithoutChannelsInput {
 export interface UserCreateWithoutChannelsInput {
   id?: Maybe<ID_Input>;
   nom: String;
+  avatar?: Maybe<String>;
   prenom: String;
   numero: String;
   offerings?: Maybe<OfferingCreateManyWithoutAuthorInput>;
@@ -571,6 +588,7 @@ export interface UserCreateOneWithoutMessagesInput {
 export interface UserCreateWithoutMessagesInput {
   id?: Maybe<ID_Input>;
   nom: String;
+  avatar?: Maybe<String>;
   prenom: String;
   numero: String;
   channels?: Maybe<ChannelCreateManyWithoutUsersInput>;
@@ -623,6 +641,7 @@ export interface UserUpdateWithWhereUniqueWithoutChannelsInput {
 
 export interface UserUpdateWithoutChannelsDataInput {
   nom?: Maybe<String>;
+  avatar?: Maybe<String>;
   prenom?: Maybe<String>;
   numero?: Maybe<String>;
   offerings?: Maybe<OfferingUpdateManyWithoutAuthorInput>;
@@ -899,6 +918,20 @@ export interface UserScalarWhereInput {
   nom_not_starts_with?: Maybe<String>;
   nom_ends_with?: Maybe<String>;
   nom_not_ends_with?: Maybe<String>;
+  avatar?: Maybe<String>;
+  avatar_not?: Maybe<String>;
+  avatar_in?: Maybe<String[] | String>;
+  avatar_not_in?: Maybe<String[] | String>;
+  avatar_lt?: Maybe<String>;
+  avatar_lte?: Maybe<String>;
+  avatar_gt?: Maybe<String>;
+  avatar_gte?: Maybe<String>;
+  avatar_contains?: Maybe<String>;
+  avatar_not_contains?: Maybe<String>;
+  avatar_starts_with?: Maybe<String>;
+  avatar_not_starts_with?: Maybe<String>;
+  avatar_ends_with?: Maybe<String>;
+  avatar_not_ends_with?: Maybe<String>;
   prenom?: Maybe<String>;
   prenom_not?: Maybe<String>;
   prenom_in?: Maybe<String[] | String>;
@@ -947,6 +980,7 @@ export interface UserUpdateManyWithWhereNestedInput {
 
 export interface UserUpdateManyDataInput {
   nom?: Maybe<String>;
+  avatar?: Maybe<String>;
   prenom?: Maybe<String>;
   numero?: Maybe<String>;
 }
@@ -993,6 +1027,7 @@ export interface UserUpdateOneRequiredWithoutMessagesInput {
 
 export interface UserUpdateWithoutMessagesDataInput {
   nom?: Maybe<String>;
+  avatar?: Maybe<String>;
   prenom?: Maybe<String>;
   numero?: Maybe<String>;
   channels?: Maybe<ChannelUpdateManyWithoutUsersInput>;
@@ -1105,6 +1140,7 @@ export interface UserCreateOneWithoutOfferingsInput {
 export interface UserCreateWithoutOfferingsInput {
   id?: Maybe<ID_Input>;
   nom: String;
+  avatar?: Maybe<String>;
   prenom: String;
   numero: String;
   channels?: Maybe<ChannelCreateManyWithoutUsersInput>;
@@ -1127,6 +1163,7 @@ export interface UserUpdateOneRequiredWithoutOfferingsInput {
 
 export interface UserUpdateWithoutOfferingsDataInput {
   nom?: Maybe<String>;
+  avatar?: Maybe<String>;
   prenom?: Maybe<String>;
   numero?: Maybe<String>;
   channels?: Maybe<ChannelUpdateManyWithoutUsersInput>;
@@ -1147,6 +1184,7 @@ export interface OfferingUpdateManyMutationInput {
 export interface UserCreateInput {
   id?: Maybe<ID_Input>;
   nom: String;
+  avatar?: Maybe<String>;
   prenom: String;
   numero: String;
   channels?: Maybe<ChannelCreateManyWithoutUsersInput>;
@@ -1156,6 +1194,7 @@ export interface UserCreateInput {
 
 export interface UserUpdateInput {
   nom?: Maybe<String>;
+  avatar?: Maybe<String>;
   prenom?: Maybe<String>;
   numero?: Maybe<String>;
   channels?: Maybe<ChannelUpdateManyWithoutUsersInput>;
@@ -1165,6 +1204,7 @@ export interface UserUpdateInput {
 
 export interface UserUpdateManyMutationInput {
   nom?: Maybe<String>;
+  avatar?: Maybe<String>;
   prenom?: Maybe<String>;
   numero?: Maybe<String>;
 }
@@ -1292,6 +1332,7 @@ export interface ChannelNullablePromise
 export interface User {
   id: ID_Output;
   nom: String;
+  avatar?: String;
   prenom: String;
   numero: String;
   createdAt: DateTimeOutput;
@@ -1300,6 +1341,7 @@ export interface User {
 export interface UserPromise extends Promise<User>, Fragmentable {
   id: () => Promise<ID_Output>;
   nom: () => Promise<String>;
+  avatar: () => Promise<String>;
   prenom: () => Promise<String>;
   numero: () => Promise<String>;
   createdAt: () => Promise<DateTimeOutput>;
@@ -1337,6 +1379,7 @@ export interface UserSubscription
     Fragmentable {
   id: () => Promise<AsyncIterator<ID_Output>>;
   nom: () => Promise<AsyncIterator<String>>;
+  avatar: () => Promise<AsyncIterator<String>>;
   prenom: () => Promise<AsyncIterator<String>>;
   numero: () => Promise<AsyncIterator<String>>;
   createdAt: () => Promise<AsyncIterator<DateTimeOutput>>;
@@ -1374,6 +1417,7 @@ export interface UserNullablePromise
     Fragmentable {
   id: () => Promise<ID_Output>;
   nom: () => Promise<String>;
+  avatar: () => Promise<String>;
   prenom: () => Promise<String>;
   numero: () => Promise<String>;
   createdAt: () => Promise<DateTimeOutput>;
@@ -1915,6 +1959,7 @@ export interface UserSubscriptionPayloadSubscription
 export interface UserPreviousValues {
   id: ID_Output;
   nom: String;
+  avatar?: String;
   prenom: String;
   numero: String;
   createdAt: DateTimeOutput;
@@ -1925,6 +1970,7 @@ export interface UserPreviousValuesPromise
     Fragmentable {
   id: () => Promise<ID_Output>;
   nom: () => Promise<String>;
+  avatar: () => Promise<String>;
   prenom: () => Promise<String>;
   numero: () => Promise<String>;
   createdAt: () => Promise<DateTimeOutput>;
@@ -1935,6 +1981,7 @@ export interface UserPreviousValuesSubscription
     Fragmentable {
   id: () => Promise<AsyncIterator<ID_Output>>;
   nom: () => Promise<AsyncIterator<String>>;
+  avatar: () => Promise<AsyncIterator<String>>;
   prenom: () => Promise<AsyncIterator<String>>;
   numero: () => Promise<AsyncIterator<String>>;
   createdAt: () => Promise<AsyncIterator<DateTimeOutput>>;

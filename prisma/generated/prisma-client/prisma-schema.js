@@ -810,6 +810,7 @@ type Subscription {
 type User {
   id: ID!
   nom: String!
+  avatar: String
   prenom: String!
   numero: String!
   createdAt: DateTime!
@@ -827,6 +828,7 @@ type UserConnection {
 input UserCreateInput {
   id: ID
   nom: String!
+  avatar: String
   prenom: String!
   numero: String!
   channels: ChannelCreateManyWithoutUsersInput
@@ -852,6 +854,7 @@ input UserCreateOneWithoutOfferingsInput {
 input UserCreateWithoutChannelsInput {
   id: ID
   nom: String!
+  avatar: String
   prenom: String!
   numero: String!
   offerings: OfferingCreateManyWithoutAuthorInput
@@ -861,6 +864,7 @@ input UserCreateWithoutChannelsInput {
 input UserCreateWithoutMessagesInput {
   id: ID
   nom: String!
+  avatar: String
   prenom: String!
   numero: String!
   channels: ChannelCreateManyWithoutUsersInput
@@ -870,6 +874,7 @@ input UserCreateWithoutMessagesInput {
 input UserCreateWithoutOfferingsInput {
   id: ID
   nom: String!
+  avatar: String
   prenom: String!
   numero: String!
   channels: ChannelCreateManyWithoutUsersInput
@@ -886,6 +891,8 @@ enum UserOrderByInput {
   id_DESC
   nom_ASC
   nom_DESC
+  avatar_ASC
+  avatar_DESC
   prenom_ASC
   prenom_DESC
   numero_ASC
@@ -897,6 +904,7 @@ enum UserOrderByInput {
 type UserPreviousValues {
   id: ID!
   nom: String!
+  avatar: String
   prenom: String!
   numero: String!
   createdAt: DateTime!
@@ -931,6 +939,20 @@ input UserScalarWhereInput {
   nom_not_starts_with: String
   nom_ends_with: String
   nom_not_ends_with: String
+  avatar: String
+  avatar_not: String
+  avatar_in: [String!]
+  avatar_not_in: [String!]
+  avatar_lt: String
+  avatar_lte: String
+  avatar_gt: String
+  avatar_gte: String
+  avatar_contains: String
+  avatar_not_contains: String
+  avatar_starts_with: String
+  avatar_not_starts_with: String
+  avatar_ends_with: String
+  avatar_not_ends_with: String
   prenom: String
   prenom_not: String
   prenom_in: [String!]
@@ -990,6 +1012,7 @@ input UserSubscriptionWhereInput {
 
 input UserUpdateInput {
   nom: String
+  avatar: String
   prenom: String
   numero: String
   channels: ChannelUpdateManyWithoutUsersInput
@@ -999,12 +1022,14 @@ input UserUpdateInput {
 
 input UserUpdateManyDataInput {
   nom: String
+  avatar: String
   prenom: String
   numero: String
 }
 
 input UserUpdateManyMutationInput {
   nom: String
+  avatar: String
   prenom: String
   numero: String
 }
@@ -1042,6 +1067,7 @@ input UserUpdateOneRequiredWithoutOfferingsInput {
 
 input UserUpdateWithoutChannelsDataInput {
   nom: String
+  avatar: String
   prenom: String
   numero: String
   offerings: OfferingUpdateManyWithoutAuthorInput
@@ -1050,6 +1076,7 @@ input UserUpdateWithoutChannelsDataInput {
 
 input UserUpdateWithoutMessagesDataInput {
   nom: String
+  avatar: String
   prenom: String
   numero: String
   channels: ChannelUpdateManyWithoutUsersInput
@@ -1058,6 +1085,7 @@ input UserUpdateWithoutMessagesDataInput {
 
 input UserUpdateWithoutOfferingsDataInput {
   nom: String
+  avatar: String
   prenom: String
   numero: String
   channels: ChannelUpdateManyWithoutUsersInput
@@ -1114,6 +1142,20 @@ input UserWhereInput {
   nom_not_starts_with: String
   nom_ends_with: String
   nom_not_ends_with: String
+  avatar: String
+  avatar_not: String
+  avatar_in: [String!]
+  avatar_not_in: [String!]
+  avatar_lt: String
+  avatar_lte: String
+  avatar_gt: String
+  avatar_gte: String
+  avatar_contains: String
+  avatar_not_contains: String
+  avatar_starts_with: String
+  avatar_not_starts_with: String
+  avatar_ends_with: String
+  avatar_not_ends_with: String
   prenom: String
   prenom_not: String
   prenom_in: [String!]
