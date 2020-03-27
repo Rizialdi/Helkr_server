@@ -12,7 +12,7 @@ export default {
       return context.prisma.channels()
     },
     recipientChannels: async (parent, args, context, info) => {
-      const userId = '5e7710e0be07770007331386' // getUserId(context)
+      const userId = '5e7dfde324aa9a0007929a6b' // getUserId(context)
       const channels = await context.prisma.channels({ where: { users_some: { id: userId } } })
       const channelIds = channels.map(channel => channel.id)
       const users = await context.prisma.users({ where: { AND: [{ channels_some: { id_in: channelIds } }, { id_not: userId }] } })

@@ -1,20 +1,24 @@
 
 import cors from 'cors'
 import bodyParser from 'body-parser'
-import { GraphQLServer } from 'graphql-yoga'
+import { GraphQLServer, PubSub } from 'graphql-yoga'
 import { typeDefs, resolvers } from './graphQL'
 import { prisma } from './prisma/generated/prisma-client'
-require('custom-env').env('prod')
+
+require('custom-env').env('dev')
 
 const { MESSAGEBIRD_API_KEY, NUMERO } = process.env
 const messagebird = require('messagebird')(MESSAGEBIRD_API_KEY)
+
+const pubsub = new PubSub()
 
 const graphqlserver = new GraphQLServer({
   typeDefs,
   resolvers,
   context: request => ({
     ...request,
-    prisma
+    prisma,
+    pubsub
   }),
   introspection: true
 })
@@ -35,12 +39,12 @@ graphqlserver.express.post('/api/v1/register-step1', (req, res) => {
   messagebird.verify
     .create(
       numero, {
-        originator: 'Yoko App',
-        template: 'Votre code de vérification est %token'
-      }, (error, response) => {
-        if (error) return res.send(error)
-        return res.send(response)
-      })
+      originator: 'Yoko App',
+      template: 'Votre code de vérification est %token'
+    }, (error, response) => {
+      if (error) return res.send(error)
+      return res.send(response)
+    })
 })
 
 graphqlserver.express.post('/api/v1/register-step2', (req, res) => {
