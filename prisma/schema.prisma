@@ -1,0 +1,50 @@
+// This is your Prisma schema file,
+// learn more about it in the docs https//pris.ly/d/prisma-schema
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model User {
+  id         String     @id @default(cuid())
+  nom        String
+  avatar     String?
+  prenom     String
+  numero     String     @unique
+  createdAt  DateTime   @default(now())
+  updatedAt  DateTime   @updatedAt
+  channels   Channel[]
+  offerings  Offering[]
+  messages   Message[]
+}
+model Offering {
+  id          String    @id @default(cuid())
+  type        String
+  category    String
+  description String
+  authorId    String?   @map("author")
+  author      User?     @relation(fields: [authorId], references: [id])
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  completed   Boolean   @default(false)
+}
+model Channel {
+  id         String     @id @default(cuid())
+  users      User[]     @relation(references: [id])
+  messages   Message[]  @relation(references: [id])
+  createdAt  DateTime   @default(now())
+}
+model Message {
+  id         String     @id @default(cuid())
+  text       String
+  sentById   String     @map("sentBy")
+  sentBy     User       @relation(fields: [sentById], references: [id])
+  channelId  String     @map("channel")
+  channel    Channel    @relation(fields: [channelId], references: [id])
+  createdAt  DateTime   @default(now())
+}

@@ -3,12 +3,13 @@ import cors from 'cors'
 import bodyParser from 'body-parser'
 import { GraphQLServer, PubSub } from 'graphql-yoga'
 import { typeDefs, resolvers } from './graphQL'
-import { prisma } from './prisma/generated/prisma-client'
+import { PrismaClient } from '@prisma/client'
 
 require('custom-env').env('dev')
 
 const { MESSAGEBIRD_API_KEY, NUMERO } = process.env
 const messagebird = require('messagebird')(MESSAGEBIRD_API_KEY)
+const prisma = new PrismaClient()
 
 const pubsub = new PubSub()
 

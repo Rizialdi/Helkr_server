@@ -13,7 +13,7 @@ export default {
     // TODO projection efficiently get the field asked for
     // TODO implement pagination
     users: async (parent, args, context, info) => {
-      return context.prisma.users()
+      return context.prisma.user.findMany()
     }
   }, // TODO Update a User by adding an avatar
   Mutation: {
