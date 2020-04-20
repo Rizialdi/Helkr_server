@@ -3,27 +3,27 @@ import { getUserId } from './utils'
 export default {
   Query: {
     offeringsUser: async (parent, { numero }, context, info) => {
-      const user = await context.prisma.user({ numero })
-      return context.prisma.offering({ author: user.id })
+      const offerings = await context.prisma.user.findOne({ where: { numero }}).offerings()
+      return offerings
     },
-    offerings: async (parent, args, context, info) => {
-      return context.prisma.offerings()
+    offerings: async (_, __, context) => {
+      return context.prisma.offering.findMany()
     }
   },
   Mutation: {
-    ajouter: async (parent, { type, category, description }, context, info) => {
+    addOffering: async (_, { type, category, description }, context) => {
       const userId = getUserId(context)
-      const offerings = await context.prisma.createOffering({ type, category, description, author: { connect: { id: userId } } })
-      return offerings
+      const offering = await context.prisma.offering.create({ data: { type, category, description, author: { connect: { id: userId } } }})
+      return offering
     },
-    modifier: async (parent, { id, description }, context, info) => {
-      const offering = await context.prisma.offering({ id })
+    updateOffering: async (_, { id, description }, context) => {
+      const offering = await context.prisma.offering.update({ where: { id }, data: { description }})
       return offering
     }
   },
   Offering: {
-    author: async (parent, args, { prisma }, info) => {
-      const author = await prisma.offering({ id: parent.id }).author()
+    author: async (parent, _, { prisma }) => {
+      const author = await prisma.offering.findOne({ where: { id: parent.id }}).author()
       return author
     }
   }

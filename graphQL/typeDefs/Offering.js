@@ -6,8 +6,8 @@ export default gql`
     offerings: [Offering!]!
   }
   type Mutation {
-    ajouter(type: String!, category: String!, description: String!): Offering!
-    modifier(id: String!,description: String!): Offering!
+    addOffering(type: String!, category: String!, description: String!): Offering!
+    updateOffering(id: String!,description: String!): Offering!
   }
   type Offering {
     id: ID!

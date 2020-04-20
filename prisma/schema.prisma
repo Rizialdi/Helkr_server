@@ -42,9 +42,10 @@ model Channel {
 model Message {
   id         String     @id @default(cuid())
   text       String
-  sentById   String     @map("sentBy")
-  sentBy     User       @relation(fields: [sentById], references: [id])
-  channelId  String     @map("channel")
-  channel    Channel    @relation(fields: [channelId], references: [id])
+  sentById   String?     @map("sentBy")
+  sentBy     User?       @relation(fields: [sentById], references: [id])
+  channelId  String?     @map("channel")
+  channel    Channel?    @relation(fields: [channelId], references: [id])
   createdAt  DateTime   @default(now())
+  
 }

@@ -2,12 +2,12 @@ import gql from 'graphql-tag'
 
 export default gql`
   type Query {
-    user(numero: String!): User! #pas obigatoire si invalid num fourni
+    user(numero: String!): User!
+    getUserInfo(numero: String!): AuthPayload
     users: [User!]!
   }
   type Mutation {
-    enregistrement(nom: String!, prenom: String!, numero: String!): AuthPayload
-    verification(numero: String!): AuthPayload
+    registerUser(nom: String!, prenom: String!, numero: String!): AuthPayload
   }
   type User {
     id: ID!
