@@ -46,7 +46,7 @@ export default {
           ]
         }
       });
-      console.log('results', results);
+
       if (userId === recipient) return false;
 
       if (results[0]) {
