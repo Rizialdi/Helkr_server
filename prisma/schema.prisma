@@ -8,28 +8,50 @@ generator client {
 }
 
 model User {
-  id        String     @default(cuid()) @id
-  nom       String
-  avatar    String?
-  prenom    String
-  numero    String     @unique
-  createdAt DateTime   @default(now())
-  updatedAt DateTime   @updatedAt
-  channels  Channel[]
-  offerings Offering[]
-  messages  Message[]
+  id                 String     @default(cuid()) @id
+  nom                String
+  avatar             String?
+  professional       Boolean    @default(false)
+  verified           Boolean    @default(false)
+  prenom             String
+  numero             String     @unique
+  createdAt          DateTime   @default(now())
+  updatedAt          DateTime   @updatedAt
+  channels           Channel[]
+  offerings          Offering[] @relation("Offering")
+  completedofferings Offering[] @relation("CompletedOffering")
+  avisreceived       Avis[]     @relation("AvisReceived")
+  avisgave           Avis[]     @relation("AvisGave")
+  messages           Message[]
+  moyenne            Moyenne?
 }
 
 model Offering {
-  id          String   @default(cuid()) @id
-  type        String
-  category    String
-  description String
-  authorId    String?  @map("author")
-  author      User?    @relation(fields: [authorId], references: [id])
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-  completed   Boolean  @default(false)
+  id            String   @default(cuid()) @id
+  type          String
+  category      String
+  description   String
+  authorId      String   @map("author")
+  author        User     @relation("Offering", fields: [authorId], references: [id])
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  completed     Boolean  @default(false)
+  completedById String?  @map("completedBy")
+  completedBy   User?    @relation("CompletedOffering", fields: [completedById], references: [id])
+  avis          Avis[]
+}
+
+model Avis {
+  id         String   @default(cuid()) @id
+  score      Int
+  comment    String
+  offeringId String   @map("offering")
+  offering   Offering @relation(fields: [offeringId], references: [id])
+  scorerId   String   @map("scorer")
+  scorer     User     @relation("AvisGave", fields: [scorerId], references: [id])
+  scoredId   String   @map("scored")
+  scored     User     @relation("AvisReceived", fields: [scoredId], references: [id])
+  createdAt  DateTime @default(now())
 }
 
 model Channel {
@@ -47,4 +69,12 @@ model Message {
   channelId String?  @map("channel")
   channel   Channel? @relation(fields: [channelId], references: [id])
   createdAt DateTime @default(now())
+}
+
+model Moyenne {
+  id          String @default(cuid()) @id
+  userId      String @map("user")
+  user        User   @relation(fields: [userId], references: [id])
+  moyenne     Float
+  realMoyenne Float
 }

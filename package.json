@@ -2,7 +2,7 @@
   "name": "backend",
   "version": "1.0.0",
   "description": "BackEnd for react-native Yoko application",
-  "main": "index.js",
+  "main": "index.tsx",
   "repository": "github.com/rizialdi/Yoko/backend",
   "author": "rizialdi <rasselio.diack@gmail.com>",
   "license": "MIT",
@@ -16,7 +16,7 @@
     "dev": "ts-node-dev --no-notify --respawn --transpileOnly src/server"
   },
   "dependencies": {
-    "@prisma/client": "^2.0.0-beta.2",
+    "@prisma/client": "^2.0.0-beta.4",
     "@types/node": "^13.13.0",
     "custom-env": "^2.0.1",
     "esm": "^3.2.25",

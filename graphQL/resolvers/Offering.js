@@ -9,36 +9,96 @@ export default {
       return offerings;
     },
     offerings: async (_, __, context) => {
-      return context.prisma.offering.findMany();
+      const offerings = await context.prisma.offering.findMany();
+      return offerings;
     }
   },
   Mutation: {
     addOffering: async (_, { type, category, description }, context) => {
       const userId = getUserId(context);
-      const offering = await context.prisma.offering.create({
-        data: {
-          type,
-          category,
-          description,
-          author: { connect: { id: userId } }
-        }
-      });
-      return offering;
+      try {
+        const offering = await context.prisma.offering.create({
+          data: {
+            type,
+            category,
+            description,
+            author: { connect: { id: userId } }
+          }
+        });
+
+        if (!offering) return false;
+        return true;
+      } catch (error) {
+        throw new Error('creation de Offre impossible');
+      }
     },
     updateOffering: async (_, { id, description }, context) => {
-      const offering = await context.prisma.offering.update({
-        where: { id },
-        data: { description }
-      });
-      return offering;
+      try {
+        const offering = await context.prisma.offering.update({
+          where: { id },
+          data: { description }
+        });
+        if (!offering) return false;
+        return true;
+      } catch (error) {
+        throw new Error('Modification de Offre impossible');
+      }
+    },
+    deleteOffering: async (_, { id }, context) => {
+      const userId = getUserId(context);
+      try {
+        const suppressed = await context.prisma.offering.delete({
+          where: { id }
+        });
+        if (!suppressed) return false;
+        return true;
+      } catch (error) {
+        throw new Error('Suppresion de Offre impossible');
+      }
+    },
+    completeOffering: async (_, { id, completedById }, context) => {
+      const userId = getUserId(context);
+      try {
+        if (userId == completedById) return false;
+
+        const offering = await context.prisma.offering.findOne({
+          where: { id }
+        });
+        if (userId !== offering.authorId) return false;
+
+        const updated = await context.prisma.offering.update({
+          where: { id },
+          data: {
+            completed: true,
+            completedBy: { connect: { id: completedById } }
+          }
+        });
+        if (!updated) return false;
+        return true;
+      } catch (error) {
+        throw new Error('Finition de Offre impossible');
+      }
     }
   },
+
   Offering: {
-    author: async (parent, _, { prisma }) => {
-      const author = await prisma.offering
-        .findOne({ where: { id: parent.id } })
-        .author();
-      return author;
+    author: async (parent, __, { prisma }) => {
+      const author = await prisma.user.findMany({
+        where: { offerings: { some: { id: parent.id } } }
+      });
+      return author[0];
+    },
+    completedBy: async (parent, __, { prisma }) => {
+      const completedBy = await prisma.user.findMany({
+        where: { completedofferings: { some: { id: parent.id } } }
+      });
+      return completedBy[0];
+    },
+    avis: async (parent, __, { prisma }) => {
+      const avis = prisma.avis.findMany({
+        where: { offering: { id: parent.id } }
+      });
+      return avis;
     }
   }
 };

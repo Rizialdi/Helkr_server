@@ -1,4 +1,4 @@
-import gql from 'graphql-tag'
+import gql from 'graphql-tag';
 
 export default gql`
   type Query {
@@ -15,12 +15,18 @@ export default gql`
     avatar: String
     prenom: String!
     numero: String!
-    offerings: [Offering!]!
+    professional: Boolean
+    verified: Boolean
+    offerings: [Offering!]
+    completedofferings: [Offering!]
+    avisreceived: [Avis]
+    avisgave: [Avis]
     channels: [Channel!]!
     messages: [Message!]!
+    moyenne: Float
   }
   type AuthPayload {
-  token: String
-  user: User
+    token: String
+    user: User
   }
-`
+`;
