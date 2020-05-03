@@ -9,6 +9,11 @@ export default {
       if (!user) return new Error('Utilisateur non existant');
       return user;
     },
+    userById: async (_, { id }, context) => {
+      const user = await context.prisma.user.findOne({ where: { id } });
+      if (!user) return new Error('Utilisateur non existant');
+      return user;
+    },
     getUserInfo: async (_, { numero }, context) => {
       const user = await context.prisma.user.findOne({ where: { numero } });
       if (!user) {
