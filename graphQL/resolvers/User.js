@@ -1,5 +1,5 @@
 import jwt from 'jsonwebtoken';
-import { APP_SECRET_CODE } from './utils';
+import { APP_SECRET_CODE, getUserId } from './utils';
 
 export default {
   Query: {
@@ -27,6 +27,22 @@ export default {
     // TODO implement pagination
     users: async (_, __, context) => {
       return context.prisma.user.findMany();
+    },
+    getUserStats: async (_, { id }, context) => {
+      const prop = await context.prisma.offering.findMany({
+        where: { author: { id } }
+      });
+      const completed = await context.prisma.avis.findMany({
+        where: { scored: { id } }
+      });
+
+      const proposed = prop.length;
+      const done = completed.length;
+      const { score } = completed.reduce((a, b) => ({
+        score: a.score + b.score
+      }));
+      const average = Number((score / done).toFixed(1));
+      return { done, proposed, average };
     }
   }, // TODO Update a User by adding an avatar
   Mutation: {

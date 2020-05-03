@@ -5,6 +5,7 @@ export default gql`
     user(numero: String!): User!
     getUserInfo(numero: String!): AuthPayload
     users: [User!]!
+    getUserStats(id: String!): Stats
   }
   type Mutation {
     registerUser(nom: String!, prenom: String!, numero: String!): AuthPayload
@@ -28,5 +29,10 @@ export default gql`
   type AuthPayload {
     token: String
     user: User
+  }
+  type Stats {
+    done: Int
+    proposed: Int
+    average: Float
   }
 `;
