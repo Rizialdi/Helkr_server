@@ -43,10 +43,14 @@ export default {
 
       const proposed = prop.length;
       const done = completed.length;
-      const { score } = completed.reduce((a, b) => ({
-        score: a.score + b.score
-      }));
-      const average = Number((score / done).toFixed(1));
+      const { score } =
+        done != 0
+          ? completed.reduce((a, b) => ({
+              score: a.score + b.score
+            }))
+          : 0;
+
+      const average = done != 0 ? Number((score / done).toFixed(1)) : 0;
       return { done, proposed, average };
     }
   }, // TODO Update a User by adding an avatar
