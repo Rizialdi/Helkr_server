@@ -10,6 +10,7 @@ export default gql`
   }
   type Mutation {
     registerUser(nom: String!, prenom: String!, numero: String!): AuthPayload
+    avatarUpload(file: Upload!): Boolean
   }
   type User {
     id: ID!
@@ -39,4 +40,5 @@ export default gql`
     proposed: Int
     average: Float
   }
+  scalar Upload
 `;

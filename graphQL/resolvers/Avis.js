@@ -65,7 +65,6 @@ export default {
       subscribe: withFilter(
         (_, __, { pubsub }) => pubsub.asyncIterator(PUB_NEW_AVIS),
         (payload, variables) => {
-          console.log(payload.newAvis);
           return payload.newAvis.scoredId === variables.userId;
         }
       )

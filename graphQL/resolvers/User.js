@@ -65,6 +65,15 @@ export default {
         token,
         user
       };
+    },
+    avatarUpload: async (_, { file }, context) => {
+      try {
+        const url = context.processUpload(file);
+        if (!url) return false;
+        return true;
+      } catch (error) {
+        console.log('erreur', error);
+      }
     }
   },
   User: {

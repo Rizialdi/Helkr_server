@@ -3,6 +3,7 @@ import bodyParser from 'body-parser';
 import { GraphQLServer, PubSub } from 'graphql-yoga';
 import { typeDefs, resolvers } from './graphQL';
 import { PrismaClient } from '@prisma/client';
+import { processUpload } from './utils';
 
 require('custom-env').env('dev');
 
@@ -17,7 +18,8 @@ const graphqlserver = new GraphQLServer({
   context: (request) => ({
     ...request,
     prisma,
-    pubsub
+    pubsub,
+    processUpload
   }),
   //@ts-ignore
   introspection: true
@@ -28,7 +30,7 @@ graphqlserver.express.use(cors());
 // parse application/x-www-form-urlencoded
 graphqlserver.express.use(bodyParser.urlencoded({ extended: true }));
 // parse application/json
-graphqlserver.express.use(bodyParser.json());
+graphqlserver.express.use(bodyParser.json({ limit: '10mb' }));
 
 graphqlserver.express.disable('x-powered-by');
 
