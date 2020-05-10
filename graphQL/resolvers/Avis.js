@@ -1,4 +1,4 @@
-import { getUserId } from './utils';
+import { getUserId } from '../../utils';
 import { PUB_NEW_AVIS } from '../constants';
 import { withFilter } from 'graphql-yoga';
 

@@ -11,6 +11,8 @@ export default gql`
   type Mutation {
     registerUser(nom: String!, prenom: String!, numero: String!): AuthPayload
     avatarUpload(file: Upload!): Boolean
+    descriptionUpdate(text: String!): Boolean
+    addressUpdate(text: String!): Boolean
   }
   type User {
     id: ID!

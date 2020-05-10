@@ -1,31 +1,45 @@
 import jwt from 'jsonwebtoken';
-import { APP_SECRET_CODE, getUserId } from './utils';
+import { APP_SECRET_CODE, getUserId } from '../../utils';
 
 export default {
   Query: {
     // TODO sanitization on provided id
     user: async (_, { numero }, context) => {
-      const user = await context.prisma.user.findOne({ where: { numero } });
-      if (!user) return new Error('Utilisateur non existant');
-      return user;
+      try {
+        const user = await context.prisma.user.findOne({ where: { numero } });
+        return user;
+      } catch (error) {
+        throw new Error('Utilisateur non existant', error);
+      }
     },
     userById: async (_, { id }, context) => {
-      const user = await context.prisma.user.findOne({ where: { id } });
-      if (!user) return new Error('Utilisateur non existant');
-      return user;
+      try {
+        const user = await context.prisma.user.findOne({ where: { id } });
+        if (!user) {
+          throw new Error('Utilisateur non existant');
+        }
+
+        return user;
+      } catch (error) {
+        throw new Error('Utilisateur non existant', error);
+      }
     },
     getUserInfo: async (_, { numero }, context) => {
-      const user = await context.prisma.user.findOne({ where: { numero } });
-      if (!user) {
-        throw new Error('Utilisateur non existant');
+      try {
+        const user = await context.prisma.user.findOne({ where: { numero } });
+        if (!user) {
+          throw new Error('Utilisateur non existant');
+        }
+
+        const token = jwt.sign({ userId: user.id }, APP_SECRET_CODE);
+
+        return {
+          token,
+          user
+        };
+      } catch (error) {
+        throw new Error('Utilisateur non existant', error);
       }
-
-      const token = jwt.sign({ userId: user.id }, APP_SECRET_CODE);
-
-      return {
-        token,
-        user
-      };
     },
     // TODO check that the user is authenticated for seeing users list
     // TODO projection efficiently get the field asked for
@@ -67,12 +81,46 @@ export default {
       };
     },
     avatarUpload: async (_, { file }, context) => {
+      const userId = getUserId(context);
+
       try {
-        const url = context.processUpload(file);
-        if (!url) return false;
+        const avatar = await context.processUpload(file);
+        const user = await context.prisma.user.update({
+          where: { id: userId },
+          data: { avatar }
+        });
+        if (!user) return false;
         return true;
       } catch (error) {
-        console.log('erreur', error);
+        throw new Error(error);
+      }
+    },
+    descriptionUpdate: async (_, { text }, context) => {
+      const userId = getUserId(context);
+
+      try {
+        const user = await context.prisma.user.update({
+          where: { id: userId },
+          data: { description: text }
+        });
+        if (!user) return false;
+        return true;
+      } catch (error) {
+        throw new Error(error);
+      }
+    },
+    addressUpdate: async (_, { text }, context) => {
+      const userId = getUserId(context);
+
+      try {
+        const user = await context.prisma.user.update({
+          where: { id: userId },
+          data: { address: text }
+        });
+        if (!user) return false;
+        return true;
+      } catch (error) {
+        throw new Error(error);
       }
     }
   },

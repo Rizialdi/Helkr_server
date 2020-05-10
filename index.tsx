@@ -5,7 +5,7 @@ import { typeDefs, resolvers } from './graphQL';
 import { PrismaClient } from '@prisma/client';
 import { processUpload } from './utils';
 
-require('custom-env').env('dev');
+require('custom-env').env('prod');
 
 const { MESSAGEBIRD_API_KEY, NUMERO } = process.env;
 const messagebird = require('messagebird')(MESSAGEBIRD_API_KEY);
