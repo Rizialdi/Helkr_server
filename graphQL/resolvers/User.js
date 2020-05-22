@@ -122,6 +122,20 @@ export default {
       } catch (error) {
         throw new Error(error);
       }
+    },
+    tagsUpdate: async (_, { tags }, context) => {
+      const userId = getUserId(context);
+
+      try {
+        const user = await context.prisma.user.update({
+          where: { id: userId },
+          data: { tags: { set: tags } }
+        });
+        if (!user) return false;
+        return true;
+      } catch (error) {
+        throw new Error(error);
+      }
     }
   },
   User: {

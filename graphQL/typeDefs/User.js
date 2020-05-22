@@ -13,6 +13,7 @@ export default gql`
     avatarUpload(file: Upload!): Boolean
     descriptionUpdate(text: String!): Boolean
     addressUpdate(text: String!): Boolean
+    tagsUpdate(tags: [String]): Boolean
   }
   type User {
     id: ID!
