@@ -1,15 +1,18 @@
 import jwt from 'jsonwebtoken';
 import cloudinary from 'cloudinary';
+import fetch from 'node-fetch';
 
 require('custom-env').env('dev');
-
-const APP_SECRET_CODE = 'HSfg5sdAkLS65DNlfsk4KL45qdSdf5DE';
 
 const {
   CLOUDINARY_CLOUD_NAME,
   CLOUDINARY_API_KEY,
   CLOUDINARY_API_SECRET,
-  CLOUDINARY_UPLOAD_PRESET
+  CLOUDINARY_UPLOAD_PRESET,
+  APP_SECRET_CODE,
+  MESSAGEBIRD_BASE_URL,
+  MESSAGEBIRD_API_KEY,
+  NUMERO
 } = process.env;
 
 cloudinary.v2.config({
@@ -48,4 +51,48 @@ const processUpload = async (upload) => {
   return resultUrl;
 };
 
-export { APP_SECRET_CODE, getUserId, processUpload };
+const authentication_step_one = async (numero) => {
+  const opts = {
+    //TODO change this number
+    recipient: NUMERO ? NUMERO : numero,
+    originator: 'Yoko App',
+    timeout: 60,
+    template:
+      'Votre code de vérification est %token. Veuillez ne pas le communiquer à une tierce entité.'
+  };
+
+  const response = await fetch(`${MESSAGEBIRD_BASE_URL}verify`, {
+    method: 'post',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `AccessKey test_${MESSAGEBIRD_API_KEY}`
+    },
+    mode: 'cors',
+    body: JSON.stringify(opts)
+  });
+  const { id, status } = await response.json();
+  return { id, status };
+};
+
+const authentication_step_two = async (id, token) => {
+  const response = await fetch(
+    `${MESSAGEBIRD_BASE_URL}verify/${id}/?token=${token}`,
+    {
+      method: 'get',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `AccessKey test_${MESSAGEBIRD_API_KEY}`
+      }
+    }
+  );
+  const { status, errors } = await response.json();
+  return { status, errors };
+};
+
+export {
+  APP_SECRET_CODE,
+  getUserId,
+  processUpload,
+  authentication_step_one,
+  authentication_step_two
+};

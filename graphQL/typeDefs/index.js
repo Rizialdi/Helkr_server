@@ -6,8 +6,17 @@ import Moyenne from './Moyenne';
 import Offering from './Offering';
 import Channel from './Channel';
 import Message from './Message';
+import AuthenticationApi from './AuthenticationApi';
 
-const typeDefs = [User, Avis, Moyenne, Offering, Channel, Message];
+const typeDefs = [
+  User,
+  Avis,
+  Moyenne,
+  Offering,
+  Channel,
+  Message,
+  AuthenticationApi
+];
 
 // NOTE: 2nd param is optional, and defaults to false
 // Only use if you have defined the same type multiple times in
