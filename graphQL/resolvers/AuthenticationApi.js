@@ -8,9 +8,9 @@ export default {
     },
     twoWFA_step_two: async (_, { id, token }, __) => {
       const { status, errors } = await authentication_step_two(id, token);
-      if (errors) return false;
-      if (status !== 'verified') return false;
-      return true;
+      if (errors) return { success: false };
+      if (status !== 'verified') return { success: false };
+      return { success: true };
     }
   }
 };
