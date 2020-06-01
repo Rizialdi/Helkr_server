@@ -1,13 +1,13 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
 
-generator client {
-  provider = "prisma-client-js"
-}
-
-model User {
+model utilisateur {
   id                 String     @default(cuid()) @id
   nom                String
   avatar             String?
@@ -20,64 +20,65 @@ model User {
   numero             String     @unique
   createdAt          DateTime   @default(now())
   updatedAt          DateTime   @updatedAt
-  channels           Channel[]
-  offerings          Offering[] @relation("Offering")
-  completedofferings Offering[] @relation("CompletedOffering")
-  avisreceived       Avis[]     @relation("AvisReceived")
-  avisgave           Avis[]     @relation("AvisGave")
-  messages           Message[]
-  moyenne            Moyenne?
+  channels           channel[]
+  offerings          offering[] @relation("offering")
+  completedofferings offering[] @relation("completedoffering")
+  avisreceived       avis[]     @relation("avisreceived")
+  avisgave           avis[]     @relation("avisgave")
+  messages           message[]
+  moyenne            moyenne?
 }
 
-model Offering {
-  id            String   @default(cuid()) @id
+model offering {
+  id            String       @default(cuid()) @id
   type          String
   category      String
   description   String
-  authorId      String   @map("author")
-  author        User     @relation("Offering", fields: [authorId], references: [id])
-  createdAt     DateTime @default(now())
-  updatedAt     DateTime @updatedAt
-  completed     Boolean  @default(false)
-  completedById String?  @map("completedBy")
-  completedBy   User?    @relation("CompletedOffering", fields: [completedById], references: [id])
-  avis          Avis[]
+  details       Json
+  authorId      String       @map("author")
+  author        utilisateur  @relation("offering", fields: [authorId], references: [id])
+  createdAt     DateTime     @default(now())
+  updatedAt     DateTime     @updatedAt
+  completed     Boolean      @default(false)
+  completedById String?      @map("completedBy")
+  completedBy   utilisateur? @relation("completedoffering", fields: [completedById], references: [id])
+  avis          avis[]
 }
 
-model Avis {
-  id         String   @default(cuid()) @id
+model avis {
+  id         String      @default(cuid()) @id
   score      Int
   comment    String
-  offeringId String   @map("offering")
-  offering   Offering @relation(fields: [offeringId], references: [id])
-  scorerId   String   @map("scorer")
-  scorer     User     @relation("AvisGave", fields: [scorerId], references: [id])
-  scoredId   String   @map("scored")
-  scored     User     @relation("AvisReceived", fields: [scoredId], references: [id])
-  createdAt  DateTime @default(now())
+  offeringId String      @map("offering")
+  offering   offering    @relation(fields: [offeringId], references: [id])
+  scorerId   String      @map("scorer")
+  scorer     utilisateur @relation("avisgave", fields: [scorerId], references: [id])
+  scoredId   String      @map("scored")
+  scored     utilisateur @relation("avisreceived", fields: [scoredId], references: [id])
+  createdAt  DateTime    @default(now())
 }
 
-model Channel {
-  id        String    @default(cuid()) @id
-  users     User[]    @relation(references: [id])
-  messages  Message[]
-  createdAt DateTime  @default(now())
+model channel {
+  id        String        @default(cuid()) @id
+  users     utilisateur[] @relation(references: [id])
+  messages  message[]
+  createdAt DateTime      @default(now())
 }
 
-model Message {
-  id        String   @default(cuid()) @id
+model message {
+  id        String       @default(cuid()) @id
   text      String
-  sentById  String?  @map("sentBy")
-  sentBy    User?    @relation(fields: [sentById], references: [id])
-  channelId String?  @map("channel")
-  channel   Channel? @relation(fields: [channelId], references: [id])
-  createdAt DateTime @default(now())
+  sentById  String?      @map("sentBy")
+  sentBy    utilisateur? @relation(fields: [sentById], references: [id])
+  channelId String?      @map("channel")
+  channel   channel?     @relation(fields: [channelId], references: [id])
+  createdAt DateTime     @default(now())
 }
 
-model Moyenne {
-  id          String @default(cuid()) @id
-  userId      String @map("user")
-  user        User   @relation(fields: [userId], references: [id])
+model moyenne {
+  id          String      @default(cuid()) @id
+  userId      String      @map("utilisateur")
+  utilisateur utilisateur @relation(fields: [userId], references: [id])
   moyenne     Float
   realMoyenne Float
 }

@@ -72,13 +72,13 @@ export default {
   },
   Avis: {
     scorer: async (parent, __, { prisma }) => {
-      const scorer = await prisma.user.findMany({
+      const scorer = await prisma.utilisateur.findMany({
         where: { avisgave: { some: { id: parent.id } } }
       });
       return scorer[0];
     },
     scored: async (parent, __, { prisma }) => {
-      const scored = await prisma.user.findMany({
+      const scored = await prisma.utilisateur.findMany({
         where: { avisreceived: { some: { id: parent.id } } }
       });
       return scored[0];

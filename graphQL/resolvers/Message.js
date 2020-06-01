@@ -116,7 +116,7 @@ export default {
       return channel[0];
     },
     sentBy: async (parent, __, { prisma }) => {
-      const sentBy = await prisma.user.findMany({
+      const sentBy = await prisma.utilisateur.findMany({
         where: { messages: { some: { id: parent.id } } }
       });
       return sentBy[0];

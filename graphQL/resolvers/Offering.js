@@ -3,7 +3,7 @@ import { getUserId } from '../../utils';
 export default {
   Query: {
     offeringsUser: async (_, { numero }, context, __) => {
-      const offerings = await context.prisma.user
+      const offerings = await context.prisma.utilisateur
         .findOne({ where: { numero } })
         .offerings();
       return offerings;
@@ -83,13 +83,13 @@ export default {
 
   Offering: {
     author: async (parent, __, { prisma }) => {
-      const author = await prisma.user.findMany({
+      const author = await prisma.utilisateur.findMany({
         where: { offerings: { some: { id: parent.id } } }
       });
       return author[0];
     },
     completedBy: async (parent, __, { prisma }) => {
-      const completedBy = await prisma.user.findMany({
+      const completedBy = await prisma.utilisateur.findMany({
         where: { completedofferings: { some: { id: parent.id } } }
       });
       return completedBy[0];

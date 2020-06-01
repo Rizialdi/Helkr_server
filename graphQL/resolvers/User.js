@@ -6,7 +6,9 @@ export default {
     // TODO sanitization on provided id
     user: async (_, { numero }, context) => {
       try {
-        const user = await context.prisma.user.findOne({ where: { numero } });
+        const user = await context.prisma.utilisateur.findOne({
+          where: { numero }
+        });
         return user;
       } catch (error) {
         throw new Error('Utilisateur non existant', error);
@@ -14,7 +16,9 @@ export default {
     },
     userById: async (_, { id }, context) => {
       try {
-        const user = await context.prisma.user.findOne({ where: { id } });
+        const user = await context.prisma.utilisateur.findOne({
+          where: { id }
+        });
         if (!user) {
           throw new Error('Utilisateur non existant');
         }
@@ -26,7 +30,9 @@ export default {
     },
     getUserInfo: async (_, { numero }, context) => {
       try {
-        const user = await context.prisma.user.findOne({ where: { numero } });
+        const user = await context.prisma.utilisateur.findOne({
+          where: { numero }
+        });
         if (!user) {
           throw new Error('Utilisateur non existant');
         }
@@ -45,7 +51,7 @@ export default {
     // TODO projection efficiently get the field asked for
     // TODO implement pagination
     users: async (_, __, context) => {
-      return context.prisma.user.findMany();
+      return context.prisma.utilisateur.findMany();
     },
     getUserStats: async (_, { id }, context) => {
       const prop = await context.prisma.offering.findMany({
@@ -70,7 +76,7 @@ export default {
   }, // TODO Update a User by adding an avatar
   Mutation: {
     registerUser: async (_, { nom, prenom, numero }, context) => {
-      const user = await context.prisma.user.create({
+      const user = await context.prisma.utilisateur.create({
         data: { nom, prenom, numero }
       });
       const token = jwt.sign({ userId: user.id }, APP_SECRET_CODE);
@@ -85,7 +91,7 @@ export default {
 
       try {
         const avatar = await context.processUpload(file);
-        const user = await context.prisma.user.update({
+        const user = await context.prisma.utilisateur.update({
           where: { id: userId },
           data: { avatar }
         });
@@ -99,7 +105,7 @@ export default {
       const userId = getUserId(context);
 
       try {
-        const user = await context.prisma.user.update({
+        const user = await context.prisma.utilisateur.update({
           where: { id: userId },
           data: { description: text }
         });
@@ -113,7 +119,7 @@ export default {
       const userId = getUserId(context);
 
       try {
-        const user = await context.prisma.user.update({
+        const user = await context.prisma.utilisateur.update({
           where: { id: userId },
           data: { address: text }
         });
@@ -127,7 +133,7 @@ export default {
       const userId = getUserId(context);
 
       try {
-        const user = await context.prisma.user.update({
+        const user = await context.prisma.utilisateur.update({
           where: { id: userId },
           data: { tags: { set: tags } }
         });

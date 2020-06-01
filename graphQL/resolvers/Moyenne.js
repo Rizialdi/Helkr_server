@@ -10,7 +10,7 @@ export default {
   },
   Moyenne: {
     user: async (parent, __, { prisma }) => {
-      const user = await prisma.user.findMany({
+      const user = await prisma.utilisateur.findMany({
         where: { moyenne: { some: { id: parent.id } } }
       });
       return user[0];

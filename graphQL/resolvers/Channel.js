@@ -16,7 +16,7 @@ export default {
         where: { users: { some: { id: userId } } }
       });
       const channelIds = channels.map((channel) => channel.id);
-      const users = await context.prisma.user.findMany({
+      const users = await context.prisma.utilisateur.findMany({
         where: {
           AND: [
             { channels: { some: { id: { in: channelIds } } } },
@@ -72,7 +72,7 @@ export default {
       return messages;
     },
     users: async (parent, _, { prisma }) => {
-      const users = await prisma.user.findMany({
+      const users = await prisma.utilisateur.findMany({
         where: { channels: { some: { id: parent.id } } }
       });
       return users;
