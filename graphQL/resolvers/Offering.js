@@ -14,7 +14,11 @@ export default {
     }
   },
   Mutation: {
-    addOffering: async (_, { type, category, description }, context) => {
+    addOffering: async (
+      _,
+      { type, category, description, details },
+      context
+    ) => {
       const userId = getUserId(context);
       try {
         const offering = await context.prisma.offering.create({
@@ -22,6 +26,7 @@ export default {
             type,
             category,
             description,
+            details,
             author: { connect: { id: userId } }
           }
         });

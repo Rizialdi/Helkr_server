@@ -9,6 +9,9 @@ export default {
         const user = await context.prisma.utilisateur.findOne({
           where: { numero }
         });
+        if (!user) {
+          throw new Error('Utilisateur non existant');
+        }
         return user;
       } catch (error) {
         throw new Error('Utilisateur non existant', error);

@@ -10,6 +10,7 @@ export default gql`
       type: String!
       category: String!
       description: String!
+      details: String!
     ): Boolean!
     deleteOffering(id: String!): Boolean!
     updateOffering(id: String!, description: String!): Boolean!
