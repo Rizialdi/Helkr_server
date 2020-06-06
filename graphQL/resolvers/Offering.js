@@ -19,6 +19,7 @@ export default {
       { type, category, description, details },
       context
     ) => {
+      console.log('IN the appple');
       const userId = getUserId(context);
       try {
         const offering = await context.prisma.offering.create({
@@ -52,6 +53,9 @@ export default {
     deleteOffering: async (_, { id }, context) => {
       const userId = getUserId(context);
       try {
+        const { authorId } = await context.prisma.findOne({ where: { id } });
+        if (userId != authorId) return false;
+
         const suppressed = await context.prisma.offering.delete({
           where: { id }
         });

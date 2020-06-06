@@ -21,6 +21,7 @@ export default gql`
     type: String!
     author: User!
     completedBy: User
+    details: String!
     category: String!
     completed: Boolean
     description: String!
