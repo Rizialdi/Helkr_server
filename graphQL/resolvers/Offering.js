@@ -14,11 +14,27 @@ export default {
       const offerings = await context.prisma.offering.findMany();
       return offerings;
     },
-    incompleteOfferings: async (_, __, context) => {
+    incompleteOfferings: async (_, { filters }, context) => {
+      const where = filters
+        ? {
+            AND: [
+              {
+                completed: { equals: false }
+              },
+              {
+                type: {
+                  in: filters
+                }
+              }
+            ]
+          }
+        : {};
+
       const offerings = await context.prisma.offering.findMany({
-        where: { completed: false },
-        orderBy: { createdAt: 'desc' }
+        orderBy: { createdAt: 'desc' },
+        where
       });
+      if (!offerings) return null;
       return offerings;
     },
     offeringById: async (_, { id }, context) => {
