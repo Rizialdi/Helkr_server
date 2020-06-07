@@ -3,7 +3,7 @@ import gql from 'graphql-tag';
 export default gql`
   type Query {
     offerings: [Offering!]!
-    incompleteOfferings(filters: [String!]): [Offering!]!
+    incompleteOfferings(filters: [String!]): [Offering]
     offeringById(id: String!): Offering!
     offeringsUser(numero: String!): Offering!
   }

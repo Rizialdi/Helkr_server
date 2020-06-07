@@ -30,6 +30,7 @@ export default {
           }
         : {};
 
+      if (!filters) return null;
       const offerings = await context.prisma.offering.findMany({
         orderBy: { createdAt: 'desc' },
         where
