@@ -1,4 +1,6 @@
 import { getUserId } from '../../utils';
+import { PUB_NEW_OFFERING } from '../constants';
+import { withFilter } from 'graphql-yoga';
 
 export default {
   Query: {
@@ -11,6 +13,13 @@ export default {
     offerings: async (_, __, context) => {
       const offerings = await context.prisma.offering.findMany();
       return offerings;
+    },
+    incompleteOfferings: async (_, __, context) => {
+      const offerings = await context.prisma.offering.findMany({
+        where: { completed: false },
+        orderBy: { createdAt: 'desc' }
+      });
+      return offerings;
     }
   },
   Mutation: {
@@ -19,7 +28,6 @@ export default {
       { type, category, description, details },
       context
     ) => {
-      console.log('IN the appple');
       const userId = getUserId(context);
       try {
         const offering = await context.prisma.offering.create({
@@ -33,6 +41,15 @@ export default {
         });
 
         if (!offering) return false;
+        context.pubsub.publish(PUB_NEW_OFFERING, {
+          newOffering: {
+            id: offering.id,
+            type: offering.type,
+            category: offering.category,
+            description: offering.description,
+            createdAt: offering.createdAt
+          }
+        });
         return true;
       } catch (error) {
         throw new Error('creation de Offre impossible');
@@ -53,8 +70,9 @@ export default {
     deleteOffering: async (_, { id }, context) => {
       const userId = getUserId(context);
       try {
-        const { authorId } = await context.prisma.findOne({ where: { id } });
-        if (userId != authorId) return false;
+        // const offre = await context.prisma.findOne({ where: { id } });
+
+        // if (userId != offre.authorId) return false;
 
         const suppressed = await context.prisma.offering.delete({
           where: { id }
@@ -89,7 +107,15 @@ export default {
       }
     }
   },
-
+  Subscription: {
+    newOffering: {
+      subscribe: withFilter(
+        (_, __, { pubsub }) => pubsub.asyncIterator(PUB_NEW_OFFERING),
+        (payload, variables) =>
+          variables.tags.includes(payload.newOffering.type)
+      )
+    }
+  },
   Offering: {
     author: async (parent, __, { prisma }) => {
       const author = await prisma.utilisateur.findMany({
