@@ -4,6 +4,7 @@ export default gql`
   type Query {
     offerings: [Offering!]!
     incompleteOfferings: [Offering!]!
+    offeringById(id: String!): Offering!
     offeringsUser(numero: String!): Offering!
   }
   type Mutation {

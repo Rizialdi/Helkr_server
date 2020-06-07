@@ -20,6 +20,13 @@ export default {
         orderBy: { createdAt: 'desc' }
       });
       return offerings;
+    },
+    offeringById: async (_, { id }, context) => {
+      const offering = await context.prisma.offering.findOne({
+        where: { id }
+      });
+      if (!offering) return null;
+      return offering;
     }
   },
   Mutation: {
