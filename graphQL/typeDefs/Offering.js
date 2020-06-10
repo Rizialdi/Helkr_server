@@ -5,6 +5,7 @@ export default gql`
     offerings: [Offering!]!
     incompleteOfferings(filters: [String!]): [Offering]
     offeringById(id: String!): Offering!
+    isCandidateTo: [Offering!]!
     offeringsUser(numero: String!): Offering!
   }
   type Mutation {
@@ -15,6 +16,7 @@ export default gql`
       details: String!
     ): Boolean!
     deleteOffering(id: String!): Boolean!
+    candidateToOffering(id: String!): ApplyTo
     updateOffering(id: String!, description: String!): Boolean!
     completeOffering(id: String!, completedById: String!): Boolean!
   }
@@ -29,6 +31,7 @@ export default gql`
     completedBy: User
     details: String!
     category: String!
+    candidates: [User!]!
     completed: Boolean
     description: String!
     avis: [Avis!]!
@@ -39,5 +42,8 @@ export default gql`
     category: String!
     createdAt: String!
     description: String!
+  }
+  type ApplyTo {
+    success: Boolean!
   }
 `;

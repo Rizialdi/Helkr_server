@@ -2,7 +2,7 @@ import jwt from 'jsonwebtoken';
 import cloudinary from 'cloudinary';
 import fetch from 'node-fetch';
 
-require('custom-env').env('dev');
+require('custom-env').env('prod');
 
 const {
   CLOUDINARY_CLOUD_NAME,

@@ -44,6 +44,22 @@ export default {
       });
       if (!offering) return null;
       return offering;
+    },
+    isCandidateTo: async (_, __, context) => {
+      const userId = getUserId(context);
+      try {
+        const offering = await context.prisma.offering.findMany({
+          where: {}
+        });
+        console.log(offering);
+        if (!offering) return null;
+
+        return offering;
+      } catch (error) {
+        console.log(error);
+
+        throw new Error('Retrait impossible');
+      }
     }
   },
   Mutation: {
@@ -89,6 +105,29 @@ export default {
         return true;
       } catch (error) {
         throw new Error('Modification de Offre impossible');
+      }
+    },
+    // TODo add a safe-guard to prevent a creator to
+    // apply to its offer. Make it on the front-end (no apply button)
+    candidateToOffering: async (_, { id }, context) => {
+      const userId = getUserId(context);
+      try {
+        const intermediate = await context.prisma.offering.findOne({
+          where: { id }
+        });
+
+        if (userId === intermediate.authorId) return { success: false };
+
+        const offering = await context.prisma.offering.update({
+          where: { id },
+          data: { candidates: { connect: { id: userId } } }
+        });
+
+        if (!intermediate || !offering) return { success: false };
+
+        return { success: true };
+      } catch (error) {
+        throw new Error('Candidature a Offre impossible');
       }
     },
     deleteOffering: async (_, { id }, context) => {
@@ -156,6 +195,12 @@ export default {
     avis: async (parent, __, { prisma }) => {
       const avis = prisma.avis.findMany({
         where: { offering: { id: parent.id } }
+      });
+      return avis;
+    },
+    candidates: async (parent, __, { prisma }) => {
+      const avis = prisma.utilisateur.findMany({
+        where: { appliedTo: { some: { id: parent.id } } }
       });
       return avis;
     }

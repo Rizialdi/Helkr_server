@@ -183,6 +183,12 @@ export default {
         where: { scorer: { id: parent.id } }
       });
       return avis;
+    },
+    appliedTo: async (parent, __, { prisma }) => {
+      const avis = await prisma.offering.findMany({
+        where: { candidates: { some: { id: parent.id } } }
+      });
+      return avis;
     }
   }
 };

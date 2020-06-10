@@ -33,6 +33,7 @@ export default gql`
     channels: [Channel!]!
     messages: [Message!]!
     moyenne: Float
+    appliedTo: [Offering!]
   }
   type AuthPayload {
     token: String

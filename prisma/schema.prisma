@@ -27,21 +27,23 @@ model utilisateur {
   avisgave           avis[]     @relation("avisgave")
   messages           message[]
   moyenne            moyenne?
+  appliedTo          offering[] @relation("appliedoffering", references: [id])
 }
 
 model offering {
-  id            String       @default(cuid()) @id
+  id            String        @default(cuid()) @id
   type          String
   category      String
   description   String
   details       Json
-  authorId      String       @map("author")
-  author        utilisateur  @relation("offering", fields: [authorId], references: [id])
-  createdAt     DateTime     @default(now())
-  updatedAt     DateTime     @updatedAt
-  completed     Boolean      @default(false)
-  completedById String?      @map("completedBy")
-  completedBy   utilisateur? @relation("completedoffering", fields: [completedById], references: [id])
+  candidates    utilisateur[] @relation("appliedoffering", references: [id])
+  authorId      String        @map("author")
+  author        utilisateur   @relation("offering", fields: [authorId], references: [id])
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
+  completed     Boolean       @default(false)
+  completedById String?       @map("completedBy")
+  completedBy   utilisateur?  @relation("completedoffering", fields: [completedById], references: [id])
   avis          avis[]
 }
 
