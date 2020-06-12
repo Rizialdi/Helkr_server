@@ -15,6 +15,7 @@ export default {
       return offerings;
     },
     incompleteOfferings: async (_, { filters }, context) => {
+      const userId = getUserId(context);
       const where = filters
         ? {
             AND: [
@@ -25,6 +26,9 @@ export default {
                 type: {
                   in: filters
                 }
+              },
+              {
+                candidates: { every: { id: { notIn: [userId] } } }
               }
             ]
           }
@@ -51,7 +55,7 @@ export default {
         const offering = await context.prisma.offering.findMany({
           where: {}
         });
-        console.log(offering);
+
         if (!offering) return null;
 
         return offering;

@@ -8,9 +8,18 @@ import { processUpload } from './utils';
 const prisma = new PrismaClient();
 const pubsub = new PubSub();
 // const fetch = async () => {
-//   const bb = await prisma.offering.update({
-//     where: { id: 'rer' },
-//     data: { candidates: { connect: { id: '15' } } }
+//   const bb = await prisma.offering.findMany({
+//     where: {
+//       AND: [
+//         { completed: { equals: false } },
+//         { type: { in: ['Ménage', 'Réparation'] } },
+//         {
+//           candidates: {
+//             every: { id: { notIn: ['ckb9uyarc0000syp9ihqwz87c'] } }
+//           }
+//         }
+//       ]
+//     }
 //   });
 //   console.log('data', bb);
 // };
