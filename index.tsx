@@ -7,22 +7,21 @@ import { processUpload } from './utils';
 
 const prisma = new PrismaClient();
 const pubsub = new PubSub();
-// const fetch = async () => {
-//   const bb = await prisma.offering.findMany({
-//     where: {
-//       AND: [
-//         { completed: { equals: false } },
-//         { type: { in: ['Ménage', 'Réparation'] } },
-//         {
-//           candidates: {
-//             every: { id: { notIn: ['ckb9uyarc0000syp9ihqwz87c'] } }
-//           }
-//         }
-//       ]
-//     }
-//   });
-//   console.log('data', bb);
-// };
+const fetch = async () => {
+  const bb = await prisma.offering.findMany({
+    where: {
+      AND: [
+        {
+          completed: { equals: false }
+        },
+        {
+          candidates: { some: { id: { in: ['ckb9uyarc0000syp9ihqwz87c'] } } }
+        }
+      ]
+    }
+  });
+  console.log('data', bb);
+};
 
 // fetch();
 const graphqlserver = new GraphQLServer({

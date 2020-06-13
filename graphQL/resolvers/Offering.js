@@ -51,18 +51,47 @@ export default {
     },
     isCandidateTo: async (_, __, context) => {
       const userId = getUserId(context);
+      const where = {
+        AND: [
+          {
+            completed: { equals: false }
+          },
+          {
+            candidates: { some: { id: { in: [userId] } } }
+          }
+        ]
+      };
+
       try {
-        const offering = await context.prisma.offering.findMany({
-          where: {}
+        const offerings = await context.prisma.offering.findMany({
+          orderBy: { createdAt: 'desc' },
+          where
         });
 
-        if (!offering) return null;
+        if (!offerings) return [];
 
-        return offering;
+        const data = offerings.map((offering) => {
+          const response = {
+            id: offering.id,
+            type: offering.type,
+            createdAt: offering.createdAt,
+            category: offering.category,
+            description: offering.description
+          };
+          if (!offering.selectedCandidate) {
+            return { ...response, status: 'waiting' };
+          }
+
+          if (offering.selectedCandidate === userId) {
+            return { ...response, status: 'accepted' };
+          } else {
+            return { ...response, status: 'rejected' };
+          }
+        });
+
+        return data;
       } catch (error) {
-        console.log(error);
-
-        throw new Error('Retrait impossible');
+        throw new Error(`Erreur fetching offering status ${error}`);
       }
     }
   },

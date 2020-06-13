@@ -5,7 +5,7 @@ export default gql`
     offerings: [Offering!]!
     incompleteOfferings(filters: [String!]): [Offering]
     offeringById(id: String!): Offering!
-    isCandidateTo: [Offering!]!
+    isCandidateTo: [AppliedStatus!]!
     offeringsUser(numero: String!): Offering!
   }
   type Mutation {
@@ -29,6 +29,7 @@ export default gql`
     author: User!
     createdAt: String!
     completedBy: User
+    selectedCandidate: User
     details: String!
     category: String!
     candidates: [User!]!
@@ -45,5 +46,13 @@ export default gql`
   }
   type ApplyTo {
     success: Boolean!
+  }
+  type AppliedStatus {
+    id: String!
+    type: String!
+    createdAt: String!
+    category: String!
+    description: String!
+    status: String!
   }
 `;
