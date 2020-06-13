@@ -1,5 +1,5 @@
 import { getUserId } from '../../utils';
-import { PUB_NEW_OFFERING } from '../constants';
+import { PUB_NEW_OFFERING, PUB_UPDATE_APPLIED_TO } from '../constants';
 import { withFilter } from 'graphql-yoga';
 
 export default {
@@ -65,7 +65,8 @@ export default {
       try {
         const offerings = await context.prisma.offering.findMany({
           orderBy: { createdAt: 'desc' },
-          where
+          where,
+          include: { selectedCandidate: true }
         });
 
         if (!offerings) return [];
@@ -78,18 +79,45 @@ export default {
             category: offering.category,
             description: offering.description
           };
+
           if (!offering.selectedCandidate) {
-            return { ...response, status: 'waiting' };
+            return { ...response, status: 'en attente' };
           }
 
-          if (offering.selectedCandidate === userId) {
-            return { ...response, status: 'accepted' };
+          if (offering.selectedCandidate.id === userId) {
+            return { ...response, status: 'acceptée' };
           } else {
-            return { ...response, status: 'rejected' };
+            return { ...response, status: 'refusée' };
           }
         });
-
         return data;
+      } catch (error) {
+        throw new Error(`Erreur fetching offering status ${error}`);
+      }
+    },
+    myIncompleteOffering: async (_, __, context) => {
+      const userId = getUserId(context);
+
+      const where = {
+        AND: [
+          { completed: { equals: false } },
+          {
+            authorId: { equals: userId }
+          },
+          { candidates: { every: { id: { equals: null } } } }
+        ]
+      };
+
+      try {
+        const offerings = await context.prisma.offering.findMany({
+          where,
+          orderBy: { createdAt: 'desc' },
+          include: { candidates: true }
+        });
+
+        if (!offerings) return [];
+
+        return offerings;
       } catch (error) {
         throw new Error(`Erreur fetching offering status ${error}`);
       }
@@ -179,6 +207,37 @@ export default {
         throw new Error('Suppresion de Offre impossible');
       }
     },
+    chooseCandidate: async (_, { id, candidateId }, context) => {
+      const userId = getUserId(context);
+      try {
+        if (userId == candidateId) return false;
+
+        const offering = await context.prisma.offering.findOne({
+          where: { id },
+          include: { selectedCandidate: true }
+        });
+
+        if (userId !== offering.authorId) return false;
+
+        if (offering.selectedCandidate) return false;
+
+        const updated = await context.prisma.offering.update({
+          where: { id },
+          data: {
+            selectedCandidate: { connect: { id: candidateId } }
+          },
+          include: { candidates: { select: { id: true } } }
+        });
+
+        context.pubsub.publish(PUB_UPDATE_APPLIED_TO, {
+          updated
+        });
+
+        return true;
+      } catch (error) {
+        throw new Error('Finition de Offre impossible');
+      }
+    },
     completeOffering: async (_, { id, completedById }, context) => {
       const userId = getUserId(context);
       try {
@@ -209,6 +268,35 @@ export default {
         (_, __, { pubsub }) => pubsub.asyncIterator(PUB_NEW_OFFERING),
         (payload, variables) =>
           variables.tags.includes(payload.newOffering.type)
+      )
+    },
+    updateAppliedTo: {
+      resolve: ({ updated }, { userId }, context, info) => {
+        let status = '';
+
+        if (!updated) return { id: '', status };
+
+        if (!updated.selectedCandidate) {
+          status = 'en attente';
+        }
+
+        if (updated.selectedCandidateId === userId) {
+          status = 'acceptée';
+        } else {
+          status = 'refusée';
+        }
+
+        return { id: updated.id, status };
+      },
+      subscribe: withFilter(
+        (_, __, { pubsub }) => pubsub.asyncIterator(PUB_UPDATE_APPLIED_TO),
+        ({ updated }, { userId }) => {
+          const candidates = [];
+          updated.candidates.map((candidate) => {
+            candidates.push(candidate.id);
+          });
+          return candidates.includes(userId);
+        }
       )
     }
   },

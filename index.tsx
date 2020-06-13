@@ -11,19 +11,19 @@ const fetch = async () => {
   const bb = await prisma.offering.findMany({
     where: {
       AND: [
+        { completed: { equals: false } },
         {
-          completed: { equals: false }
+          authorId: { equals: 'ckb9svn8p00000ip99ubjoc01' }
         },
-        {
-          candidates: { some: { id: { in: ['ckb9uyarc0000syp9ihqwz87c'] } } }
-        }
+        { candidates: { every: { id: { equals: null } } } }
       ]
-    }
+    },
+    include: { candidates: true }
   });
   console.log('data', bb);
 };
 
-// fetch();
+//fetch();
 const graphqlserver = new GraphQLServer({
   typeDefs,
   resolvers,
