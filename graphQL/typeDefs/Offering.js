@@ -7,6 +7,7 @@ export default gql`
     offeringById(id: String!): Offering!
     isCandidateTo: [AppliedStatus!]!
     myIncompleteOffering: [Offering!]!
+    myIncompleteOfferingCandidates: [AppliedStatus!]!
     offeringsUser(numero: String!): Offering!
   }
   type Mutation {

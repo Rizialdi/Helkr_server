@@ -11,11 +11,10 @@ const fetch = async () => {
   const bb = await prisma.offering.findMany({
     where: {
       AND: [
-        { completed: { equals: false } },
         {
           authorId: { equals: 'ckb9svn8p00000ip99ubjoc01' }
         },
-        { candidates: { every: { id: { equals: null } } } }
+        { candidates: { some: { NOT: { id: null } } } }
       ]
     },
     include: { candidates: true }

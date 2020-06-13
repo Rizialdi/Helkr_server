@@ -18,20 +18,20 @@ export default {
       const userId = getUserId(context);
       const where = filters
         ? {
-            AND: [
-              {
-                completed: { equals: false }
-              },
-              {
-                type: {
-                  in: filters
-                }
-              },
-              {
-                candidates: { every: { id: { notIn: [userId] } } }
+          AND: [
+            {
+              completed: { equals: false }
+            },
+            {
+              type: {
+                in: filters
               }
-            ]
-          }
+            },
+            {
+              candidates: { every: { id: { notIn: [userId] } } }
+            }
+          ]
+        }
         : {};
 
       if (!filters) return null;
@@ -118,6 +118,50 @@ export default {
         if (!offerings) return [];
 
         return offerings;
+      } catch (error) {
+        throw new Error(`Erreur fetching offering status ${error}`);
+      }
+    },
+    myIncompleteOfferingCandidates: async (_, __, context) => {
+      const userId = getUserId(context);
+
+      const where = {
+        AND: [
+          {
+            authorId: { equals: userId }
+          },
+          { candidates: { some: { NOT: { id: null } } } }
+        ]
+      };
+
+      try {
+        const offerings = await context.prisma.offering.findMany({
+          where,
+          orderBy: { createdAt: 'desc' },
+          include: { candidates: true }
+        });
+
+        if (!offerings) return [];
+
+        const data = offerings.map((offering) => {
+          const response = {
+            id: offering.id,
+            type: offering.type,
+            createdAt: offering.createdAt,
+            category: offering.category,
+            description: offering.description
+          };
+
+          if (!offering.selectedCandidate) {
+            return { ...response, status: 'en attente' };
+          }
+
+          if (offering.selectedCandidate) {
+            return { ...response, status: 'confirmée' };
+          }
+        });
+
+        return data;
       } catch (error) {
         throw new Error(`Erreur fetching offering status ${error}`);
       }
