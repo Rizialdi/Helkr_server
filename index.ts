@@ -8,7 +8,7 @@ import { processUpload } from './utils';
 const prisma = new PrismaClient();
 const pubsub = new PubSub();
 const fetch = async () => {
-  const bb = await prisma.offering.findMany({
+  const data = await prisma.offering.findMany({
     where: {
       AND: [
         {
@@ -19,14 +19,14 @@ const fetch = async () => {
     },
     include: { candidates: true }
   });
-  console.log('data', bb);
+  console.log('data', data);
 };
 
 //fetch();
 const graphqlserver = new GraphQLServer({
   typeDefs,
   resolvers,
-  context: (request) => ({
+  context: request => ({
     ...request,
     prisma,
     pubsub,

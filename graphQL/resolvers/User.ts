@@ -14,7 +14,7 @@ export default {
         }
         return user;
       } catch (error) {
-        throw new Error('Utilisateur non existant', error);
+        throw new Error(`Utilisateur non existant ${error}`);
       }
     },
     userById: async (_, { id }, context) => {
@@ -28,7 +28,7 @@ export default {
 
         return user;
       } catch (error) {
-        throw new Error('Utilisateur non existant', error);
+        throw new Error(`Utilisateur non existant ${error}`);
       }
     },
     getUserInfo: async (_, { numero }, context) => {
@@ -47,7 +47,7 @@ export default {
           user
         };
       } catch (error) {
-        throw new Error('Utilisateur non existant', error);
+        throw new Error(`Utilisateur non existant ${error}`);
       }
     },
     // TODO check that the user is authenticated for seeing users list
