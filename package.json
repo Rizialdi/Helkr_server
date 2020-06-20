@@ -10,7 +10,7 @@
   "scripts": {
     "start": "NODE_ENV=dev nodemon -r esm",
     "build": "npm -s run clean && npm -s run generate && tsc",
-    "format": "prettier \"**/*.{ts}\" --write",
+    "format": "prettier \"**/**/*.{ts}\" --write",
     "generate": "npm -s run generate:prisma",
     "generate:prisma": "prisma generate",
     "postinstall": "npm -s run generate",
@@ -34,6 +34,7 @@
   },
   "devDependencies": {
     "@prisma/cli": "2.0.0-beta.4",
+    "@types/graphql": "^14.5.0",
     "@types/typescript": "^2.0.0",
     "nodemon": "^2.0.4",
     "prettier": "^2.0.5",
