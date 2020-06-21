@@ -1,4 +1,0 @@
-export const PUB_NEW_MESSAGE = 'PUB_NEW_MESSAGE';
-export const PUB_NEW_AVIS = 'PUB_NEW_AVIS';
-export const PUB_NEW_OFFERING = 'PUB_NEW_OFFERING';
-export const PUB_UPDATE_APPLIED_TO = 'PUB_UPDATE_APPLIED_TO';

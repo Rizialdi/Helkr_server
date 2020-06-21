@@ -9,8 +9,22 @@
     // "strictPropertyInitialization": false,
     "esModuleInterop": true,
     "experimentalDecorators": true,
-    "emitDecoratorMetadata": true
+    "emitDecoratorMetadata": true,
+    "rootDir": ".",
+    "typeRoots": ["node_modules/@types",
+      "types"],
+    "plugins": [
+      {
+        "name": "nexus/typescript-language-service"
+      }
+    ]
   },
+  "include": [
+    "types.d.ts",
+    "**/*.ts",
+    "**/*.tsx",
+    "."
+  ],
   "exclude": [
     "./tests/"
   ]
