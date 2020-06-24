@@ -1,18 +1,98 @@
-import { objectType } from '@nexus/schema';
+import { objectType, extendType, stringArg } from '@nexus/schema';
+import { getUserId } from '../../utils';
 
 exports.Channel = objectType({
-  name: 'Channel',
+  name: 'channel',
   definition(t) {
-    t.string('id'),
-      t.list.field('messages', {
-        type: 'Message',
-        nullable: false,
-        description: 'Messages belonging to a specific channel'
-      });
-    t.list.field('users', {
-      type: 'User',
-      nullable: false,
-      description: 'Users contributing in a specific channel'
+    t.model.id();
+    t.model.createdAt();
+    t.model.messages({
+      type: 'message',
+      resolve: (parent, __, { prisma }) => {
+        return prisma.message.findMany({
+          orderBy: { createdAt: 'desc' },
+          where: { channelId: parent.id }
+        });
+      }
     });
+    t.model.users({
+      type: 'utilisateur',
+      resolve: (parent, __, { prisma }) => {
+        return prisma.utilisateur.findMany({
+          where: { channels: { some: { id: parent.id } } }
+        });
+      }
+    });
+  }
+});
+
+exports.QueryChannel = extendType({
+  type: 'Query',
+  definition(t) {
+    t.field('channel', {
+      type: 'channel',
+      args: { id: stringArg({ required: true }) },
+      resolve: async (_, { id }, { prisma }) => {
+        return prisma.channel.findOne({ where: { id } });
+      }
+    });
+    t.list.field('channels', {
+      type: 'channel',
+      resolve: async (_, __, { prisma }) => {
+        const channels = await prisma.channel.findMany();
+        return channels;
+      }
+    });
+    //TODO to define according to your messages
+    // t.field('recipientChannels', {
+    //   type: 'channel',
+    //   args: { id: stringArg({ required: true }) },
+    //   resolve: async (_, { id }, { prisma }) => {
+    //     const channel = await prisma.channel.findOne({ where: { id } });
+    //     if (!channel) return new Error('Chaine inexistante');
+    //     return channel;
+    //   }
+    // });
+  }
+});
+
+exports.MutationChannel = extendType({
+  type: 'Mutation',
+  definition(t) {
+    t.field('createChannel', {
+      type: 'createChannel',
+      args: { recipient: stringArg({ required: true }) },
+      resolve: async (_, { recipient }, ctx) => {
+        try {
+          const sentBy = getUserId(ctx);
+          if (sentBy === recipient)
+            throw new Error('Creation chaine impossible');
+          const channel = await ctx.prisma.channel.create({
+            data: { users: { connect: [{ id: recipient }, { id: sentBy }] } }
+          });
+
+          if (!channel) {
+            return {
+              success: false,
+              channel
+            };
+          }
+          return {
+            success: true,
+            channel
+          };
+        } catch (error) {
+          throw new Error('La creation de chaine a echoue');
+        }
+      }
+    });
+  }
+});
+
+exports.CreateChannel = objectType({
+  name: 'createChannel',
+  definition(t) {
+    t.boolean('success', { nullable: false });
+    t.field('channel', { type: 'channel', nullable: false });
   }
 });

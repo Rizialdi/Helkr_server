@@ -1,15 +1,11 @@
-import { objectType } from '@nexus/schema';
+import { objectType, extendType, stringArg } from '@nexus/schema';
 
 exports.Moyenne = objectType({
-  name: 'Moyenne',
+  name: 'moyenne',
   definition(t) {
-    t.string('id'),
-      t.field('user', {
-        type: 'User',
-        nullable: false,
-        description: 'mark of a specific user in the platform'
-      });
-    t.float('moyenne');
-    t.float('realMoyenne');
+    t.model.id();
+    t.model.userId();
+    t.model.moyenne();
+    t.model.utilisateur();
   }
 });

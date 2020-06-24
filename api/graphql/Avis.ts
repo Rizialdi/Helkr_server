@@ -1,85 +1,66 @@
 import { PUB_NEW_AVIS } from './constants';
-import { objectType, extendType } from '@nexus/schema';
+import {
+  objectType,
+  extendType,
+  stringArg,
+  intArg,
+  subscriptionField
+} from '@nexus/schema';
 import { getUserId } from '../../utils';
-import { type } from 'os';
+import { withFilter } from 'graphql-yoga';
 
 exports.Avis = objectType({
-  name: 'Avis',
+  name: 'avis',
   definition(t) {
-    t.string('id');
-    t.int('score', { nullable: true });
-    t.field('scorer', {
-      type: 'User',
-      nullable: false,
-      description: 'The author of an offering'
-    });
-    t.field('scored', {
-      type: 'User',
-      nullable: false,
-      description: 'The user who completed an offering'
-    });
-    t.string('comment', {
-      nullable: false,
-      description: 'Sentence describing how the service was'
-    });
-    t.string('createdAt');
-    t.field('offering', {
-      type: 'Offering',
-      nullable: false,
-      description: 'Offering whose a mark is attributed'
-    });
+    t.model.id();
+    t.model.comment();
+    t.model.createdAt({ alias: 'date' });
+    t.model.scorer();
+    t.model.scored();
+    t.model.offering();
   }
 });
 
-exports.Query = extendType({
+exports.QueryAvis = extendType({
   type: 'Query',
   definition(t) {
-    t.list.field('getAvis', {
-      type: 'Avis',
-      resolve: async (_, __, ctx) => {
-        const avis = await ctx.db.avis.findMany();
-        if (!avis) return new Error('Aucun avis associe');
-        return avis;
-      }
-    });
     t.list.field('getAvisUser', {
-      type: 'Avis',
-      args: { userId: 'String' },
-      resolve: async (_, { userId }, ctx) => {
-        const avis = await ctx.db.avis.findMany({
+      type: 'avis',
+      args: { userId: stringArg({ required: true }) },
+      resolve: async (_, { userId }, { prisma }) => {
+        const avis = await prisma.avis.findMany({
           where: { scored: { id: userId } }
         });
-        if (!avis) return new Error('Aucun avis associe');
         return avis;
       }
     });
   }
 });
 
-exports.Mutation = extendType({
+exports.MutationAvis = extendType({
   type: 'Mutation',
   definition(t) {
     t.field('createAvis', {
       type: 'Boolean',
       args: {
-        scoredId: 'String',
-        comment: 'String',
-        score: 'Int',
-        offeringId: 'String'
+        scoredId: stringArg({ required: true }),
+        comment: stringArg({ required: true }),
+        score: intArg({ required: true }),
+        offeringId: stringArg({ required: true })
       },
       resolve: async (_, { scoredId, comment, score, offeringId }, ctx) => {
         try {
           const scorerId = getUserId(ctx);
           if (scorerId == scoredId) return false;
 
-          const offering = await ctx.db.offering.findOne({
+          const offering = await ctx.prisma.offering.findOne({
             where: { id: offeringId }
           });
 
-          if (scorerId !== offering.authorId) return false;
-          if (scoredId == offering.authorId) return false;
+          if (offering && scorerId !== offering.authorId) return false;
+          if (offering && scoredId == offering.authorId) return false;
 
-          const avis = await ctx.db.avis.create({
+          const avis = await ctx.prisma.avis.create({
             data: {
               score,
               comment,
@@ -90,7 +71,7 @@ exports.Mutation = extendType({
           });
           if (!avis) return false;
 
-          const updated = await ctx.db.offering.update({
+          const updated = await ctx.prisma.offering.update({
             where: { id: offeringId },
             data: {
               completed: true,
@@ -105,5 +86,19 @@ exports.Mutation = extendType({
         }
       }
     });
+  }
+});
+
+exports.SubscriptionAvis = subscriptionField('newAvis', {
+  type: 'avis',
+  args: { userId: stringArg({ required: true }) },
+  subscribe: withFilter(
+    (_, __, { pubsub }) => pubsub.asyncIterator(PUB_NEW_AVIS),
+    (payload, variables) => {
+      return payload.newAvis.scoredId === variables.userId;
+    }
+  ),
+  resolve: payload => {
+    return payload.newAvis;
   }
 });
