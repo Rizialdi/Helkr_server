@@ -56,7 +56,7 @@ const authentication_step_one = async (numero: string) => {
   const opts = {
     //TODO change this number
     recipient: NUMERO ? NUMERO : numero,
-    originator: 'Yoko App',
+    originator: 'HelpKr App',
     timeout: 60,
     template:
       'Votre code de vérification est %token. Veuillez ne pas le communiquer à une tierce entité.'

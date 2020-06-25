@@ -44,6 +44,8 @@ exports.MessagesQuery = extendType({
       args: { filters: arg({ type: 'Tags', required: true }) },
       resolve: async (_, { filters }, ctx) => {
         const userId = getUserId(ctx);
+
+        if (!filters) return [];
         const where = filters
           ? {
               AND: [
@@ -62,7 +64,6 @@ exports.MessagesQuery = extendType({
             }
           : {};
 
-        if (!filters) return null;
         const offerings = await ctx.prisma.offering.findMany({
           orderBy: { createdAt: 'desc' },
           where
@@ -75,11 +76,14 @@ exports.MessagesQuery = extendType({
       type: 'offering',
       args: { id: stringArg({ required: true }) },
       resolve: async (_, { id }, ctx) => {
-        const offering = await ctx.prisma.offering.findOne({
-          where: { id }
-        });
-        if (!offering) return null;
-        return offering;
+        try {
+          const offering = await ctx.prisma.offering.findOne({
+            where: { id }
+          });
+          return offering;
+        } catch (error) {
+          throw new Error('Impossible de trouver cette offre');
+        }
       }
     });
     t.list.field('isCandidateTo', {
@@ -198,10 +202,10 @@ exports.MessagesMutation = extendType({
   type: 'Mutation',
   definition(t) {
     t.field('addOffering', {
-      type: 'offering',
+      type: 'Boolean',
       args: {
-        type: stringArg({ nullable: true }),
-        category: stringArg({ nullable: true }),
+        type: stringArg({ required: true }),
+        category: stringArg({ required: true }),
         description: stringArg({ required: true }),
         details: stringArg({ required: true })
       },

@@ -58,7 +58,7 @@ type moyenne {
 }
 
 type Mutation {
-  addOffering(category: String, description: String!, details: String!, type: String): offering!
+  addOffering(category: String!, description: String!, details: String!, type: String!): Boolean!
   addressUpdate(text: String!): Boolean!
   avatarUpload(file: String!): Boolean!
   candidateToOffering(id: String!): Boolean!

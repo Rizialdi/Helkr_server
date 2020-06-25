@@ -123,7 +123,7 @@ export interface NexusGenFieldTypes {
     user: NexusGenRootTypes['utilisateur']; // utilisateur!
   }
   Mutation: { // field return type
-    addOffering: NexusGenRootTypes['offering']; // offering!
+    addOffering: boolean; // Boolean!
     addressUpdate: boolean; // Boolean!
     avatarUpload: boolean; // Boolean!
     candidateToOffering: boolean; // Boolean!
@@ -234,10 +234,10 @@ export interface NexusGenFieldTypes {
 export interface NexusGenArgTypes {
   Mutation: {
     addOffering: { // args
-      category?: string | null; // String
+      category: string; // String!
       description: string; // String!
       details: string; // String!
-      type?: string | null; // String
+      type: string; // String!
     }
     addressUpdate: { // args
       text: string; // String!
