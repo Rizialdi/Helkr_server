@@ -1,15 +1,8 @@
-import {
-  objectType,
-  extendType,
-  stringArg,
-  arg,
-  inputObjectType,
-  core,
-  intArg
-} from '@nexus/schema';
-import jwt, { Secret } from 'jsonwebtoken';
-import { APP_SECRET_CODE, getUserId } from '../../utils';
-import { requiredStr } from './Offering';
+import jwt, { Secret } from 'jsonwebtoken'
+import { arg, core, extendType, inputObjectType, intArg, objectType, stringArg } from '@nexus/schema'
+
+import { APP_SECRET_CODE, getUserId } from '../../utils'
+import { requiredStr } from './Offering'
 
 exports.User = objectType({
   name: 'utilisateur',
@@ -262,7 +255,7 @@ exports.MutationUser = extendType({
     t.field('tagsUpdate', {
       type: 'Boolean',
       args: {
-        tags: requiredStr({ list: true })
+        tags: requiredStr({ list: true, required: true })
       },
       resolve: async (_, { tags }, ctx) => {
         const userId = getUserId(ctx);

@@ -53,7 +53,7 @@ export interface NexusGenRootTypes {
     token: string; // String!
     user: NexusGenRootTypes['utilisateur']; // utilisateur!
   }
-  CandidiateToOfferingSuccess: { // root type
+  CandidateToOfferingSuccess: { // root type
     success: boolean; // Boolean!
   }
   Mutation: {};
@@ -135,14 +135,14 @@ export interface NexusGenFieldTypes {
     token: string; // String!
     user: NexusGenRootTypes['utilisateur']; // utilisateur!
   }
-  CandidiateToOfferingSuccess: { // field return type
+  CandidateToOfferingSuccess: { // field return type
     success: boolean; // Boolean!
   }
   Mutation: { // field return type
     addOffering: boolean; // Boolean!
     addressUpdate: boolean; // Boolean!
     avatarUpload: boolean; // Boolean!
-    candidateToOffering: NexusGenRootTypes['CandidiateToOfferingSuccess']; // CandidiateToOfferingSuccess!
+    candidateToOffering: NexusGenRootTypes['CandidateToOfferingSuccess']; // CandidateToOfferingSuccess!
     chooseCandidate: boolean; // Boolean!
     completeOffering: boolean; // Boolean!
     createAvis: boolean; // Boolean!
@@ -303,7 +303,7 @@ export interface NexusGenArgTypes {
       prenom: string; // String!
     }
     tagsUpdate: { // args
-      tags?: string[] | null; // [String!]
+      tags: string[]; // [String!]!
     }
     updateOffering: { // args
       description: string; // String!
@@ -429,7 +429,7 @@ export interface NexusGenAbstractResolveReturnTypes {
 
 export interface NexusGenInheritedFields {}
 
-export type NexusGenObjectNames = "AuthPayload" | "CandidiateToOfferingSuccess" | "Mutation" | "Query" | "Stats" | "Subscription" | "avis" | "channel" | "createChannel" | "message" | "moyenne" | "offering" | "updateAppliedToType" | "utilisateur";
+export type NexusGenObjectNames = "AuthPayload" | "CandidateToOfferingSuccess" | "Mutation" | "Query" | "Stats" | "Subscription" | "avis" | "channel" | "createChannel" | "message" | "moyenne" | "offering" | "updateAppliedToType" | "utilisateur";
 
 export type NexusGenInputNames = "avisWhereUniqueInput" | "channelWhereUniqueInput" | "messageWhereUniqueInput" | "offeringWhereUniqueInput" | "utilisateurWhereUniqueInput";
 

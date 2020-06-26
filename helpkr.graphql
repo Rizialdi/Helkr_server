@@ -21,7 +21,7 @@ input avisWhereUniqueInput {
   id: String
 }
 
-type CandidiateToOfferingSuccess {
+type CandidateToOfferingSuccess {
   success: Boolean!
 }
 
@@ -68,7 +68,7 @@ type Mutation {
   addOffering(category: String!, description: String!, details: String!, type: String!): Boolean!
   addressUpdate(text: String!): Boolean!
   avatarUpload(file: String!): Boolean!
-  candidateToOffering(id: String!): CandidiateToOfferingSuccess!
+  candidateToOffering(id: String!): CandidateToOfferingSuccess!
   chooseCandidate(candidateId: String!, id: String!): Boolean!
   completeOffering(completedById: String!, id: String!): Boolean!
   createAvis(comment: String!, offeringId: String!, score: Int!, scoredId: String!): Boolean!
@@ -77,7 +77,7 @@ type Mutation {
   deleteOffering(id: String!): Boolean!
   descriptionUpdate(text: String!): Boolean!
   registerUser(nom: String!, numero: String!, prenom: String!): AuthPayload!
-  tagsUpdate(tags: [String!]): Boolean!
+  tagsUpdate(tags: [String!]!): Boolean!
   updateOffering(description: String!, id: String!): Boolean!
 }
 

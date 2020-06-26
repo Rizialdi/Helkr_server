@@ -298,7 +298,7 @@ exports.MutationOfferings = extendType({
       }
     });
     t.field('candidateToOffering', {
-      type: 'CandidiateToOfferingSuccess',
+      type: 'CandidateToOfferingSuccess',
       args: {
         id: stringArg({ required: true })
       },
@@ -470,8 +470,8 @@ exports.updateAppliedToType = objectType({
   }
 });
 
-exports.CandidiateToOfferingSuccess = objectType({
-  name: 'CandidiateToOfferingSuccess',
+exports.CandidateToOfferingSuccess = objectType({
+  name: 'CandidateToOfferingSuccess',
   definition(t) {
     t.boolean('success');
   }
