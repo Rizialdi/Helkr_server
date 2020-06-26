@@ -14,9 +14,10 @@ exports.Avis = objectType({
   definition(t) {
     t.model.id();
     t.model.comment();
-    t.model.createdAt({ alias: 'date' });
+    t.model.createdAt();
     t.model.scorer();
     t.model.scored();
+    t.model.score();
     t.model.offering();
   }
 });

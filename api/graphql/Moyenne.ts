@@ -1,4 +1,4 @@
-import { objectType, extendType, stringArg } from '@nexus/schema';
+import { objectType } from '@nexus/schema';
 
 exports.Moyenne = objectType({
   name: 'moyenne',

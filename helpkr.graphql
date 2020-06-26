@@ -9,9 +9,10 @@ type AuthPayload {
 
 type avis {
   comment: String!
-  date: DateTime!
+  createdAt: DateTime!
   id: String!
   offering: offering!
+  score: Int!
   scored: utilisateur!
   scorer: utilisateur!
 }
@@ -42,9 +43,11 @@ type createChannel {
 
 scalar DateTime
 
+scalar JSON
+
 type message {
   channel: channel
-  date: DateTime!
+  createdAt: DateTime!
   id: String!
   sentById: String
   text: String!
@@ -70,10 +73,11 @@ type Mutation {
   completeOffering(completedById: String!, id: String!): Boolean!
   createAvis(comment: String!, offeringId: String!, score: Int!, scoredId: String!): Boolean!
   createChannel(recipient: String!): createChannel!
+  createMessage(channelId: String, recipient: String, text: String!): Boolean!
   deleteOffering(id: String!): Boolean!
   descriptionUpdate(text: String!): Boolean!
   registerUser(nom: String!, numero: String!, prenom: String!): AuthPayload!
-  tagsUpdate(tags: [String!]!): Boolean!
+  tagsUpdate(tags: [String!]): Boolean!
   updateOffering(description: String!, id: String!): Boolean!
 }
 
@@ -82,10 +86,12 @@ type offering {
   avis(after: avisWhereUniqueInput, before: avisWhereUniqueInput, first: Int, last: Int): [avis!]!
   candidates(after: utilisateurWhereUniqueInput, before: utilisateurWhereUniqueInput, first: Int, last: Int): [utilisateur!]!
   category: String!
-  date: DateTime!
+  createdAt: DateTime!
   description: String!
+  details: JSON!
   id: String!
   selectedCandidate: utilisateur
+  status: String
   type: String!
 }
 
@@ -99,10 +105,11 @@ type Query {
   getAvisUser(userId: String!): [avis!]!
   getUserInfo(numero: String!): AuthPayload!
   getUserStats(id: String!): Stats!
-  incompleteOfferings(filters: [String!]!): [offering!]!
+  incompleteOfferings(filters: [String!]): [offering!]!
   isCandidateTo: [offering!]!
+  messages: [message!]!
   myIncompleteOffering: [offering!]!
-  myIncompleteOfferingCandidates: [offering!]!
+  myIncompleteOfferingWithCandidates: [offering!]!
   offeringById(id: String!): offering!
   offeringsUser(numero: String!): [offering!]!
   userById(id: String!): utilisateur!
@@ -118,7 +125,7 @@ type Stats {
 type Subscription {
   newAvis(userId: String!): avis!
   newMessage(channelId: String!): message!
-  newOffering(tags: [String!]!): offering!
+  onOfferingAdded(tags: [String!]): offering!
   updateAppliedTo(userId: String!): updateAppliedToType!
 }
 

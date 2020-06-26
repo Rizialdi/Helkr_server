@@ -4,9 +4,17 @@
  */
 
 import * as Context from "./context"
-
-
-
+import { core } from "@nexus/schema"
+declare global {
+  interface NexusGenCustomInputMethods<TypeName extends string> {
+    json<FieldName extends string>(fieldName: FieldName, opts?: core.ScalarInputFieldConfig<core.GetGen3<"inputTypes", TypeName, FieldName>>): void // "JSON";
+  }
+}
+declare global {
+  interface NexusGenCustomOutputMethods<TypeName extends string> {
+    json<FieldName extends string>(fieldName: FieldName, ...opts: core.ScalarOutSpread<TypeName, FieldName>): void // "JSON";
+  }
+}
 declare global {
   interface NexusGenCustomOutputProperties<TypeName extends string> {
     model: NexusPrisma<TypeName, 'model'>
@@ -58,7 +66,9 @@ export interface NexusGenRootTypes {
   Subscription: {};
   avis: { // root type
     comment: string; // String!
+    createdAt: any; // DateTime!
     id: string; // String!
+    score: number; // Int!
   }
   channel: { // root type
     createdAt: any; // DateTime!
@@ -69,6 +79,7 @@ export interface NexusGenRootTypes {
     success: boolean; // Boolean!
   }
   message: { // root type
+    createdAt: any; // DateTime!
     id: string; // String!
     sentById?: string | null; // String
     text: string; // String!
@@ -80,8 +91,10 @@ export interface NexusGenRootTypes {
   }
   offering: { // root type
     category: string; // String!
+    createdAt: any; // DateTime!
     description: string; // String!
     id: string; // String!
+    status?: string | null; // String
     type: string; // String!
   }
   updateAppliedToType: { // root type
@@ -106,6 +119,7 @@ export interface NexusGenRootTypes {
   Boolean: boolean;
   ID: string;
   DateTime: any;
+  JSON: any;
 }
 
 export interface NexusGenAllTypes extends NexusGenRootTypes {
@@ -133,6 +147,7 @@ export interface NexusGenFieldTypes {
     completeOffering: boolean; // Boolean!
     createAvis: boolean; // Boolean!
     createChannel: NexusGenRootTypes['createChannel']; // createChannel!
+    createMessage: boolean; // Boolean!
     deleteOffering: boolean; // Boolean!
     descriptionUpdate: boolean; // Boolean!
     registerUser: NexusGenRootTypes['AuthPayload']; // AuthPayload!
@@ -147,8 +162,9 @@ export interface NexusGenFieldTypes {
     getUserStats: NexusGenRootTypes['Stats']; // Stats!
     incompleteOfferings: NexusGenRootTypes['offering'][]; // [offering!]!
     isCandidateTo: NexusGenRootTypes['offering'][]; // [offering!]!
+    messages: NexusGenRootTypes['message'][]; // [message!]!
     myIncompleteOffering: NexusGenRootTypes['offering'][]; // [offering!]!
-    myIncompleteOfferingCandidates: NexusGenRootTypes['offering'][]; // [offering!]!
+    myIncompleteOfferingWithCandidates: NexusGenRootTypes['offering'][]; // [offering!]!
     offeringById: NexusGenRootTypes['offering']; // offering!
     offeringsUser: NexusGenRootTypes['offering'][]; // [offering!]!
     userById: NexusGenRootTypes['utilisateur']; // utilisateur!
@@ -162,14 +178,15 @@ export interface NexusGenFieldTypes {
   Subscription: { // field return type
     newAvis: NexusGenRootTypes['avis']; // avis!
     newMessage: NexusGenRootTypes['message']; // message!
-    newOffering: NexusGenRootTypes['offering']; // offering!
+    onOfferingAdded: NexusGenRootTypes['offering']; // offering!
     updateAppliedTo: NexusGenRootTypes['updateAppliedToType']; // updateAppliedToType!
   }
   avis: { // field return type
     comment: string; // String!
-    date: any; // DateTime!
+    createdAt: any; // DateTime!
     id: string; // String!
     offering: NexusGenRootTypes['offering']; // offering!
+    score: number; // Int!
     scored: NexusGenRootTypes['utilisateur']; // utilisateur!
     scorer: NexusGenRootTypes['utilisateur']; // utilisateur!
   }
@@ -185,7 +202,7 @@ export interface NexusGenFieldTypes {
   }
   message: { // field return type
     channel: NexusGenRootTypes['channel'] | null; // channel
-    date: any; // DateTime!
+    createdAt: any; // DateTime!
     id: string; // String!
     sentById: string | null; // String
     text: string; // String!
@@ -201,10 +218,12 @@ export interface NexusGenFieldTypes {
     avis: NexusGenRootTypes['avis'][]; // [avis!]!
     candidates: NexusGenRootTypes['utilisateur'][]; // [utilisateur!]!
     category: string; // String!
-    date: any; // DateTime!
+    createdAt: any; // DateTime!
     description: string; // String!
+    details: any; // JSON!
     id: string; // String!
     selectedCandidate: NexusGenRootTypes['utilisateur'] | null; // utilisateur
+    status: string | null; // String
     type: string; // String!
   }
   updateAppliedToType: { // field return type
@@ -267,6 +286,11 @@ export interface NexusGenArgTypes {
     createChannel: { // args
       recipient: string; // String!
     }
+    createMessage: { // args
+      channelId?: string | null; // String
+      recipient?: string | null; // String
+      text: string; // String!
+    }
     deleteOffering: { // args
       id: string; // String!
     }
@@ -279,7 +303,7 @@ export interface NexusGenArgTypes {
       prenom: string; // String!
     }
     tagsUpdate: { // args
-      tags: string[]; // [String!]!
+      tags?: string[] | null; // [String!]
     }
     updateOffering: { // args
       description: string; // String!
@@ -300,7 +324,7 @@ export interface NexusGenArgTypes {
       id: string; // String!
     }
     incompleteOfferings: { // args
-      filters: string[]; // [String!]!
+      filters?: string[] | null; // [String!]
     }
     offeringById: { // args
       id: string; // String!
@@ -319,8 +343,8 @@ export interface NexusGenArgTypes {
     newMessage: { // args
       channelId: string; // String!
     }
-    newOffering: { // args
-      tags: string[]; // [String!]!
+    onOfferingAdded: { // args
+      tags?: string[] | null; // [String!]
     }
     updateAppliedTo: { // args
       userId: string; // String!
@@ -413,7 +437,7 @@ export type NexusGenEnumNames = never;
 
 export type NexusGenInterfaceNames = never;
 
-export type NexusGenScalarNames = "Boolean" | "DateTime" | "Float" | "ID" | "Int" | "String";
+export type NexusGenScalarNames = "Boolean" | "DateTime" | "Float" | "ID" | "Int" | "JSON" | "String";
 
 export type NexusGenUnionNames = never;
 

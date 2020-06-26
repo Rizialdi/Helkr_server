@@ -5,14 +5,24 @@ import {
   extendType,
   stringArg,
   subscriptionField,
-  core
+  core,
+  scalarType
 } from '@nexus/schema';
 import { getUserId } from '../../utils';
 import { utilisateur } from '@prisma/client';
+import { GraphQLJSONObject } from 'graphql-type-json';
 
 export const requiredStr = (opts: core.ScalarArgConfig<string>) => {
-  return stringArg({ ...opts, required: true });
+  return stringArg({ ...opts });
 };
+
+exports.JSONScalar = scalarType({
+  name: 'JSON',
+  asNexusMethod: 'json',
+  serialize: GraphQLJSONObject.serialize,
+  parseValue: GraphQLJSONObject.parseValue,
+  parseLiteral: GraphQLJSONObject.parseLiteral
+});
 
 exports.Offering = objectType({
   name: 'offering',
@@ -25,12 +35,28 @@ exports.Offering = objectType({
     t.model.description();
     t.model.candidates({ type: 'utilisateur' });
     t.model.selectedCandidate({ type: 'utilisateur' });
-    t.model.createdAt({ alias: 'date' });
+    t.model.createdAt();
+    t.field('details', {
+      type: 'JSON',
+      resolve: async (parent, __, ctx) => {
+        return ctx.prisma.offering.findOne({
+          where: { id: parent.id },
+          select: { details: true }
+        });
+      }
+    });
     t.model.avis();
   }
 });
 
-exports.MessagesQuery = extendType({
+exports.OfferingWithCandidates = extendType({
+  type: 'offering',
+  definition(t) {
+    t.string('status', { nullable: true });
+  }
+});
+
+exports.QueryOfferings = extendType({
   type: 'Query',
   definition(t) {
     t.list.field('offeringsUser', {
@@ -170,7 +196,7 @@ exports.MessagesQuery = extendType({
         }
       }
     });
-    t.list.field('myIncompleteOfferingCandidates', {
+    t.list.field('myIncompleteOfferingWithCandidates', {
       type: 'offering',
       resolve: async (_, __, ctx) => {
         const userId = getUserId(ctx);
@@ -193,6 +219,20 @@ exports.MessagesQuery = extendType({
 
           if (!offerings) return [];
 
+          const data = offerings.map(offering => {
+            if (!offering.selectedCandidateId) {
+              return { ...offering, status: 'en attente' };
+            }
+
+            if (offering.selectedCandidateId && !offering.completed) {
+              return { ...offering, status: 'validée' };
+            }
+
+            if (offering.selectedCandidateId && offering.completed) {
+              return { ...offering, status: 'terminée' };
+            }
+            return { ...offering, status: '' };
+          });
           return offerings;
         } catch (error) {
           throw new Error(`Erreur fetching offering status ${error}`);
@@ -202,7 +242,7 @@ exports.MessagesQuery = extendType({
   }
 });
 
-exports.MessagesMutation = extendType({
+exports.MutationOfferings = extendType({
   type: 'Mutation',
   definition(t) {
     t.field('addOffering', {
@@ -216,7 +256,7 @@ exports.MessagesMutation = extendType({
       resolve: async (_, { type, category, description, details }, ctx) => {
         const userId = getUserId(ctx);
         try {
-          const offering = await ctx.prisma.offering.create({
+          const addedOffering = await ctx.prisma.offering.create({
             data: {
               type,
               category,
@@ -226,7 +266,10 @@ exports.MessagesMutation = extendType({
             }
           });
 
-          if (!offering) return false;
+          if (!addedOffering) return false;
+          ctx.pubsub.publish(PUB_NEW_OFFERING, {
+            addedOffering
+          });
           return true;
         } catch (error) {
           throw new Error('creation de Offre impossible');
@@ -276,7 +319,7 @@ exports.MessagesMutation = extendType({
 
           if (!intermediate || !offering) return { success: false };
 
-          return { success: false };
+          return { success: true };
         } catch (error) {
           throw new Error('Candidature a Offre impossible');
         }
@@ -374,17 +417,17 @@ exports.MessagesMutation = extendType({
   }
 });
 
-exports.SubscriptionOffering = subscriptionField('newOffering', {
+exports.SubscriptionOffering = subscriptionField('onOfferingAdded', {
   type: 'offering',
   args: { tags: requiredStr({ list: true }) },
   subscribe: withFilter(
     (_, __, { pubsub }) => pubsub.asyncIterator(PUB_NEW_OFFERING),
     (payload, variables) => {
-      return variables.tags.includes(payload.newOffering);
+      return variables.tags.includes(payload.addedOffering.type);
     }
   ),
   resolve: payload => {
-    return payload.newOffering;
+    return payload.addedOffering;
   }
 });
 

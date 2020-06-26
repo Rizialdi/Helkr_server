@@ -1,8 +1,8 @@
 Arguments: 
-  /usr/local/bin/node /usr/share/yarn/bin/yarn.js add -D @types/ts-node-dev
+  /usr/local/bin/node /usr/share/yarn/bin/yarn.js add @types/graphql-type-json graph-type-json -D
 
 PATH: 
-  /home/rizialdi/.local/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin:/home/rizialdi/Android/Sdk/emulator
+  /home/rizialdi/.local/bin:/home/rizialdi/.local/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin:/home/rizialdi/Android/Sdk/emulator:/home/rizialdi/Android/Sdk/emulator
 
 Yarn version: 
   1.22.4
@@ -14,7 +14,7 @@ Platform:
   linux x64
 
 Trace: 
-  Error: https://registry.yarnpkg.com/@types%2fts-node-dev: Not found
+  Error: https://registry.yarnpkg.com/graph-type-json: Not found
       at Request.params.callback [as _callback] (/usr/share/yarn/lib/cli.js:66987:18)
       at Request.self.callback (/usr/share/yarn/lib/cli.js:140748:22)
       at Request.emit (events.js:315:20)
@@ -31,8 +31,8 @@ npm manifest:
     "name": "backend",
     "version": "1.0.0",
     "main": "api/app.ts",
-    "description": "BackEnd for react-native Yoko application",
-    "repository": "github.com/rizialdi/Yoko/backend",
+    "description": "Server for react-native HelpKr application",
+    "repository": "github.com/rizialdi/Yoko/server",
     "author": "rizialdi <rasselio.diack@gmail.com>",
     "license": "MIT",
     "private": true,

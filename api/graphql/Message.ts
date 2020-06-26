@@ -14,12 +14,12 @@ exports.Message = objectType({
     t.model.id();
     t.model.sentById();
     t.model.text();
-    t.model.createdAt({ alias: 'date' });
+    t.model.createdAt();
     t.model.channel();
   }
 });
 
-exports.MessagesQuery = extendType({
+exports.QueryMessages = extendType({
   type: 'Query',
   definition(t) {
     t.list.field('messages', {
@@ -31,7 +31,7 @@ exports.MessagesQuery = extendType({
   }
 });
 
-exports.MessagesMutation = extendType({
+exports.MutationMessages = extendType({
   type: 'Mutation',
   definition(t) {
     t.field('createMessage', {
