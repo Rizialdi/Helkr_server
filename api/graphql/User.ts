@@ -3,10 +3,13 @@ import {
   extendType,
   stringArg,
   arg,
-  inputObjectType
+  inputObjectType,
+  core,
+  intArg
 } from '@nexus/schema';
 import jwt, { Secret } from 'jsonwebtoken';
 import { APP_SECRET_CODE, getUserId } from '../../utils';
+import { requiredStr } from './Offering';
 
 exports.User = objectType({
   name: 'utilisateur',
@@ -259,8 +262,7 @@ exports.MutationUser = extendType({
     t.field('tagsUpdate', {
       type: 'Boolean',
       args: {
-        // TODO change to String[]
-        tags: arg({ type: 'String', required: true })
+        tags: requiredStr({ list: true })
       },
       resolve: async (_, { tags }, ctx) => {
         const userId = getUserId(ctx);
@@ -294,12 +296,5 @@ exports.Stats = objectType({
     t.int('done');
     t.int('proposed');
     t.float('average');
-  }
-});
-
-exports.Tags = inputObjectType({
-  name: 'Tags',
-  definition(t) {
-    t.list.string('tags');
   }
 });

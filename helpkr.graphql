@@ -20,6 +20,10 @@ input avisWhereUniqueInput {
   id: String
 }
 
+type CandidiateToOfferingSuccess {
+  success: Boolean!
+}
+
 type channel {
   createdAt: DateTime!
   id: String!
@@ -61,7 +65,7 @@ type Mutation {
   addOffering(category: String!, description: String!, details: String!, type: String!): Boolean!
   addressUpdate(text: String!): Boolean!
   avatarUpload(file: String!): Boolean!
-  candidateToOffering(id: String!): Boolean!
+  candidateToOffering(id: String!): CandidiateToOfferingSuccess!
   chooseCandidate(candidateId: String!, id: String!): Boolean!
   completeOffering(completedById: String!, id: String!): Boolean!
   createAvis(comment: String!, offeringId: String!, score: Int!, scoredId: String!): Boolean!
@@ -69,7 +73,7 @@ type Mutation {
   deleteOffering(id: String!): Boolean!
   descriptionUpdate(text: String!): Boolean!
   registerUser(nom: String!, numero: String!, prenom: String!): AuthPayload!
-  tagsUpdate(tags: String!): Boolean!
+  tagsUpdate(tags: [String!]!): Boolean!
   updateOffering(description: String!, id: String!): Boolean!
 }
 
@@ -95,7 +99,7 @@ type Query {
   getAvisUser(userId: String!): [avis!]!
   getUserInfo(numero: String!): AuthPayload!
   getUserStats(id: String!): Stats!
-  incompleteOfferings(filters: Tags!): [offering!]!
+  incompleteOfferings(filters: [String!]!): [offering!]!
   isCandidateTo: [offering!]!
   myIncompleteOffering: [offering!]!
   myIncompleteOfferingCandidates: [offering!]!
@@ -114,12 +118,8 @@ type Stats {
 type Subscription {
   newAvis(userId: String!): avis!
   newMessage(channelId: String!): message!
-  newOffering(tags: Tags): offering!
+  newOffering(tags: [String!]!): offering!
   updateAppliedTo(userId: String!): updateAppliedToType!
-}
-
-input Tags {
-  tags: [String!]
 }
 
 type updateAppliedToType {

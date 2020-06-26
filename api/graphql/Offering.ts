@@ -4,11 +4,15 @@ import {
   objectType,
   extendType,
   stringArg,
-  arg,
-  subscriptionField
+  subscriptionField,
+  core
 } from '@nexus/schema';
 import { getUserId } from '../../utils';
 import { utilisateur } from '@prisma/client';
+
+export const requiredStr = (opts: core.ScalarArgConfig<string>) => {
+  return stringArg({ ...opts, required: true });
+};
 
 exports.Offering = objectType({
   name: 'offering',
@@ -41,7 +45,7 @@ exports.MessagesQuery = extendType({
     });
     t.list.field('incompleteOfferings', {
       type: 'offering',
-      args: { filters: arg({ type: 'Tags', required: true }) },
+      args: { filters: requiredStr({ list: true }) },
       resolve: async (_, { filters }, ctx) => {
         const userId = getUserId(ctx);
 
@@ -251,7 +255,7 @@ exports.MessagesMutation = extendType({
       }
     });
     t.field('candidateToOffering', {
-      type: 'Boolean',
+      type: 'CandidiateToOfferingSuccess',
       args: {
         id: stringArg({ required: true })
       },
@@ -262,16 +266,17 @@ exports.MessagesMutation = extendType({
             where: { id }
           });
 
-          if (intermediate && userId === intermediate.authorId) return false;
+          if (intermediate && userId === intermediate.authorId)
+            return { success: false };
 
           const offering = await ctx.prisma.offering.update({
             where: { id },
             data: { candidates: { connect: { id: userId } } }
           });
 
-          if (!intermediate || !offering) return false;
+          if (!intermediate || !offering) return { success: false };
 
-          return true;
+          return { success: false };
         } catch (error) {
           throw new Error('Candidature a Offre impossible');
         }
@@ -371,7 +376,7 @@ exports.MessagesMutation = extendType({
 
 exports.SubscriptionOffering = subscriptionField('newOffering', {
   type: 'offering',
-  args: { tags: arg({ type: 'Tags' }) },
+  args: { tags: requiredStr({ list: true }) },
   subscribe: withFilter(
     (_, __, { pubsub }) => pubsub.asyncIterator(PUB_NEW_OFFERING),
     (payload, variables) => {
@@ -419,5 +424,12 @@ exports.updateAppliedToType = objectType({
   name: 'updateAppliedToType',
   definition(t) {
     t.string('id'), t.string('status');
+  }
+});
+
+exports.CandidiateToOfferingSuccess = objectType({
+  name: 'CandidiateToOfferingSuccess',
+  definition(t) {
+    t.boolean('success');
   }
 });

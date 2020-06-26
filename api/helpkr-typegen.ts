@@ -19,9 +19,6 @@ declare global {
 }
 
 export interface NexusGenInputs {
-  Tags: { // input type
-    tags?: string[] | null; // [String!]
-  }
   avisWhereUniqueInput: { // input type
     id?: string | null; // String
   }
@@ -47,6 +44,9 @@ export interface NexusGenRootTypes {
   AuthPayload: { // root type
     token: string; // String!
     user: NexusGenRootTypes['utilisateur']; // utilisateur!
+  }
+  CandidiateToOfferingSuccess: { // root type
+    success: boolean; // Boolean!
   }
   Mutation: {};
   Query: {};
@@ -109,7 +109,6 @@ export interface NexusGenRootTypes {
 }
 
 export interface NexusGenAllTypes extends NexusGenRootTypes {
-  Tags: NexusGenInputs['Tags'];
   avisWhereUniqueInput: NexusGenInputs['avisWhereUniqueInput'];
   channelWhereUniqueInput: NexusGenInputs['channelWhereUniqueInput'];
   messageWhereUniqueInput: NexusGenInputs['messageWhereUniqueInput'];
@@ -122,11 +121,14 @@ export interface NexusGenFieldTypes {
     token: string; // String!
     user: NexusGenRootTypes['utilisateur']; // utilisateur!
   }
+  CandidiateToOfferingSuccess: { // field return type
+    success: boolean; // Boolean!
+  }
   Mutation: { // field return type
     addOffering: boolean; // Boolean!
     addressUpdate: boolean; // Boolean!
     avatarUpload: boolean; // Boolean!
-    candidateToOffering: boolean; // Boolean!
+    candidateToOffering: NexusGenRootTypes['CandidiateToOfferingSuccess']; // CandidiateToOfferingSuccess!
     chooseCandidate: boolean; // Boolean!
     completeOffering: boolean; // Boolean!
     createAvis: boolean; // Boolean!
@@ -277,7 +279,7 @@ export interface NexusGenArgTypes {
       prenom: string; // String!
     }
     tagsUpdate: { // args
-      tags: string; // String!
+      tags: string[]; // [String!]!
     }
     updateOffering: { // args
       description: string; // String!
@@ -298,7 +300,7 @@ export interface NexusGenArgTypes {
       id: string; // String!
     }
     incompleteOfferings: { // args
-      filters: NexusGenInputs['Tags']; // Tags!
+      filters: string[]; // [String!]!
     }
     offeringById: { // args
       id: string; // String!
@@ -318,7 +320,7 @@ export interface NexusGenArgTypes {
       channelId: string; // String!
     }
     newOffering: { // args
-      tags?: NexusGenInputs['Tags'] | null; // Tags
+      tags: string[]; // [String!]!
     }
     updateAppliedTo: { // args
       userId: string; // String!
@@ -403,9 +405,9 @@ export interface NexusGenAbstractResolveReturnTypes {
 
 export interface NexusGenInheritedFields {}
 
-export type NexusGenObjectNames = "AuthPayload" | "Mutation" | "Query" | "Stats" | "Subscription" | "avis" | "channel" | "createChannel" | "message" | "moyenne" | "offering" | "updateAppliedToType" | "utilisateur";
+export type NexusGenObjectNames = "AuthPayload" | "CandidiateToOfferingSuccess" | "Mutation" | "Query" | "Stats" | "Subscription" | "avis" | "channel" | "createChannel" | "message" | "moyenne" | "offering" | "updateAppliedToType" | "utilisateur";
 
-export type NexusGenInputNames = "Tags" | "avisWhereUniqueInput" | "channelWhereUniqueInput" | "messageWhereUniqueInput" | "offeringWhereUniqueInput" | "utilisateurWhereUniqueInput";
+export type NexusGenInputNames = "avisWhereUniqueInput" | "channelWhereUniqueInput" | "messageWhereUniqueInput" | "offeringWhereUniqueInput" | "utilisateurWhereUniqueInput";
 
 export type NexusGenEnumNames = never;
 
