@@ -1,3 +1,4 @@
+import { PrismaClient } from '@prisma/client';
 import cors from 'cors';
 import bodyParser from 'body-parser';
 import { GraphQLServer } from 'graphql-yoga';
@@ -7,8 +8,17 @@ import { schema } from './schema';
 const playground = process.env.NODE_ENV === 'dev' ? '/' : false;
 const port = process.env.PORT || '4000';
 
-// const fetch = async () => {};
-// //fetch();
+// const prisma = new PrismaClient();
+// const fetch = async () => {
+//   const id = 'ckb9uyarc0000syp9ihqwz87c';
+//   const channels = await prisma.channel.findMany({
+//     where: { users: { some: { id } } },
+//     include: { messages: { last: 10 } }
+//   });
+//   console.log(channels);
+// };
+
+// fetch();
 
 const graphqlserver = new GraphQLServer({
   schema,

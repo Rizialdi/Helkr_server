@@ -45,7 +45,6 @@ exports.MutationMessages = extendType({
         const userId = getUserId(ctx);
         if (userId === recipient) return false;
         // if a channelId is given, aka not delete
-
         if (channelId) {
           try {
             const message = await ctx.prisma.message.create({
@@ -94,7 +93,6 @@ exports.MutationMessages = extendType({
         }
 
         // default case, create a channel and continue
-
         try {
           const channel = await ctx.prisma.channel.create({
             data: {

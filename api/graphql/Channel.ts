@@ -43,6 +43,25 @@ exports.QueryChannel = extendType({
         return channels;
       }
     });
+    t.list.field('allChatsAndMessages', {
+      type: 'channel',
+      resolve: async (_, __, ctx) => {
+        try {
+          const userId = getUserId(ctx);
+          const chatsAndMessages = await ctx.prisma.channel.findMany({
+            where: { users: { some: { id: userId } } },
+            include: {
+              messages: { last: 10, orderBy: { createdAt: 'desc' } },
+              users: true
+            }
+          });
+          if (!chatsAndMessages) return;
+          return chatsAndMessages;
+        } catch (error) {
+          throw new Error(`All chats and messages query impossible ${error}`);
+        }
+      }
+    });
     //TODO to define according to your messages
     // t.field('recipientChannels', {
     //   type: 'channel',

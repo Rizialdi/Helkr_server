@@ -155,6 +155,7 @@ export interface NexusGenFieldTypes {
     updateOffering: boolean; // Boolean!
   }
   Query: { // field return type
+    allChatsAndMessages: NexusGenRootTypes['channel'][]; // [channel!]!
     channel: NexusGenRootTypes['channel']; // channel!
     channels: NexusGenRootTypes['channel'][]; // [channel!]!
     getAvisUser: NexusGenRootTypes['avis'][]; // [avis!]!
