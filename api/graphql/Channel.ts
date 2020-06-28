@@ -1,5 +1,12 @@
-import { objectType, extendType, stringArg } from '@nexus/schema';
+import {
+  objectType,
+  extendType,
+  stringArg,
+  subscriptionField
+} from '@nexus/schema';
 import { getUserId } from '../../utils';
+import { withFilter } from 'graphql-yoga';
+import { PUB_NEW_CHANNEL } from './constants';
 
 exports.Channel = objectType({
   name: 'channel',
@@ -113,5 +120,22 @@ exports.CreateChannel = objectType({
   definition(t) {
     t.boolean('success', { nullable: false });
     t.field('channel', { type: 'channel', nullable: false });
+  }
+});
+
+exports.SubscriptionChannel = subscriptionField('newChannel', {
+  type: 'channel',
+  args: { userId: stringArg({ required: true }) },
+  subscribe: withFilter(
+    (_, __, { pubsub }) => pubsub.asyncIterator(PUB_NEW_CHANNEL),
+    (payload, variables) => {
+      let userIds: string[] = [];
+
+      payload.newChannel.users.map((item: any) => userIds.push(item.id));
+      return userIds.includes(variables.userId);
+    }
+  ),
+  resolve: payload => {
+    return payload.newChannel;
   }
 });

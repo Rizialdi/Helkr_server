@@ -47,6 +47,7 @@ scalar JSON
 
 type message {
   channel: channel
+  channelId: String
   createdAt: DateTime!
   id: String!
   sentById: String
@@ -125,7 +126,8 @@ type Stats {
 
 type Subscription {
   newAvis(userId: String!): avis!
-  newMessage(channelId: String!): message!
+  newChannel(userId: String!): channel!
+  newMessage(channelIds: [String!]!): message!
   onOfferingAdded(tags: [String!]): offering!
   updateAppliedTo(userId: String!): updateAppliedToType!
 }

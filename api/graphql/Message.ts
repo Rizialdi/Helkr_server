@@ -1,5 +1,5 @@
 import { withFilter } from 'graphql-yoga';
-import { PUB_NEW_MESSAGE } from './constants';
+import { PUB_NEW_MESSAGE, PUB_NEW_CHANNEL } from './constants';
 import {
   objectType,
   extendType,
@@ -15,6 +15,7 @@ exports.Message = objectType({
     t.model.sentById();
     t.model.text();
     t.model.createdAt();
+    t.model.channelId();
     t.model.channel();
   }
 });
@@ -55,7 +56,7 @@ exports.MutationMessages = extendType({
               }
             });
             if (!message) return false;
-            message.channelId = channelId;
+
             ctx.pubsub.publish(PUB_NEW_MESSAGE, { newMessage: message });
             return true;
           } catch (error) {
@@ -78,13 +79,13 @@ exports.MutationMessages = extendType({
             const channelId = results[0].id;
             const message = await ctx.prisma.message.create({
               data: {
-                channel: { connect: { id: channelId } },
                 text,
-                sentBy: { connect: { id: userId } }
+                sentBy: { connect: { id: userId } },
+                channel: { connect: { id: channelId } }
               }
             });
             if (!message) return false;
-            message.channelId = channelId;
+
             ctx.pubsub.publish(PUB_NEW_MESSAGE, { newMessage: message });
             return true;
           } catch (error) {
@@ -96,24 +97,33 @@ exports.MutationMessages = extendType({
         try {
           const channel = await ctx.prisma.channel.create({
             data: {
-              users: { connect: [{ id: recipient }, { id: userId }] }
+              users: { connect: [{ id: recipient }, { id: userId }] },
+              messages: {
+                create: {
+                  text,
+                  sentBy: {
+                    connect: { id: userId }
+                  }
+                }
+              }
+            },
+            include: {
+              messages: true,
+              users: {
+                select: { id: true, nom: true, prenom: true, avatar: true }
+              }
             }
           });
+
           if (!channel) {
             throw new Error(
               'La creation de la chaine de communication a echoue'
             );
           }
-          const channelId = channel.id;
-          const message = await ctx.prisma.message.create({
-            data: {
-              text,
-              sentBy: { connect: { id: userId } },
-              channel: { connect: { id: channelId } }
-            }
-          });
-          if (!message) return false;
-          ctx.pubsub.publish(PUB_NEW_MESSAGE, { newMessage: message });
+
+          if (!channel) return false;
+
+          ctx.pubsub.publish(PUB_NEW_CHANNEL, { newChannel: channel });
           return true;
         } catch (error) {
           throw new Error('La creation de Channel ou de message a echoue');
@@ -125,11 +135,11 @@ exports.MutationMessages = extendType({
 
 exports.SubscriptionMessage = subscriptionField('newMessage', {
   type: 'message',
-  args: { channelId: stringArg({ required: true }) },
+  args: { channelIds: stringArg({ required: true, list: true }) },
   subscribe: withFilter(
     (_, __, { pubsub }) => pubsub.asyncIterator(PUB_NEW_MESSAGE),
     (payload, variables) => {
-      return payload.newMessage.channelId === variables.channelId;
+      return variables.channelIds.includes(payload.newMessage.channel.id);
     }
   ),
   resolve: payload => {

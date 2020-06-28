@@ -79,6 +79,7 @@ export interface NexusGenRootTypes {
     success: boolean; // Boolean!
   }
   message: { // root type
+    channelId?: string | null; // String
     createdAt: any; // DateTime!
     id: string; // String!
     sentById?: string | null; // String
@@ -178,6 +179,7 @@ export interface NexusGenFieldTypes {
   }
   Subscription: { // field return type
     newAvis: NexusGenRootTypes['avis']; // avis!
+    newChannel: NexusGenRootTypes['channel']; // channel!
     newMessage: NexusGenRootTypes['message']; // message!
     onOfferingAdded: NexusGenRootTypes['offering']; // offering!
     updateAppliedTo: NexusGenRootTypes['updateAppliedToType']; // updateAppliedToType!
@@ -203,6 +205,7 @@ export interface NexusGenFieldTypes {
   }
   message: { // field return type
     channel: NexusGenRootTypes['channel'] | null; // channel
+    channelId: string | null; // String
     createdAt: any; // DateTime!
     id: string; // String!
     sentById: string | null; // String
@@ -341,8 +344,11 @@ export interface NexusGenArgTypes {
     newAvis: { // args
       userId: string; // String!
     }
+    newChannel: { // args
+      userId: string; // String!
+    }
     newMessage: { // args
-      channelId: string; // String!
+      channelIds: string[]; // [String!]!
     }
     onOfferingAdded: { // args
       tags?: string[] | null; // [String!]
