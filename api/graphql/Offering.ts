@@ -108,7 +108,10 @@ exports.QueryOfferings = extendType({
       resolve: async (_, { id }, ctx) => {
         try {
           const offering = await ctx.prisma.offering.findOne({
-            where: { id }
+            where: { id },
+            include: {
+              candidates: true
+            }
           });
           return offering;
         } catch (error) {
@@ -214,7 +217,9 @@ exports.QueryOfferings = extendType({
           const offerings = await ctx.prisma.offering.findMany({
             where,
             orderBy: { createdAt: 'desc' },
-            include: { candidates: true }
+            include: {
+              candidates: true
+            }
           });
 
           if (!offerings) return [];
