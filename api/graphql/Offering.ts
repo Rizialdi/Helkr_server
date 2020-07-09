@@ -359,6 +359,9 @@ exports.MutationOfferings = extendType({
       },
       resolve: async (_, { id, candidateId }, ctx) => {
         const userId = getUserId(ctx);
+        console.log('id', id);
+        console.log('candidateId', candidateId);
+        console.log('userId', userId);
         try {
           if (userId == candidateId) return false;
 
