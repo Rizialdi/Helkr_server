@@ -94,6 +94,7 @@ type offering {
   selectedCandidate: utilisateur
   status: String
   type: String!
+  updatedAt: DateTime!
 }
 
 input offeringWhereUniqueInput {

@@ -36,6 +36,7 @@ exports.Offering = objectType({
     t.model.candidates({ type: 'utilisateur' });
     t.model.selectedCandidate({ type: 'utilisateur' });
     t.model.createdAt();
+    t.model.updatedAt();
     t.field('details', {
       type: 'JSON',
       resolve: async (parent, __, ctx) => {
@@ -149,6 +150,7 @@ exports.QueryOfferings = extendType({
               id: offering.id,
               type: offering.type,
               createdAt: offering.createdAt,
+              updatedAt: offering.updatedAt,
               category: offering.category,
               description: offering.description
             };
@@ -359,9 +361,6 @@ exports.MutationOfferings = extendType({
       },
       resolve: async (_, { id, candidateId }, ctx) => {
         const userId = getUserId(ctx);
-        console.log('id', id);
-        console.log('candidateId', candidateId);
-        console.log('userId', userId);
         try {
           if (userId == candidateId) return false;
 

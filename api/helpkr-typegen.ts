@@ -97,6 +97,7 @@ export interface NexusGenRootTypes {
     id: string; // String!
     status?: string | null; // String
     type: string; // String!
+    updatedAt: any; // DateTime!
   }
   updateAppliedToType: { // root type
     id: string; // String!
@@ -229,6 +230,7 @@ export interface NexusGenFieldTypes {
     selectedCandidate: NexusGenRootTypes['utilisateur'] | null; // utilisateur
     status: string | null; // String
     type: string; // String!
+    updatedAt: any; // DateTime!
   }
   updateAppliedToType: { // field return type
     id: string; // String!
