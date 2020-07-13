@@ -2,6 +2,13 @@
 ### Do not make changes to this file directly
 
 
+type authorizedcategories {
+  id: String!
+  listofauthorizedcategories: Json
+  userId: String
+  utilisateur: utilisateur
+}
+
 type AuthPayload {
   token: String!
   user: utilisateur!
@@ -43,6 +50,8 @@ type createChannel {
 
 scalar DateTime
 
+scalar Json
+
 scalar JSON
 
 type message {
@@ -66,8 +75,10 @@ type moyenne {
 }
 
 type Mutation {
-  addOffering(category: String!, description: String!, details: String!, type: String!): Boolean!
+  addAuthorizedCategories(id: String, listofauthorizedcategories: String!): Boolean!
+  addOffering(category: String!, description: String!, details: String!, referenceId: String!, type: String!): Boolean!
   addressUpdate(text: String!): Boolean!
+  addVerificationpieces(id: String, listofpieces: String!): Boolean!
   avatarUpload(file: String!): Boolean!
   candidateToOffering(id: String!): CandidateToOfferingSuccess!
   chooseCandidate(candidateId: String!, id: String!): Boolean!
@@ -91,6 +102,7 @@ type offering {
   description: String!
   details: JSON!
   id: String!
+  referenceId: String
   selectedCandidate: utilisateur
   status: String
   type: String!
@@ -105,9 +117,11 @@ type Query {
   allChatsAndMessages: [channel!]!
   channel(id: String!): channel!
   channels: [channel!]!
+  getAuthorizedCategories(id: String): authorizedcategories!
   getAvisUser(userId: String!): [avis!]!
   getUserInfo(numero: String!): AuthPayload!
   getUserStats(id: String!): Stats!
+  getVerificationPieces(id: String): verificationpieces!
   incompleteOfferings(filters: [String!]): [offering!]!
   isCandidateTo: [offering!]!
   messages: [message!]!
@@ -151,15 +165,22 @@ type utilisateur {
   moyenne: Int!
   nom: String!
   numero: String!
-  offering(after: offeringWhereUniqueInput, before: offeringWhereUniqueInput, first: Int, last: Int): [offering!]!
   offerings(after: offeringWhereUniqueInput, before: offeringWhereUniqueInput, first: Int, last: Int): [offering!]!
   prenom: String!
   professional: Boolean!
   tags: [String!]!
+  verificationpieces: verificationpieces
   verified: Boolean!
 }
 
 input utilisateurWhereUniqueInput {
   id: String
   numero: String
+}
+
+type verificationpieces {
+  id: String!
+  listofpieces: Json
+  userId: String
+  utilisateur: utilisateur
 }

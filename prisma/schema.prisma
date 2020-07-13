@@ -7,83 +7,104 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model utilisateur {
-  id                 String     @default(cuid()) @id
-  nom                String
-  avatar             String?
-  professional       Boolean    @default(false)
-  verified           Boolean    @default(false)
-  prenom             String
-  tags               String[]
-  description        String?
-  address            String?
-  numero             String     @unique
-  createdAt          DateTime   @default(now())
-  updatedAt          DateTime   @updatedAt
-  channels           channel[]
-  offerings          offering[] @relation("offering")
-  completedofferings offering[] @relation("completedoffering")
-  avisreceived       avis[]     @relation("avisreceived")
-  avisgave           avis[]     @relation("avisgave")
-  messages           message[]
-  moyenne            moyenne?
-  appliedTo          offering[] @relation("appliedoffering", references: [id])
-  offering           offering[]
-}
-
-model offering {
-  id                  String        @default(cuid()) @id
-  type                String
-  category            String
-  description         String
-  details             Json
-  candidates          utilisateur[] @relation("appliedoffering", references: [id])
-  selectedCandidateId String?       @map("selectedCandidate")
-  selectedCandidate   utilisateur?  @relation(fields: [selectedCandidateId], references: [id])
-  authorId            String        @map("author")
-  author              utilisateur   @relation("offering", fields: [authorId], references: [id])
-  createdAt           DateTime      @default(now())
-  updatedAt           DateTime      @updatedAt
-  completed           Boolean       @default(false)
-  completedById       String?       @map("completedBy")
-  completedBy         utilisateur?  @relation("completedoffering", fields: [completedById], references: [id])
-  avis                avis[]
+model authorizedcategories {
+  id                         String       @default(cuid()) @id
+  listofauthorizedcategories Json?
+  userId                     String?      @map("utilisateur") @unique
+  utilisateur                utilisateur? @relation(fields: [userId], references: [id])
 }
 
 model avis {
-  id         String      @default(cuid()) @id
-  score      Int
   comment    String
-  offeringId String      @map("offering")
-  offering   offering    @relation(fields: [offeringId], references: [id])
-  scorerId   String      @map("scorer")
-  scorer     utilisateur @relation("avisgave", fields: [scorerId], references: [id])
-  scoredId   String      @map("scored")
-  scored     utilisateur @relation("avisreceived", fields: [scoredId], references: [id])
   createdAt  DateTime    @default(now())
+  id         String      @default(cuid()) @id
+  offeringId String      @map("offering")
+  score      Int
+  scoredId   String      @map("scored")
+  scorerId   String      @map("scorer")
+  offering   offering    @relation(fields: [offeringId], references: [id])
+  scored     utilisateur @relation("avisreceived", fields: [scoredId], references: [id])
+  scorer     utilisateur @relation("avisgave", fields: [scorerId], references: [id])
 }
 
 model channel {
-  id        String        @default(cuid()) @id
-  users     utilisateur[] @relation(references: [id])
-  messages  message[]
   createdAt DateTime      @default(now())
+  id        String        @default(cuid()) @id
+  messages  message[]
+  users     utilisateur[] @relation(references: [id])
 }
 
 model message {
-  id        String       @default(cuid()) @id
-  text      String
-  sentById  String?      @map("sentBy")
-  sentBy    utilisateur? @relation(fields: [sentById], references: [id])
   channelId String?      @map("channel")
-  channel   channel?     @relation(fields: [channelId], references: [id])
   createdAt DateTime     @default(now())
+  id        String       @default(cuid()) @id
+  sentById  String?      @map("sentBy")
+  text      String
+  channel   channel?     @relation(fields: [channelId], references: [id])
+  sentBy    utilisateur? @relation(fields: [sentById], references: [id])
 }
 
 model moyenne {
   id          String      @default(cuid()) @id
-  userId      String      @map("utilisateur")
-  utilisateur utilisateur @relation(fields: [userId], references: [id])
   moyenne     Float
   realMoyenne Float
+  userId      String      @map("utilisateur")
+  utilisateur utilisateur @relation(fields: [userId], references: [id])
+}
+
+model offering {
+  authorId            String        @map("author")
+  category            String
+  completed           Boolean       @default(false)
+  completedById       String?       @map("completedBy")
+  createdAt           DateTime      @default(now())
+  description         String
+  details             Json
+  eventday            Int?
+  id                  String        @default(cuid()) @id
+  preferreddays       Int[]
+  referenceid         String?
+  selectedCandidateId String?       @map("selectedCandidate")
+  type                String
+  updatedAt           DateTime      @updatedAt
+  author              utilisateur   @relation("offering_authorToutilisateur", fields: [authorId], references: [id])
+  completedBy         utilisateur?  @relation("offering_completedByToutilisateur", fields: [completedById], references: [id])
+  selectedCandidate   utilisateur?  @relation("offering_selectedCandidateToutilisateur", fields: [selectedCandidateId], references: [id])
+  avis                avis[]
+  candidates          utilisateur[] @relation("appliedoffering", references: [id])
+}
+
+model utilisateur {
+  address              String?
+  avatar               String?
+  createdAt            DateTime              @default(now())
+  description          String?
+  id                   String                @default(cuid()) @id
+  jobauthorization     String?
+  mobilemoneyaccount   String?
+  nom                  String
+  numero               String                @unique
+  prenom               String
+  professional         Boolean               @default(false)
+  tags                 String[]
+  updatedAt            DateTime              @updatedAt
+  verified             Boolean               @default(false)
+  avisreceived         avis[]                @relation("avisreceived")
+  avisgave             avis[]                @relation("avisgave")
+  messages             message[]
+  moyenne              moyenne?
+  offerings            offering[]            @relation("offering_authorToutilisateur")
+  completedofferings   offering[]            @relation("offering_completedByToutilisateur")
+  acceptedToOffering   offering[]            @relation("offering_selectedCandidateToutilisateur")
+  appliedTo            offering[]            @relation("appliedoffering", references: [id])
+  channels             channel[]             @relation(references: [id])
+  verificationpieces   verificationpieces?
+  authorizedcategories authorizedcategories?
+}
+
+model verificationpieces {
+  id           String       @default(cuid()) @id
+  listofpieces Json?
+  userId       String?      @map("utilisateur") @unique
+  utilisateur  utilisateur? @relation(fields: [userId], references: [id])
 }

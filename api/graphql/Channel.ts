@@ -40,7 +40,12 @@ exports.QueryChannel = extendType({
       type: 'channel',
       args: { id: stringArg({ required: true }) },
       resolve: async (_, { id }, { prisma }) => {
-        return prisma.channel.findOne({ where: { id } });
+        try {
+          const channel = await prisma.channel.findMany({ where: { id } });
+          return channel[0];
+        } catch (error) {
+          throw new Error(`Channel query impossible ${error}`);
+        }
       }
     });
     t.list.field('channels', {
@@ -58,11 +63,11 @@ exports.QueryChannel = extendType({
           const chatsAndMessages = await ctx.prisma.channel.findMany({
             where: { users: { some: { id: userId } } },
             include: {
-              messages: { last: 10, orderBy: { createdAt: 'desc' } },
+              messages: { orderBy: { createdAt: 'desc' } },
               users: true
             }
           });
-          if (!chatsAndMessages) return;
+          if (!chatsAndMessages) return [];
           return chatsAndMessages;
         } catch (error) {
           throw new Error(`All chats and messages query impossible ${error}`);

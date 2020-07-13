@@ -4,3 +4,5 @@ export * from './Offering';
 export * from './Moyenne';
 export * from './Message';
 export * from './Channel';
+export * from './VerificationPiece';
+export * from './AuthorizedCategories';

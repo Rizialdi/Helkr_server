@@ -1,8 +1,16 @@
-import jwt, { Secret } from 'jsonwebtoken'
-import { arg, core, extendType, inputObjectType, intArg, objectType, stringArg } from '@nexus/schema'
+import jwt, { Secret } from 'jsonwebtoken';
+import {
+  arg,
+  core,
+  extendType,
+  inputObjectType,
+  intArg,
+  objectType,
+  stringArg
+} from '@nexus/schema';
 
-import { APP_SECRET_CODE, getUserId } from '../../utils'
-import { requiredStr } from './Offering'
+import { APP_SECRET_CODE, getUserId } from '../../utils';
+import { requiredStr } from './Offering';
 
 exports.User = objectType({
   name: 'utilisateur',
@@ -17,7 +25,7 @@ exports.User = objectType({
     t.model.description();
     t.model.professional();
     t.model.verified();
-    t.model.offering();
+    t.model.verificationpieces();
     t.model.offerings({
       type: 'offering',
       resolve: (parent, _, { prisma }) => {

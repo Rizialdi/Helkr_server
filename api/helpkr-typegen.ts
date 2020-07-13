@@ -64,6 +64,11 @@ export interface NexusGenRootTypes {
     proposed: number; // Int!
   }
   Subscription: {};
+  authorizedcategories: { // root type
+    id: string; // String!
+    listofauthorizedcategories?: any | null; // Json
+    userId?: string | null; // String
+  }
   avis: { // root type
     comment: string; // String!
     createdAt: any; // DateTime!
@@ -115,6 +120,11 @@ export interface NexusGenRootTypes {
     tags: string[]; // [String!]!
     verified: boolean; // Boolean!
   }
+  verificationpieces: { // root type
+    id: string; // String!
+    listofpieces?: any | null; // Json
+    userId?: string | null; // String
+  }
   String: string;
   Int: number;
   Float: number;
@@ -122,6 +132,7 @@ export interface NexusGenRootTypes {
   ID: string;
   DateTime: any;
   JSON: any;
+  Json: any;
 }
 
 export interface NexusGenAllTypes extends NexusGenRootTypes {
@@ -141,8 +152,10 @@ export interface NexusGenFieldTypes {
     success: boolean; // Boolean!
   }
   Mutation: { // field return type
+    addAuthorizedCategories: boolean; // Boolean!
     addOffering: boolean; // Boolean!
     addressUpdate: boolean; // Boolean!
+    addVerificationpieces: boolean; // Boolean!
     avatarUpload: boolean; // Boolean!
     candidateToOffering: NexusGenRootTypes['CandidateToOfferingSuccess']; // CandidateToOfferingSuccess!
     chooseCandidate: boolean; // Boolean!
@@ -160,9 +173,11 @@ export interface NexusGenFieldTypes {
     allChatsAndMessages: NexusGenRootTypes['channel'][]; // [channel!]!
     channel: NexusGenRootTypes['channel']; // channel!
     channels: NexusGenRootTypes['channel'][]; // [channel!]!
+    getAuthorizedCategories: NexusGenRootTypes['authorizedcategories']; // authorizedcategories!
     getAvisUser: NexusGenRootTypes['avis'][]; // [avis!]!
     getUserInfo: NexusGenRootTypes['AuthPayload']; // AuthPayload!
     getUserStats: NexusGenRootTypes['Stats']; // Stats!
+    getVerificationPieces: NexusGenRootTypes['verificationpieces']; // verificationpieces!
     incompleteOfferings: NexusGenRootTypes['offering'][]; // [offering!]!
     isCandidateTo: NexusGenRootTypes['offering'][]; // [offering!]!
     messages: NexusGenRootTypes['message'][]; // [message!]!
@@ -184,6 +199,12 @@ export interface NexusGenFieldTypes {
     newMessage: NexusGenRootTypes['message']; // message!
     onOfferingAdded: NexusGenRootTypes['offering']; // offering!
     updateAppliedTo: NexusGenRootTypes['updateAppliedToType']; // updateAppliedToType!
+  }
+  authorizedcategories: { // field return type
+    id: string; // String!
+    listofauthorizedcategories: any | null; // Json
+    userId: string | null; // String
+    utilisateur: NexusGenRootTypes['utilisateur'] | null; // utilisateur
   }
   avis: { // field return type
     comment: string; // String!
@@ -227,6 +248,7 @@ export interface NexusGenFieldTypes {
     description: string; // String!
     details: any; // JSON!
     id: string; // String!
+    referenceId: string | null; // String
     selectedCandidate: NexusGenRootTypes['utilisateur'] | null; // utilisateur
     status: string | null; // String
     type: string; // String!
@@ -249,25 +271,40 @@ export interface NexusGenFieldTypes {
     moyenne: number; // Int!
     nom: string; // String!
     numero: string; // String!
-    offering: NexusGenRootTypes['offering'][]; // [offering!]!
     offerings: NexusGenRootTypes['offering'][]; // [offering!]!
     prenom: string; // String!
     professional: boolean; // Boolean!
     tags: string[]; // [String!]!
+    verificationpieces: NexusGenRootTypes['verificationpieces'] | null; // verificationpieces
     verified: boolean; // Boolean!
+  }
+  verificationpieces: { // field return type
+    id: string; // String!
+    listofpieces: any | null; // Json
+    userId: string | null; // String
+    utilisateur: NexusGenRootTypes['utilisateur'] | null; // utilisateur
   }
 }
 
 export interface NexusGenArgTypes {
   Mutation: {
+    addAuthorizedCategories: { // args
+      id?: string | null; // String
+      listofauthorizedcategories: string; // String!
+    }
     addOffering: { // args
       category: string; // String!
       description: string; // String!
       details: string; // String!
+      referenceId: string; // String!
       type: string; // String!
     }
     addressUpdate: { // args
       text: string; // String!
+    }
+    addVerificationpieces: { // args
+      id?: string | null; // String
+      listofpieces: string; // String!
     }
     avatarUpload: { // args
       file: string; // String!
@@ -320,6 +357,9 @@ export interface NexusGenArgTypes {
     channel: { // args
       id: string; // String!
     }
+    getAuthorizedCategories: { // args
+      id?: string | null; // String
+    }
     getAvisUser: { // args
       userId: string; // String!
     }
@@ -328,6 +368,9 @@ export interface NexusGenArgTypes {
     }
     getUserStats: { // args
       id: string; // String!
+    }
+    getVerificationPieces: { // args
+      id?: string | null; // String
     }
     incompleteOfferings: { // args
       filters?: string[] | null; // [String!]
@@ -418,12 +461,6 @@ export interface NexusGenArgTypes {
       first?: number | null; // Int
       last?: number | null; // Int
     }
-    offering: { // args
-      after?: NexusGenInputs['offeringWhereUniqueInput'] | null; // offeringWhereUniqueInput
-      before?: NexusGenInputs['offeringWhereUniqueInput'] | null; // offeringWhereUniqueInput
-      first?: number | null; // Int
-      last?: number | null; // Int
-    }
     offerings: { // args
       after?: NexusGenInputs['offeringWhereUniqueInput'] | null; // offeringWhereUniqueInput
       before?: NexusGenInputs['offeringWhereUniqueInput'] | null; // offeringWhereUniqueInput
@@ -438,7 +475,7 @@ export interface NexusGenAbstractResolveReturnTypes {
 
 export interface NexusGenInheritedFields {}
 
-export type NexusGenObjectNames = "AuthPayload" | "CandidateToOfferingSuccess" | "Mutation" | "Query" | "Stats" | "Subscription" | "avis" | "channel" | "createChannel" | "message" | "moyenne" | "offering" | "updateAppliedToType" | "utilisateur";
+export type NexusGenObjectNames = "AuthPayload" | "CandidateToOfferingSuccess" | "Mutation" | "Query" | "Stats" | "Subscription" | "authorizedcategories" | "avis" | "channel" | "createChannel" | "message" | "moyenne" | "offering" | "updateAppliedToType" | "utilisateur" | "verificationpieces";
 
 export type NexusGenInputNames = "avisWhereUniqueInput" | "channelWhereUniqueInput" | "messageWhereUniqueInput" | "offeringWhereUniqueInput" | "utilisateurWhereUniqueInput";
 
@@ -446,7 +483,7 @@ export type NexusGenEnumNames = never;
 
 export type NexusGenInterfaceNames = never;
 
-export type NexusGenScalarNames = "Boolean" | "DateTime" | "Float" | "ID" | "Int" | "JSON" | "String";
+export type NexusGenScalarNames = "Boolean" | "DateTime" | "Float" | "ID" | "Int" | "JSON" | "Json" | "String";
 
 export type NexusGenUnionNames = never;
 

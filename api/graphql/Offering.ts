@@ -28,6 +28,7 @@ exports.Offering = objectType({
   name: 'offering',
   definition(t) {
     t.model.id();
+    t.model.referenceid({ alias: 'referenceId' });
     t.model.type();
     t.model.category();
     t.model.description();
@@ -108,13 +109,13 @@ exports.QueryOfferings = extendType({
       args: { id: stringArg({ required: true }) },
       resolve: async (_, { id }, ctx) => {
         try {
-          const offering = await ctx.prisma.offering.findOne({
+          const offering = await ctx.prisma.offering.findMany({
             where: { id },
             include: {
               candidates: true
             }
           });
-          return offering;
+          return offering[0];
         } catch (error) {
           throw new Error('Impossible de trouver cette offre');
         }
@@ -258,17 +259,23 @@ exports.MutationOfferings = extendType({
         type: stringArg({ required: true }),
         category: stringArg({ required: true }),
         description: stringArg({ required: true }),
-        details: stringArg({ required: true })
+        details: stringArg({ required: true }),
+        referenceId: stringArg({ required: true })
       },
-      resolve: async (_, { type, category, description, details }, ctx) => {
+      resolve: async (
+        _,
+        { type, category, description, details, referenceId },
+        ctx
+      ) => {
         const userId = getUserId(ctx);
         try {
           const addedOffering = await ctx.prisma.offering.create({
             data: {
               type,
+              details,
               category,
               description,
-              details,
+              referenceid: referenceId,
               author: { connect: { id: userId } }
             }
           });
