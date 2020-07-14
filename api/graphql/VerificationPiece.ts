@@ -1,4 +1,4 @@
-import { objectType, extendType, stringArg } from '@nexus/schema';
+import { objectType, extendType, stringArg, convertSDL } from '@nexus/schema';
 import { getUserId } from '../../utils';
 
 exports.VerificationPiece = objectType({
@@ -28,7 +28,7 @@ exports.QueryVerificationPiece = extendType({
   }
 });
 
-exports.MutationVerificationpiece = extendType({
+exports.Mutation = extendType({
   type: 'Mutation',
   definition(t) {
     t.field('addVerificationpieces', {
@@ -38,17 +38,37 @@ exports.MutationVerificationpiece = extendType({
         listofpieces: stringArg({ required: true })
       },
       resolve: async (_, { id, listofpieces }, ctx) => {
-        const userId = id ? id : getUserId(ctx);
-        const verificationPieces = await ctx.prisma.verificationpieces.upsert({
-          where: { userId },
-          create: {
-            listofpieces,
-            utilisateur: { connect: { id: userId } }
-          },
-          update: { listofpieces }
-        });
-        if (!verificationPieces) return false;
-        return true;
+        try {
+          const userId = id ? id : getUserId(ctx);
+          const parsedValues = JSON.parse(listofpieces);
+          //TODO Issue of pending promises
+          const toStore = Object.entries(parsedValues).map(
+            async ([key, value], _) => {
+              const cloudUri = await ctx.processUpload(value);
+              console.log(cloudUri);
+              return { [key]: cloudUri };
+            }
+          );
+
+          toStore && console.log(await toStore);
+
+          const toStoreStringified = await JSON.stringify(toStore);
+          toStore && console.log('toStore', await toStore);
+          const verificationPieces = await ctx.prisma.verificationpieces.upsert(
+            {
+              where: { userId },
+              create: {
+                listofpieces: toStoreStringified,
+                utilisateur: { connect: { id: userId } }
+              },
+              update: { listofpieces: toStoreStringified }
+            }
+          );
+          if (!verificationPieces) return false;
+          return true;
+        } catch (error) {
+          throw new Error(`${error}`);
+        }
       }
     });
   }
