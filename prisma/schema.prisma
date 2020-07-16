@@ -103,8 +103,12 @@ model utilisateur {
 }
 
 model verificationpieces {
-  id           String       @default(cuid()) @id
+  createdAt    DateTime    @default(now())
+  id           String      @default(cuid())
   listofpieces Json?
-  userId       String?      @map("utilisateur") @unique
-  utilisateur  utilisateur? @relation(fields: [userId], references: [id])
+  referenceid  String
+  status       String?     @default("enattente")
+  userId       String      @map("utilisateur") @unique
+  utilisateur  utilisateur @relation(fields: [userId], references: [id])
+  @@id([referenceid, userId, id])
 }

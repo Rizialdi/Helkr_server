@@ -123,7 +123,7 @@ export interface NexusGenRootTypes {
   verificationpieces: { // root type
     id: string; // String!
     listofpieces?: any | null; // Json
-    userId?: string | null; // String
+    userId: string; // String!
   }
   String: string;
   Int: number;
@@ -175,6 +175,7 @@ export interface NexusGenFieldTypes {
     channels: NexusGenRootTypes['channel'][]; // [channel!]!
     getAuthorizedCategories: NexusGenRootTypes['authorizedcategories']; // authorizedcategories!
     getAvisUser: NexusGenRootTypes['avis'][]; // [avis!]!
+    getSendVerificationPiecesReferenceIdsAndStatus: string; // String!
     getUserInfo: NexusGenRootTypes['AuthPayload']; // AuthPayload!
     getUserStats: NexusGenRootTypes['Stats']; // Stats!
     getVerificationPieces: NexusGenRootTypes['verificationpieces']; // verificationpieces!
@@ -281,8 +282,8 @@ export interface NexusGenFieldTypes {
   verificationpieces: { // field return type
     id: string; // String!
     listofpieces: any | null; // Json
-    userId: string | null; // String
-    utilisateur: NexusGenRootTypes['utilisateur'] | null; // utilisateur
+    userId: string; // String!
+    utilisateur: NexusGenRootTypes['utilisateur']; // utilisateur!
   }
 }
 
@@ -305,6 +306,7 @@ export interface NexusGenArgTypes {
     addVerificationpieces: { // args
       id?: string | null; // String
       listofpieces: string; // String!
+      referenceId: string; // String!
     }
     avatarUpload: { // args
       file: string; // String!
@@ -362,6 +364,9 @@ export interface NexusGenArgTypes {
     }
     getAvisUser: { // args
       userId: string; // String!
+    }
+    getSendVerificationPiecesReferenceIdsAndStatus: { // args
+      id?: string | null; // String
     }
     getUserInfo: { // args
       numero: string; // String!

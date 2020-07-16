@@ -24,7 +24,40 @@ exports.QueryVerificationPiece = extendType({
         );
         return verificationpieces[0];
       }
-    });
+    }),
+      t.field('getSendVerificationPiecesReferenceIdsAndStatus', {
+        type: 'String',
+        args: { id: stringArg({ nullable: true }) },
+        resolve: async (_, { id }, ctx) => {
+          const userId = id ? id : getUserId(ctx);
+          const refNstatus = await ctx.prisma.verificationpieces.findMany({
+            where: { userId },
+            select: { referenceid: true, status: true, createdAt: true }
+          });
+          const uniqueRefId = [
+            ...new Set(refNstatus.map(item => item.referenceid))
+          ];
+
+          const toReturnInt = uniqueRefId.map(refId => {
+            const listOfSameRefId = refNstatus.filter(
+              item => item.referenceid === refId
+            );
+            return listOfSameRefId.reduce((a, b) =>
+              new Date(a.createdAt) > new Date(b.createdAt) ? a : b
+            );
+          });
+
+          const toReturn = toReturnInt
+            .map(item => {
+              return {
+                [item.referenceid]: item.status
+              };
+            })
+            .reduce((a, b) => ({ ...a, ...b }));
+          if (!toReturn) return '';
+          return JSON.stringify(toReturn);
+        }
+      });
   }
 });
 
@@ -35,9 +68,10 @@ exports.Mutation = extendType({
       type: 'Boolean',
       args: {
         id: stringArg({ nullable: true }),
-        listofpieces: stringArg({ required: true })
+        listofpieces: stringArg({ required: true }),
+        referenceId: stringArg({ required: true })
       },
-      resolve: async (_, { id, listofpieces }, ctx) => {
+      resolve: async (_, { id, listofpieces, referenceId }, ctx) => {
         try {
           const userId = id ? id : getUserId(ctx);
           const parsedValues = JSON.parse(listofpieces);
@@ -59,6 +93,7 @@ exports.Mutation = extendType({
               where: { userId },
               create: {
                 listofpieces: toStoreStringified,
+                referenceid: referenceId,
                 utilisateur: { connect: { id: userId } }
               },
               update: { listofpieces: toStoreStringified }
