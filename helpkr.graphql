@@ -115,6 +115,7 @@ input offeringWhereUniqueInput {
 
 type Query {
   allChatsAndMessages: [channel!]!
+  allOfferings(filters: [String!]): [offering!]!
   channel(id: String!): channel!
   channels: [channel!]!
   getAuthorizedCategories(id: String): authorizedcategories!

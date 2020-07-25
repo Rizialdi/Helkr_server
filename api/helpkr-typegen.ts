@@ -171,6 +171,7 @@ export interface NexusGenFieldTypes {
   }
   Query: { // field return type
     allChatsAndMessages: NexusGenRootTypes['channel'][]; // [channel!]!
+    allOfferings: NexusGenRootTypes['offering'][]; // [offering!]!
     channel: NexusGenRootTypes['channel']; // channel!
     channels: NexusGenRootTypes['channel'][]; // [channel!]!
     getAuthorizedCategories: NexusGenRootTypes['authorizedcategories']; // authorizedcategories!
@@ -356,6 +357,9 @@ export interface NexusGenArgTypes {
     }
   }
   Query: {
+    allOfferings: { // args
+      filters?: string[] | null; // [String!]
+    }
     channel: { // args
       id: string; // String!
     }

@@ -71,6 +71,22 @@ exports.QueryOfferings = extendType({
         return offerings;
       }
     });
+    t.list.field('allOfferings', {
+      type: 'offering',
+      args: { filters: requiredStr({ list: true }) },
+
+      resolve: async (_, { filters }, { prisma }) => {
+        const where = filters
+          ? {
+              type: {
+                in: filters as string[]
+              }
+            }
+          : {};
+        const offerings = await prisma.offering.findMany({ where });
+        return offerings;
+      }
+    });
     t.list.field('incompleteOfferings', {
       type: 'offering',
       args: { filters: requiredStr({ list: true }) },
