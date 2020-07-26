@@ -36,21 +36,51 @@ exports.MutationAuthorizedCategories = extendType({
       type: 'Boolean',
       args: {
         id: stringArg({ nullable: true }),
-        listofauthorizedcategories: stringArg({ required: true })
+        authorizedcategory: stringArg({ required: true })
       },
-      resolve: async (_, { id, listofauthorizedcategories }, ctx) => {
+      resolve: async (_, { id, authorizedcategory }, ctx) => {
         const userId = id ? id : getUserId(ctx);
-        const authorizedcategories = await ctx.prisma.authorizedcategories.upsert(
+
+        const authorizedcategories = await ctx.prisma.authorizedcategories.findOne(
           {
             where: { userId },
-            create: {
-              listofauthorizedcategories,
-              utilisateur: { connect: { id: userId } }
-            },
-            update: { listofauthorizedcategories }
+            select: { listofauthorizedcategories: true }
           }
         );
-        if (!authorizedcategories) return false;
+        if (
+          authorizedcategories &&
+          authorizedcategories.listofauthorizedcategories
+        ) {
+          const listofauthorizedcategories = [
+            ...new Set([
+              ...JSON.parse(
+                authorizedcategories.listofauthorizedcategories as string
+              ),
+              authorizedcategory
+            ])
+          ];
+          const data = await ctx.prisma.authorizedcategories.update({
+            where: { userId },
+            data: {
+              listofauthorizedcategories: JSON.stringify(
+                listofauthorizedcategories
+              )
+            }
+          });
+
+          if (!data) return false;
+          return true;
+        }
+
+        const newAuth = await ctx.prisma.authorizedcategories.create({
+          data: {
+            listofauthorizedcategories: JSON.stringify([authorizedcategory]),
+            utilisateur: { connect: { id: userId } }
+          }
+        });
+
+        console.log('im tada');
+        if (!newAuth) return false;
         return true;
       }
     });

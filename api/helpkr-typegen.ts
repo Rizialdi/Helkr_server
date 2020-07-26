@@ -307,8 +307,8 @@ export interface NexusGenFieldTypes {
 export interface NexusGenArgTypes {
   Mutation: {
     addAuthorizedCategories: { // args
+      authorizedcategory: string; // String!
       id?: string | null; // String
-      listofauthorizedcategories: string; // String!
     }
     addOffering: { // args
       category: string; // String!

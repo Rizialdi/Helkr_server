@@ -189,7 +189,14 @@ exports.MutationUser = extendType({
       },
       resolve: async (_, { nom, prenom, numero }, { prisma }) => {
         const user = await prisma.utilisateur.create({
-          data: { nom, prenom, numero }
+          data: {
+            nom,
+            prenom,
+            numero,
+            authorizedcategories: {
+              create: { listofauthorizedcategories: '' }
+            }
+          }
         });
         const token = jwt.sign({ userId: user.id }, APP_SECRET_CODE as Secret);
 
