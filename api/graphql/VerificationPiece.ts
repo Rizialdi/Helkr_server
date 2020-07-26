@@ -8,6 +8,8 @@ exports.VerificationPiece = objectType({
     t.model.userId();
     t.model.listofpieces({});
     t.model.utilisateur();
+    t.model.referenceid();
+    t.model.status();
   }
 });
 
@@ -34,6 +36,9 @@ exports.QueryVerificationPiece = extendType({
             where: { userId },
             select: { referenceid: true, status: true, createdAt: true }
           });
+
+          if (!refNstatus.length) return '';
+
           const uniqueRefId = [
             ...new Set(refNstatus.map(item => item.referenceid))
           ];
@@ -75,30 +80,30 @@ exports.Mutation = extendType({
         try {
           const userId = id ? id : getUserId(ctx);
           const parsedValues = JSON.parse(listofpieces);
-          //TODO Issue of pending promises
-          const toStore = Object.entries(parsedValues).map(
-            async ([key, value], _) => {
-              const cloudUri = await ctx.processUpload(value);
-              console.log(cloudUri);
-              return { [key]: cloudUri };
-            }
-          );
 
-          toStore && console.log(await toStore);
+          const handleImageLoading = async () => {
+            const relativeUri = await Object.entries(parsedValues).map(
+              async ([key, value], _) => {
+                const cloudUri = await ctx.processUpload(value);
+                return { [key]: cloudUri };
+              }
+            );
+            return Promise.all(relativeUri);
+          };
 
-          const toStoreStringified = await JSON.stringify(toStore);
-          toStore && console.log('toStore', await toStore);
-          const verificationPieces = await ctx.prisma.verificationpieces.upsert(
+          const toStore = await handleImageLoading();
+
+          const verificationPieces = await ctx.prisma.verificationpieces.create(
             {
-              where: { userId },
-              create: {
-                listofpieces: toStoreStringified,
+              data: {
+                listofpieces: JSON.stringify(toStore),
                 referenceid: referenceId,
+                status: 'enattente',
                 utilisateur: { connect: { id: userId } }
-              },
-              update: { listofpieces: toStoreStringified }
+              }
             }
           );
+
           if (!verificationPieces) return false;
           return true;
         } catch (error) {

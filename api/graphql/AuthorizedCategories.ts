@@ -1,5 +1,6 @@
 import { objectType, extendType, stringArg } from '@nexus/schema';
 import { getUserId } from '../../utils';
+import { requiredStr } from './Offering';
 
 exports.AuthorizedCategories = objectType({
   name: 'authorizedcategories',
@@ -51,6 +52,37 @@ exports.MutationAuthorizedCategories = extendType({
         );
         if (!authorizedcategories) return false;
         return true;
+      }
+    });
+    t.field('removeAuthorizedCategories', {
+      type: 'Boolean',
+      args: {
+        id: stringArg({ nullable: true }),
+        referenceId: requiredStr({ required: true })
+      },
+      resolve: async (_, { id, referenceId }, ctx) => {
+        const userId = id ? id : getUserId(ctx);
+        try {
+          const authorizedcategories = await ctx.prisma.authorizedcategories.findOne(
+            { where: { userId }, select: { listofauthorizedcategories: true } }
+          );
+          if (!authorizedcategories) return false;
+          const array: string[] = JSON.parse(
+            authorizedcategories.listofauthorizedcategories as string
+          );
+          if (!array.includes(referenceId)) return false;
+          const newArray = array.filter(i => i != referenceId);
+          const newAuthorizedcategories = await ctx.prisma.authorizedcategories.update(
+            {
+              where: { userId },
+              data: { listofauthorizedcategories: JSON.stringify(newArray) }
+            }
+          );
+          if (!newAuthorizedcategories) return false;
+          return true;
+        } catch (error) {
+          throw new Error(`Remove of authorized category impossible, ${error}`);
+        }
       }
     });
   }

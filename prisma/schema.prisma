@@ -98,7 +98,7 @@ model utilisateur {
   acceptedToOffering   offering[]            @relation("offering_selectedCandidateToutilisateur")
   appliedTo            offering[]            @relation("appliedoffering", references: [id])
   channels             channel[]             @relation(references: [id])
-  verificationpieces   verificationpieces?
+  verificationpieces   verificationpieces[]
   authorizedcategories authorizedcategories?
 }
 

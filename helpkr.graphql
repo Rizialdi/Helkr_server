@@ -89,6 +89,7 @@ type Mutation {
   deleteOffering(id: String!): Boolean!
   descriptionUpdate(text: String!): Boolean!
   registerUser(nom: String!, numero: String!, prenom: String!): AuthPayload!
+  removeAuthorizedCategories(id: String, referenceId: String!): Boolean!
   tagsUpdate(tags: [String!]!): Boolean!
   updateOffering(description: String!, id: String!): Boolean!
 }
@@ -135,6 +136,12 @@ type Query {
   users: [utilisateur!]!
 }
 
+input ReferenceidUserIdIdCompoundUniqueInput {
+  id: String!
+  referenceid: String!
+  userId: String!
+}
+
 type Stats {
   average: Float!
   done: Int!
@@ -171,7 +178,7 @@ type utilisateur {
   prenom: String!
   professional: Boolean!
   tags: [String!]!
-  verificationpieces: verificationpieces
+  verificationpieces(after: verificationpiecesWhereUniqueInput, before: verificationpiecesWhereUniqueInput, first: Int, last: Int): [verificationpieces!]!
   verified: Boolean!
 }
 
@@ -183,6 +190,13 @@ input utilisateurWhereUniqueInput {
 type verificationpieces {
   id: String!
   listofpieces: Json
+  referenceid: String!
+  status: String
   userId: String!
   utilisateur: utilisateur!
+}
+
+input verificationpiecesWhereUniqueInput {
+  referenceid_userId_id: ReferenceidUserIdIdCompoundUniqueInput
+  userId: String
 }

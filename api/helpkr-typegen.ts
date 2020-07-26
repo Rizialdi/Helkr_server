@@ -27,6 +27,11 @@ declare global {
 }
 
 export interface NexusGenInputs {
+  ReferenceidUserIdIdCompoundUniqueInput: { // input type
+    id: string; // String!
+    referenceid: string; // String!
+    userId: string; // String!
+  }
   avisWhereUniqueInput: { // input type
     id?: string | null; // String
   }
@@ -42,6 +47,10 @@ export interface NexusGenInputs {
   utilisateurWhereUniqueInput: { // input type
     id?: string | null; // String
     numero?: string | null; // String
+  }
+  verificationpiecesWhereUniqueInput: { // input type
+    referenceid_userId_id?: NexusGenInputs['ReferenceidUserIdIdCompoundUniqueInput'] | null; // ReferenceidUserIdIdCompoundUniqueInput
+    userId?: string | null; // String
   }
 }
 
@@ -123,6 +132,8 @@ export interface NexusGenRootTypes {
   verificationpieces: { // root type
     id: string; // String!
     listofpieces?: any | null; // Json
+    referenceid: string; // String!
+    status?: string | null; // String
     userId: string; // String!
   }
   String: string;
@@ -136,11 +147,13 @@ export interface NexusGenRootTypes {
 }
 
 export interface NexusGenAllTypes extends NexusGenRootTypes {
+  ReferenceidUserIdIdCompoundUniqueInput: NexusGenInputs['ReferenceidUserIdIdCompoundUniqueInput'];
   avisWhereUniqueInput: NexusGenInputs['avisWhereUniqueInput'];
   channelWhereUniqueInput: NexusGenInputs['channelWhereUniqueInput'];
   messageWhereUniqueInput: NexusGenInputs['messageWhereUniqueInput'];
   offeringWhereUniqueInput: NexusGenInputs['offeringWhereUniqueInput'];
   utilisateurWhereUniqueInput: NexusGenInputs['utilisateurWhereUniqueInput'];
+  verificationpiecesWhereUniqueInput: NexusGenInputs['verificationpiecesWhereUniqueInput'];
 }
 
 export interface NexusGenFieldTypes {
@@ -166,6 +179,7 @@ export interface NexusGenFieldTypes {
     deleteOffering: boolean; // Boolean!
     descriptionUpdate: boolean; // Boolean!
     registerUser: NexusGenRootTypes['AuthPayload']; // AuthPayload!
+    removeAuthorizedCategories: boolean; // Boolean!
     tagsUpdate: boolean; // Boolean!
     updateOffering: boolean; // Boolean!
   }
@@ -277,12 +291,14 @@ export interface NexusGenFieldTypes {
     prenom: string; // String!
     professional: boolean; // Boolean!
     tags: string[]; // [String!]!
-    verificationpieces: NexusGenRootTypes['verificationpieces'] | null; // verificationpieces
+    verificationpieces: NexusGenRootTypes['verificationpieces'][]; // [verificationpieces!]!
     verified: boolean; // Boolean!
   }
   verificationpieces: { // field return type
     id: string; // String!
     listofpieces: any | null; // Json
+    referenceid: string; // String!
+    status: string | null; // String
     userId: string; // String!
     utilisateur: NexusGenRootTypes['utilisateur']; // utilisateur!
   }
@@ -347,6 +363,10 @@ export interface NexusGenArgTypes {
       nom: string; // String!
       numero: string; // String!
       prenom: string; // String!
+    }
+    removeAuthorizedCategories: { // args
+      id?: string | null; // String
+      referenceId: string; // String!
     }
     tagsUpdate: { // args
       tags: string[]; // [String!]!
@@ -476,6 +496,12 @@ export interface NexusGenArgTypes {
       first?: number | null; // Int
       last?: number | null; // Int
     }
+    verificationpieces: { // args
+      after?: NexusGenInputs['verificationpiecesWhereUniqueInput'] | null; // verificationpiecesWhereUniqueInput
+      before?: NexusGenInputs['verificationpiecesWhereUniqueInput'] | null; // verificationpiecesWhereUniqueInput
+      first?: number | null; // Int
+      last?: number | null; // Int
+    }
   }
 }
 
@@ -486,7 +512,7 @@ export interface NexusGenInheritedFields {}
 
 export type NexusGenObjectNames = "AuthPayload" | "CandidateToOfferingSuccess" | "Mutation" | "Query" | "Stats" | "Subscription" | "authorizedcategories" | "avis" | "channel" | "createChannel" | "message" | "moyenne" | "offering" | "updateAppliedToType" | "utilisateur" | "verificationpieces";
 
-export type NexusGenInputNames = "avisWhereUniqueInput" | "channelWhereUniqueInput" | "messageWhereUniqueInput" | "offeringWhereUniqueInput" | "utilisateurWhereUniqueInput";
+export type NexusGenInputNames = "ReferenceidUserIdIdCompoundUniqueInput" | "avisWhereUniqueInput" | "channelWhereUniqueInput" | "messageWhereUniqueInput" | "offeringWhereUniqueInput" | "utilisateurWhereUniqueInput" | "verificationpiecesWhereUniqueInput";
 
 export type NexusGenEnumNames = never;
 
