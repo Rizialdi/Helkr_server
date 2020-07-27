@@ -48,6 +48,8 @@ exports.Offering = objectType({
       }
     });
     t.model.avis();
+    t.model.preferreddays();
+    t.model.eventday();
   }
 });
 
@@ -107,7 +109,8 @@ exports.QueryOfferings = extendType({
                 },
                 {
                   candidates: { every: { id: { notIn: [userId] } } }
-                }
+                },
+                { author: { id: { notIn: [userId] } } }
               ]
             }
           : {};
@@ -169,6 +172,7 @@ exports.QueryOfferings = extendType({
               createdAt: offering.createdAt,
               updatedAt: offering.updatedAt,
               category: offering.category,
+              eventday: offering.eventday,
               description: offering.description
             };
 
@@ -324,6 +328,37 @@ exports.MutationOfferings = extendType({
           return true;
         } catch (error) {
           throw new Error('Modification de Offre impossible');
+        }
+      }
+    });
+    t.field('chooseEventDay', {
+      type: 'Boolean',
+      args: {
+        id: stringArg({ required: true }),
+        timestamp: stringArg({ required: true })
+      },
+      resolve: async (_, { id, timestamp }, ctx) => {
+        const userId = getUserId(ctx);
+        try {
+          const data = await ctx.prisma.offering.findOne({
+            where: { id },
+            select: { selectedCandidate: true }
+          });
+          const condition =
+            data &&
+            data.selectedCandidate &&
+            data.selectedCandidate.id != userId;
+
+          if (condition) return false;
+
+          const offering = await ctx.prisma.offering.update({
+            where: { id },
+            data: { eventday: timestamp }
+          });
+          if (!offering) return false;
+          return true;
+        } catch (error) {
+          throw new Error('Choix du jour impossible');
         }
       }
     });

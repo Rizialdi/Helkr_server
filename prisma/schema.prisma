@@ -60,9 +60,9 @@ model offering {
   createdAt           DateTime      @default(now())
   description         String
   details             Json
-  eventday            Int?
+  eventday            String?
   id                  String        @default(cuid()) @id
-  preferreddays       Int[]
+  preferreddays       String[]
   referenceid         String?
   selectedCandidateId String?       @map("selectedCandidate")
   type                String

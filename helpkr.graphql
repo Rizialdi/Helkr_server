@@ -82,6 +82,7 @@ type Mutation {
   avatarUpload(file: String!): Boolean!
   candidateToOffering(id: String!): CandidateToOfferingSuccess!
   chooseCandidate(candidateId: String!, id: String!): Boolean!
+  chooseEventDay(id: String!, timestamp: String!): Boolean!
   completeOffering(completedById: String!, id: String!): Boolean!
   createAvis(comment: String!, offeringId: String!, score: Int!, scoredId: String!): Boolean!
   createChannel(recipient: String!): createChannel!
@@ -102,7 +103,9 @@ type offering {
   createdAt: DateTime!
   description: String!
   details: JSON!
+  eventday: String
   id: String!
+  preferreddays: [String!]!
   referenceId: String
   selectedCandidate: utilisateur
   status: String

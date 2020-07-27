@@ -108,7 +108,9 @@ export interface NexusGenRootTypes {
     category: string; // String!
     createdAt: any; // DateTime!
     description: string; // String!
+    eventday?: string | null; // String
     id: string; // String!
+    preferreddays: string[]; // [String!]!
     status?: string | null; // String
     type: string; // String!
     updatedAt: any; // DateTime!
@@ -172,6 +174,7 @@ export interface NexusGenFieldTypes {
     avatarUpload: boolean; // Boolean!
     candidateToOffering: NexusGenRootTypes['CandidateToOfferingSuccess']; // CandidateToOfferingSuccess!
     chooseCandidate: boolean; // Boolean!
+    chooseEventDay: boolean; // Boolean!
     completeOffering: boolean; // Boolean!
     createAvis: boolean; // Boolean!
     createChannel: NexusGenRootTypes['createChannel']; // createChannel!
@@ -263,7 +266,9 @@ export interface NexusGenFieldTypes {
     createdAt: any; // DateTime!
     description: string; // String!
     details: any; // JSON!
+    eventday: string | null; // String
     id: string; // String!
+    preferreddays: string[]; // [String!]!
     referenceId: string | null; // String
     selectedCandidate: NexusGenRootTypes['utilisateur'] | null; // utilisateur
     status: string | null; // String
@@ -334,6 +339,10 @@ export interface NexusGenArgTypes {
     chooseCandidate: { // args
       candidateId: string; // String!
       id: string; // String!
+    }
+    chooseEventDay: { // args
+      id: string; // String!
+      timestamp: string; // String!
     }
     completeOffering: { // args
       completedById: string; // String!
