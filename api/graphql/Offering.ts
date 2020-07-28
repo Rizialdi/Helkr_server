@@ -50,6 +50,7 @@ exports.Offering = objectType({
     t.model.avis();
     t.model.preferreddays();
     t.model.eventday();
+    t.model.completed();
   }
 });
 
@@ -169,6 +170,7 @@ exports.QueryOfferings = extendType({
             const response = {
               id: offering.id,
               type: offering.type,
+              completed: offering.completed,
               createdAt: offering.createdAt,
               updatedAt: offering.updatedAt,
               category: offering.category,
@@ -415,9 +417,10 @@ exports.MutationOfferings = extendType({
       type: 'Boolean',
       args: {
         id: stringArg({ required: true }),
-        candidateId: stringArg({ required: true })
+        candidateId: stringArg({ required: true }),
+        preferreddays: requiredStr({ required: true, list: true })
       },
-      resolve: async (_, { id, candidateId }, ctx) => {
+      resolve: async (_, { id, candidateId, preferreddays }, ctx) => {
         const userId = getUserId(ctx);
         try {
           if (userId == candidateId) return false;
@@ -434,7 +437,8 @@ exports.MutationOfferings = extendType({
           const updated = await ctx.prisma.offering.update({
             where: { id },
             data: {
-              selectedCandidate: { connect: { id: candidateId } }
+              selectedCandidate: { connect: { id: candidateId } },
+              preferreddays: { set: preferreddays }
             },
             include: { candidates: { select: { id: true } } }
           });

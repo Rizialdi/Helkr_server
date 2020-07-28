@@ -106,6 +106,7 @@ export interface NexusGenRootTypes {
   }
   offering: { // root type
     category: string; // String!
+    completed: boolean; // Boolean!
     createdAt: any; // DateTime!
     description: string; // String!
     eventday?: string | null; // String
@@ -263,6 +264,7 @@ export interface NexusGenFieldTypes {
     avis: NexusGenRootTypes['avis'][]; // [avis!]!
     candidates: NexusGenRootTypes['utilisateur'][]; // [utilisateur!]!
     category: string; // String!
+    completed: boolean; // Boolean!
     createdAt: any; // DateTime!
     description: string; // String!
     details: any; // JSON!
@@ -339,6 +341,7 @@ export interface NexusGenArgTypes {
     chooseCandidate: { // args
       candidateId: string; // String!
       id: string; // String!
+      preferreddays: string[]; // [String!]!
     }
     chooseEventDay: { // args
       id: string; // String!

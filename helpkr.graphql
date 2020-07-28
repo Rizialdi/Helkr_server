@@ -81,7 +81,7 @@ type Mutation {
   addVerificationpieces(id: String, listofpieces: String!, referenceId: String!): Boolean!
   avatarUpload(file: String!): Boolean!
   candidateToOffering(id: String!): CandidateToOfferingSuccess!
-  chooseCandidate(candidateId: String!, id: String!): Boolean!
+  chooseCandidate(candidateId: String!, id: String!, preferreddays: [String!]!): Boolean!
   chooseEventDay(id: String!, timestamp: String!): Boolean!
   completeOffering(completedById: String!, id: String!): Boolean!
   createAvis(comment: String!, offeringId: String!, score: Int!, scoredId: String!): Boolean!
@@ -100,6 +100,7 @@ type offering {
   avis(after: avisWhereUniqueInput, before: avisWhereUniqueInput, first: Int, last: Int): [avis!]!
   candidates(after: utilisateurWhereUniqueInput, before: utilisateurWhereUniqueInput, first: Int, last: Int): [utilisateur!]!
   category: String!
+  completed: Boolean!
   createdAt: DateTime!
   description: String!
   details: JSON!
