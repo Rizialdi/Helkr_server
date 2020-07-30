@@ -1,5 +1,6 @@
 import { objectType, extendType, stringArg } from '@nexus/schema';
 import { getUserId } from '../../utils';
+import { ReactNativeFile } from 'apollo-upload-client';
 
 exports.VerificationPiece = objectType({
   name: 'verificationpieces',
@@ -83,7 +84,7 @@ exports.Mutation = extendType({
       resolve: async (_, { id, listofpieces, referenceId }, ctx) => {
         try {
           const userId = id ? id : getUserId(ctx);
-          const parsedValues = JSON.parse(listofpieces);
+          const parsedValues: ReactNativeFile[] = JSON.parse(listofpieces);
 
           const handleImageLoading = async (): Promise<
             { [x: string]: string }[]
