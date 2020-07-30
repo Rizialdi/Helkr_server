@@ -79,7 +79,6 @@ exports.MutationAuthorizedCategories = extendType({
           }
         });
 
-        console.log('im tada');
         if (!newAuth) return false;
         return true;
       }

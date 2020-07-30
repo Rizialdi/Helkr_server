@@ -120,6 +120,10 @@ export interface NexusGenRootTypes {
     id: string; // String!
     status: string; // String!
   }
+  updateSelectedEventDay: { // root type
+    eventday: string; // String!
+    offeringId: string; // String!
+  }
   utilisateur: { // root type
     address?: string | null; // String
     avatar?: string | null; // String
@@ -219,6 +223,7 @@ export interface NexusGenFieldTypes {
     newMessage: NexusGenRootTypes['message']; // message!
     onOfferingAdded: NexusGenRootTypes['offering']; // offering!
     updateAppliedTo: NexusGenRootTypes['updateAppliedToType']; // updateAppliedToType!
+    updatedEventDay: NexusGenRootTypes['updateSelectedEventDay']; // updateSelectedEventDay!
   }
   authorizedcategories: { // field return type
     id: string; // String!
@@ -280,6 +285,10 @@ export interface NexusGenFieldTypes {
   updateAppliedToType: { // field return type
     id: string; // String!
     status: string; // String!
+  }
+  updateSelectedEventDay: { // field return type
+    eventday: string; // String!
+    offeringId: string; // String!
   }
   utilisateur: { // field return type
     address: string | null; // String
@@ -442,6 +451,9 @@ export interface NexusGenArgTypes {
     updateAppliedTo: { // args
       userId: string; // String!
     }
+    updatedEventDay: { // args
+      userId: string; // String!
+    }
   }
   channel: {
     messages: { // args
@@ -522,7 +534,7 @@ export interface NexusGenAbstractResolveReturnTypes {
 
 export interface NexusGenInheritedFields {}
 
-export type NexusGenObjectNames = "AuthPayload" | "CandidateToOfferingSuccess" | "Mutation" | "Query" | "Stats" | "Subscription" | "authorizedcategories" | "avis" | "channel" | "createChannel" | "message" | "moyenne" | "offering" | "updateAppliedToType" | "utilisateur" | "verificationpieces";
+export type NexusGenObjectNames = "AuthPayload" | "CandidateToOfferingSuccess" | "Mutation" | "Query" | "Stats" | "Subscription" | "authorizedcategories" | "avis" | "channel" | "createChannel" | "message" | "moyenne" | "offering" | "updateAppliedToType" | "updateSelectedEventDay" | "utilisateur" | "verificationpieces";
 
 export type NexusGenInputNames = "ReferenceidUserIdIdCompoundUniqueInput" | "avisWhereUniqueInput" | "channelWhereUniqueInput" | "messageWhereUniqueInput" | "offeringWhereUniqueInput" | "utilisateurWhereUniqueInput" | "verificationpiecesWhereUniqueInput";
 

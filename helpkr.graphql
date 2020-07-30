@@ -158,11 +158,17 @@ type Subscription {
   newMessage(channelIds: [String!]!): message!
   onOfferingAdded(tags: [String!]): offering!
   updateAppliedTo(userId: String!): updateAppliedToType!
+  updatedEventDay(userId: String!): updateSelectedEventDay!
 }
 
 type updateAppliedToType {
   id: String!
   status: String!
+}
+
+type updateSelectedEventDay {
+  eventday: String!
+  offeringId: String!
 }
 
 type utilisateur {

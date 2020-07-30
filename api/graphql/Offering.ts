@@ -1,5 +1,9 @@
 import { withFilter } from 'graphql-yoga';
-import { PUB_UPDATE_APPLIED_TO, PUB_NEW_OFFERING } from './constants';
+import {
+  PUB_UPDATE_APPLIED_TO,
+  PUB_NEW_OFFERING,
+  PUB_SELECTED_EVENT_DAY
+} from './constants';
 import {
   objectType,
   extendType,
@@ -182,6 +186,9 @@ exports.QueryOfferings = extendType({
               return { ...response, status: 'en attente' };
             }
 
+            if (offering.selectedCandidate.id && offering.completed)
+              return { ...offering, status: 'terminée' };
+
             if (offering.selectedCandidate.id === userId) {
               return { ...response, status: 'acceptée' };
             } else {
@@ -263,7 +270,7 @@ exports.QueryOfferings = extendType({
             }
             return { ...offering, status: '' };
           });
-          return offerings;
+          return data;
         } catch (error) {
           throw new Error(`Erreur fetching offering status ${error}`);
         }
@@ -358,6 +365,7 @@ exports.MutationOfferings = extendType({
             data: { eventday: timestamp }
           });
           if (!offering) return false;
+          ctx.pubsub.publish(PUB_SELECTED_EVENT_DAY, { updated: offering });
           return true;
         } catch (error) {
           throw new Error('Choix du jour impossible');
@@ -500,6 +508,20 @@ exports.SubscriptionOffering = subscriptionField('onOfferingAdded', {
   }
 });
 
+exports.SubscriptionUpdateEventDay = subscriptionField('updatedEventDay', {
+  type: 'updateSelectedEventDay',
+  args: { userId: stringArg({ required: true }) },
+  subscribe: withFilter(
+    (_, __, { pubsub }) => pubsub.asyncIterator(PUB_SELECTED_EVENT_DAY),
+    ({ updated }, { userId }) => {
+      return updated.authorId === userId;
+    }
+  ),
+  resolve: ({ updated }, _, __) => {
+    return { offeringId: updated.id, eventday: updated.eventday };
+  }
+});
+
 exports.SubscriptionAppliedOffering = subscriptionField('updateAppliedTo', {
   type: 'updateAppliedToType',
   args: { userId: stringArg({ required: true }) },
@@ -536,6 +558,13 @@ exports.updateAppliedToType = objectType({
   name: 'updateAppliedToType',
   definition(t) {
     t.string('id'), t.string('status');
+  }
+});
+
+exports.updateSelectedEventDay = objectType({
+  name: 'updateSelectedEventDay',
+  definition(t) {
+    t.string('offeringId'), t.string('eventday');
   }
 });
 
