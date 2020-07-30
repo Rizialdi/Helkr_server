@@ -1,4 +1,4 @@
-import { objectType, extendType, stringArg, convertSDL } from '@nexus/schema';
+import { objectType, extendType, stringArg } from '@nexus/schema';
 import { getUserId } from '../../utils';
 
 exports.VerificationPiece = objectType({
@@ -34,7 +34,11 @@ exports.QueryVerificationPiece = extendType({
           const userId = id ? id : getUserId(ctx);
           const refNstatus = await ctx.prisma.verificationpieces.findMany({
             where: { userId },
-            select: { referenceid: true, status: true, createdAt: true }
+            select: {
+              referenceid: true,
+              status: true,
+              createdAt: true
+            }
           });
 
           if (!refNstatus.length) return '';
@@ -81,9 +85,11 @@ exports.Mutation = extendType({
           const userId = id ? id : getUserId(ctx);
           const parsedValues = JSON.parse(listofpieces);
 
-          const handleImageLoading = async () => {
+          const handleImageLoading = async (): Promise<
+            { [x: string]: string }[]
+          > => {
             const relativeUri = await Object.entries(parsedValues).map(
-              async ([key, value], _) => {
+              async ([key, value]) => {
                 const cloudUri = await ctx.processUpload(value);
                 return { [key]: cloudUri };
               }

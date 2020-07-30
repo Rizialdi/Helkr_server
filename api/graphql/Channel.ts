@@ -7,6 +7,7 @@ import {
 import { getUserId } from '../../utils';
 import { withFilter } from 'graphql-yoga';
 import { PUB_NEW_CHANNEL } from './constants';
+import { utilisateur } from '@prisma/client';
 
 exports.Channel = objectType({
   name: 'channel',
@@ -41,7 +42,9 @@ exports.QueryChannel = extendType({
       args: { id: stringArg({ required: true }) },
       resolve: async (_, { id }, { prisma }) => {
         try {
-          const channel = await prisma.channel.findMany({ where: { id } });
+          const channel = await prisma.channel.findMany({
+            where: { id }
+          });
           return channel[0];
         } catch (error) {
           throw new Error(`Channel query impossible ${error}`);
@@ -99,7 +102,11 @@ exports.MutationChannel = extendType({
           if (sentBy === recipient)
             throw new Error('Creation chaine impossible');
           const channel = await ctx.prisma.channel.create({
-            data: { users: { connect: [{ id: recipient }, { id: sentBy }] } }
+            data: {
+              users: {
+                connect: [{ id: recipient }, { id: sentBy }]
+              }
+            }
           });
 
           if (!channel) {
@@ -134,9 +141,11 @@ exports.SubscriptionChannel = subscriptionField('newChannel', {
   subscribe: withFilter(
     (_, __, { pubsub }) => pubsub.asyncIterator(PUB_NEW_CHANNEL),
     (payload, variables) => {
-      let userIds: string[] = [];
+      const userIds: string[] = [];
 
-      payload.newChannel.users.map((item: any) => userIds.push(item.id));
+      payload.newChannel.users.map((item: utilisateur) =>
+        userIds.push(item.id)
+      );
       return userIds.includes(variables.userId);
     }
   ),

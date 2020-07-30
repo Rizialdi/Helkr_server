@@ -1,16 +1,14 @@
 import jwt, { Secret } from 'jsonwebtoken';
 import {
-  arg,
-  core,
   extendType,
-  inputObjectType,
-  intArg,
   objectType,
-  stringArg
+  stringArg,
+  inputObjectType
 } from '@nexus/schema';
 
-import { APP_SECRET_CODE, getUserId } from '../../utils';
+import { APP_SECRET_CODE, getUserId, addFunction } from '../../utils';
 import { requiredStr } from './Offering';
+import { avis } from '@prisma/client';
 
 exports.User = objectType({
   name: 'utilisateur',
@@ -153,25 +151,34 @@ exports.QueryUser = extendType({
       args: { id: stringArg({ required: true }) },
       resolve: async (_, { id }, { prisma }) => {
         const prop = await prisma.offering.findMany({
-          where: { author: { id } }
+          where: {
+            author: {
+              id
+            }
+          }
         });
         const completed = await prisma.avis.findMany({
-          where: { scored: { id } }
+          where: {
+            scored: {
+              id
+            }
+          }
         });
 
         const proposed = prop.length;
         const done = completed.length;
-        //@ts-ignore
-        const { score } =
-          done === 0
-            ? 0
-            : //@ts-ignore
-              completed.reduce((a, b) => ({
-                score: a.score + b.score
-              }));
 
-        const average = done != 0 ? Number((score / done).toFixed(1)) : 0;
-        return { done, proposed, average };
+        const getSumOfscores = (array: avis[]): number =>
+          array.map(item => item.score).reduce(addFunction);
+
+        const sumOfScore = done === 0 ? 0 : getSumOfscores(completed);
+
+        const average = done != 0 ? Number((sumOfScore / done).toFixed(1)) : 0;
+        return {
+          done,
+          proposed,
+          average
+        };
       }
     });
   }
@@ -209,11 +216,11 @@ exports.MutationUser = extendType({
     t.field('avatarUpload', {
       type: 'Boolean',
       args: {
-        file: stringArg({ required: true })
+        file: UploadImageType
       },
       resolve: async (_, { file }, ctx) => {
         const userId = getUserId(ctx);
-
+        if (!file) return false;
         try {
           const avatar = await ctx.processUpload(file);
           const user = await ctx.prisma.utilisateur.update({
@@ -270,7 +277,7 @@ exports.MutationUser = extendType({
     t.field('tagsUpdate', {
       type: 'Boolean',
       args: {
-        tags: requiredStr({ list: true, required: true })
+        tags: requiredStr({ list: true })
       },
       resolve: async (_, { tags }, ctx) => {
         const userId = getUserId(ctx);
@@ -304,5 +311,14 @@ exports.Stats = objectType({
     t.int('done');
     t.int('proposed');
     t.float('average');
+  }
+});
+
+const UploadImageType = inputObjectType({
+  name: 'uploadImageType',
+  definition(t) {
+    t.string('uri', { required: true });
+    t.string('name', { required: true });
+    t.string('type', { required: true });
   }
 });

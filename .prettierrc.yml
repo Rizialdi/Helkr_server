@@ -2,3 +2,4 @@ singleQuote: true
 parser: 'typescript'
 trailingComma: 'none'
 arrowParens: "avoid"
+tabWidth: 2

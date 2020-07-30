@@ -16,8 +16,10 @@ import { getUserId } from '../../utils';
 import { utilisateur } from '@prisma/client';
 import { GraphQLJSONObject } from 'graphql-type-json';
 
-export const requiredStr = (opts: core.ScalarArgConfig<string>) => {
-  return stringArg({ ...opts });
+export const requiredStr = (
+  opts: core.ScalarArgConfig<string>
+): core.NexusArgDef<'String'> => {
+  return stringArg({ ...opts, required: true });
 };
 
 exports.JSONScalar = scalarType({
@@ -113,7 +115,9 @@ exports.QueryOfferings = extendType({
                   }
                 },
                 {
-                  candidates: { every: { id: { notIn: [userId] } } }
+                  candidates: {
+                    every: { id: { notIn: [userId] } }
+                  }
                 },
                 { author: { id: { notIn: [userId] } } }
               ]
@@ -171,28 +175,17 @@ exports.QueryOfferings = extendType({
           if (!offerings) return [];
 
           const data = offerings.map(offering => {
-            const response = {
-              id: offering.id,
-              type: offering.type,
-              completed: offering.completed,
-              createdAt: offering.createdAt,
-              updatedAt: offering.updatedAt,
-              category: offering.category,
-              eventday: offering.eventday,
-              description: offering.description
-            };
-
             if (!offering.selectedCandidate) {
-              return { ...response, status: 'en attente' };
+              return { ...offering, status: 'en attente' };
             }
 
             if (offering.selectedCandidate.id && offering.completed)
               return { ...offering, status: 'terminée' };
 
             if (offering.selectedCandidate.id === userId) {
-              return { ...response, status: 'acceptée' };
+              return { ...offering, status: 'acceptée' };
             } else {
-              return { ...response, status: 'refusée' };
+              return { ...offering, status: 'refusée' };
             }
           });
           return data;
@@ -212,7 +205,11 @@ exports.QueryOfferings = extendType({
             {
               authorId: { equals: userId }
             },
-            { candidates: { every: { id: { equals: undefined || '' } } } }
+            {
+              candidates: {
+                every: { id: { equals: undefined || '' } }
+              }
+            }
           ]
         };
 
@@ -241,7 +238,11 @@ exports.QueryOfferings = extendType({
             {
               authorId: { equals: userId }
             },
-            { candidates: { some: { NOT: { id: undefined || '' } } } }
+            {
+              candidates: {
+                some: { NOT: { id: undefined || '' } }
+              }
+            }
           ]
         };
 
@@ -365,7 +366,9 @@ exports.MutationOfferings = extendType({
             data: { eventday: timestamp }
           });
           if (!offering) return false;
-          ctx.pubsub.publish(PUB_SELECTED_EVENT_DAY, { updated: offering });
+          ctx.pubsub.publish(PUB_SELECTED_EVENT_DAY, {
+            updated: offering
+          });
           return true;
         } catch (error) {
           throw new Error('Choix du jour impossible');
@@ -408,7 +411,9 @@ exports.MutationOfferings = extendType({
       resolve: async (_, { id }, ctx) => {
         const userId = getUserId(ctx);
         try {
-          const offering = await ctx.prisma.offering.findOne({ where: { id } });
+          const offering = await ctx.prisma.offering.findOne({
+            where: { id }
+          });
           if (offering && userId != offering.authorId) return false;
 
           const suppressed = await ctx.prisma.offering.delete({
@@ -426,7 +431,7 @@ exports.MutationOfferings = extendType({
       args: {
         id: stringArg({ required: true }),
         candidateId: stringArg({ required: true }),
-        preferreddays: requiredStr({ required: true, list: true })
+        preferreddays: requiredStr({ list: true })
       },
       resolve: async (_, { id, candidateId, preferreddays }, ctx) => {
         const userId = getUserId(ctx);
@@ -517,7 +522,7 @@ exports.SubscriptionUpdateEventDay = subscriptionField('updatedEventDay', {
       return updated.authorId === userId;
     }
   ),
-  resolve: ({ updated }, _, __) => {
+  resolve: ({ updated }) => {
     return { offeringId: updated.id, eventday: updated.eventday };
   }
 });
@@ -535,7 +540,7 @@ exports.SubscriptionAppliedOffering = subscriptionField('updateAppliedTo', {
       return candidates.includes(userId);
     }
   ),
-  resolve: ({ updated }, { userId }, ctx) => {
+  resolve: ({ updated }, { userId }) => {
     let status = '';
 
     if (!updated) return { id: '', status };

@@ -44,6 +44,11 @@ export interface NexusGenInputs {
   offeringWhereUniqueInput: { // input type
     id?: string | null; // String
   }
+  uploadImageType: { // input type
+    name: string; // String!
+    type: string; // String!
+    uri: string; // String!
+  }
   utilisateurWhereUniqueInput: { // input type
     id?: string | null; // String
     numero?: string | null; // String
@@ -159,6 +164,7 @@ export interface NexusGenAllTypes extends NexusGenRootTypes {
   channelWhereUniqueInput: NexusGenInputs['channelWhereUniqueInput'];
   messageWhereUniqueInput: NexusGenInputs['messageWhereUniqueInput'];
   offeringWhereUniqueInput: NexusGenInputs['offeringWhereUniqueInput'];
+  uploadImageType: NexusGenInputs['uploadImageType'];
   utilisateurWhereUniqueInput: NexusGenInputs['utilisateurWhereUniqueInput'];
   verificationpiecesWhereUniqueInput: NexusGenInputs['verificationpiecesWhereUniqueInput'];
 }
@@ -342,7 +348,7 @@ export interface NexusGenArgTypes {
       referenceId: string; // String!
     }
     avatarUpload: { // args
-      file: string; // String!
+      file?: NexusGenInputs['uploadImageType'] | null; // uploadImageType
     }
     candidateToOffering: { // args
       id: string; // String!
@@ -399,7 +405,7 @@ export interface NexusGenArgTypes {
   }
   Query: {
     allOfferings: { // args
-      filters?: string[] | null; // [String!]
+      filters: string[]; // [String!]!
     }
     channel: { // args
       id: string; // String!
@@ -423,7 +429,7 @@ export interface NexusGenArgTypes {
       id?: string | null; // String
     }
     incompleteOfferings: { // args
-      filters?: string[] | null; // [String!]
+      filters: string[]; // [String!]!
     }
     offeringById: { // args
       id: string; // String!
@@ -446,7 +452,7 @@ export interface NexusGenArgTypes {
       channelIds: string[]; // [String!]!
     }
     onOfferingAdded: { // args
-      tags?: string[] | null; // [String!]
+      tags: string[]; // [String!]!
     }
     updateAppliedTo: { // args
       userId: string; // String!
@@ -536,7 +542,7 @@ export interface NexusGenInheritedFields {}
 
 export type NexusGenObjectNames = "AuthPayload" | "CandidateToOfferingSuccess" | "Mutation" | "Query" | "Stats" | "Subscription" | "authorizedcategories" | "avis" | "channel" | "createChannel" | "message" | "moyenne" | "offering" | "updateAppliedToType" | "updateSelectedEventDay" | "utilisateur" | "verificationpieces";
 
-export type NexusGenInputNames = "ReferenceidUserIdIdCompoundUniqueInput" | "avisWhereUniqueInput" | "channelWhereUniqueInput" | "messageWhereUniqueInput" | "offeringWhereUniqueInput" | "utilisateurWhereUniqueInput" | "verificationpiecesWhereUniqueInput";
+export type NexusGenInputNames = "ReferenceidUserIdIdCompoundUniqueInput" | "avisWhereUniqueInput" | "channelWhereUniqueInput" | "messageWhereUniqueInput" | "offeringWhereUniqueInput" | "uploadImageType" | "utilisateurWhereUniqueInput" | "verificationpiecesWhereUniqueInput";
 
 export type NexusGenEnumNames = never;
 

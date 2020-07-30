@@ -1,8 +1,8 @@
 Arguments: 
-  /usr/local/bin/node /usr/share/yarn/bin/yarn.js add @types/graphql-type-json graph-type-json -D
+  /usr/local/bin/node /usr/share/yarn/bin/yarn.js add pretier -D
 
 PATH: 
-  /home/rizialdi/.local/bin:/home/rizialdi/.local/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin:/home/rizialdi/Android/Sdk/emulator:/home/rizialdi/Android/Sdk/emulator
+  /home/rizialdi/.local/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin:/home/rizialdi/Android/Sdk/emulator:/home/rizialdi/Android/Sdk/emulator
 
 Yarn version: 
   1.22.4
@@ -14,7 +14,7 @@ Platform:
   linux x64
 
 Trace: 
-  Error: https://registry.yarnpkg.com/graph-type-json: Not found
+  Error: https://registry.yarnpkg.com/pretier: Not found
       at Request.params.callback [as _callback] (/usr/share/yarn/lib/cli.js:66987:18)
       at Request.self.callback (/usr/share/yarn/lib/cli.js:140748:22)
       at Request.emit (events.js:315:20)
@@ -37,7 +37,8 @@ npm manifest:
     "license": "MIT",
     "private": true,
     "scripts": {
-      "format": "prettier \"**/**/*.{ts}\" --write",
+      "format": "prettier --config ./.prettierrc.yml \"api/**/*.{ts, tsx}\" --write",
+      "lint": "eslint --ext .ts . --max-warnings 0",
       "build": "npm -s run clean && npm -s run generate && tsc",
       "generate": "npm -s run generate:prisma",
       "generate:prisma": "prisma generate",
@@ -47,12 +48,13 @@ npm manifest:
     },
     "dependencies": {
       "@nexus/schema": "^0.14.0",
-      "@prisma/client": "^2.0.1",
+      "@prisma/client": "2.2.0",
       "@types/axios": "^0.14.0",
       "@types/node": "^13.13.0",
       "axios": "^0.19.2",
       "cloudinary": "^1.21.0",
       "custom-env": "^2.0.1",
+      "eslint-plugin-prettier": "^3.1.4",
       "esm": "^3.2.25",
       "express": "^4.17.1",
       "graphql": "^14.6.0",
@@ -67,11 +69,13 @@ npm manifest:
       "ts-node": "^8.10.2"
     },
     "devDependencies": {
-      "@prisma/cli": "2.0.0-beta.4",
+      "@prisma/cli": "2.2.0",
       "@types/graphql": "^14.5.0",
+      "@types/graphql-type-json": "^0.3.2",
       "@types/jsonwebtoken": "^8.5.0",
       "@types/node-fetch": "^2.5.7",
       "@types/typescript": "^2.0.0",
+      "graphql-type-json": "^0.3.2",
       "nodemon": "^2.0.4",
       "prettier": "^2.0.5",
       "standard": "^14.3.1",
@@ -173,15 +177,15 @@ Lockfile:
       "@nodelib/fs.scandir" "2.1.3"
       fastq "^1.6.0"
   
-  "@prisma/cli@2.0.0-beta.4":
-    version "2.0.0-beta.4"
-    resolved "https://registry.yarnpkg.com/@prisma/cli/-/cli-2.0.0-beta.4.tgz#4989dab626ba5de0591af1a14f423db4838a5e8c"
-    integrity sha512-z9si4cmn/dN7bxVx3hbdDFL6fQuosTzj45EhVrCYt6VCWcJ5jYn0Fzamr+npZvbR/Gl6eLhexXP1sa7iGe8gjA==
+  "@prisma/cli@2.2.0":
+    version "2.2.0"
+    resolved "https://registry.yarnpkg.com/@prisma/cli/-/cli-2.2.0.tgz#f2f46ea4b406aa08fdd1c9eac7c6ceb608b457ba"
+    integrity sha512-MNb2u/EPML9LZZQSQx/+h/KNNa89UocdQmxF7+ElRi66JckTtMo2A2ZCLw1Xb+1cyYXhcJgMnZ9q2bm5rsF0WA==
   
-  "@prisma/client@^2.0.1":
-    version "2.0.1"
-    resolved "https://registry.yarnpkg.com/@prisma/client/-/client-2.0.1.tgz#f0e9a52424c92511e8bd87b7358802001400c849"
-    integrity sha512-9TaIp72H/mhTkkUUQ3bE+1NTWfwJcanAdfUt6dDH0G57r1suTyz0YUbhCOH4hJrtCADumIi9bvGw+wAk1CstaA==
+  "@prisma/client@2.2.0":
+    version "2.2.0"
+    resolved "https://registry.yarnpkg.com/@prisma/client/-/client-2.2.0.tgz#be390658688702a5980b2c8eec673e5a20d90e36"
+    integrity sha512-i7zcVEtMk3QCPCc/oC+vQG2pyXYWWzhPZ11bBxgULo0gL7C/3GPZvAvAkNxpQ0mmt46EdzvpgEBNbg4VdjiR+Q==
     dependencies:
       pkg-up "^3.1.0"
   
@@ -259,6 +263,13 @@ Lockfile:
     version "2.0.0"
     resolved "https://registry.yarnpkg.com/@types/graphql-deduplicator/-/graphql-deduplicator-2.0.0.tgz#9e577b8f3feb3d067b0ca756f4a1fb356d533922"
     integrity sha512-swUwj5hWF1yFzbUXStLJrUa0ksAt11B8+SwhsAjQAX0LYJ1LLioAyuDcJ9bovWbsNzIXJYXLvljSPQw8nR728w==
+  
+  "@types/graphql-type-json@^0.3.2":
+    version "0.3.2"
+    resolved "https://registry.yarnpkg.com/@types/graphql-type-json/-/graphql-type-json-0.3.2.tgz#1a7105e6546fc1630a5db4834bfbc0eb554986e4"
+    integrity sha512-c1cq4o8EhY0Z39ua8UXwG8uBs23xBYA/Uw0tXFl6SuTUpkVv/IJqf6pHQbfdC7nwFRhX2ifTOV/UIg0Q/IJsbg==
+    dependencies:
+      graphql "^14.5.3"
   
   "@types/graphql@^14.0.0", "@types/graphql@^14.5.0":
     version "14.5.0"
@@ -1272,6 +1283,13 @@ Lockfile:
       resolve "^1.10.1"
       semver "^6.1.0"
   
+  eslint-plugin-prettier@^3.1.4:
+    version "3.1.4"
+    resolved "https://registry.yarnpkg.com/eslint-plugin-prettier/-/eslint-plugin-prettier-3.1.4.tgz#168ab43154e2ea57db992a2cd097c828171f75c2"
+    integrity sha512-jZDa8z76klRqo+TdGDTFJSavwbnWK2ZpqGKNZ+VvweMW516pDUMmQ2koXvxEE4JhzNvTv+radye/bWGBmA6jmg==
+    dependencies:
+      prettier-linter-helpers "^1.0.0"
+  
   eslint-plugin-promise@~4.2.1:
     version "4.2.1"
     resolved "https://registry.yarnpkg.com/eslint-plugin-promise/-/eslint-plugin-promise-4.2.1.tgz#845fd8b2260ad8f82564c1222fce44ad71d9418a"
@@ -1472,6 +1490,11 @@ Lockfile:
     version "3.1.1"
     resolved "https://registry.yarnpkg.com/fast-deep-equal/-/fast-deep-equal-3.1.1.tgz#545145077c501491e33b15ec408c294376e94ae4"
     integrity sha512-8UEa58QDLauDNfpbrX55Q9jrGHThw2ZMdOky5Gl1CDtVeJDPVrG4Jxx1N8jw2gkWaff5UUuX1KJd+9zGe2B+ZA==
+  
+  fast-diff@^1.1.2:
+    version "1.2.0"
+    resolved "https://registry.yarnpkg.com/fast-diff/-/fast-diff-1.2.0.tgz#73ee11982d86caaf7959828d519cfe927fac5f03"
+    integrity sha512-xJuoT5+L99XlZ8twedaRf6Ax2TgQVxvgZOYoPKqZufmJib0tL2tegPBOZb1pVNgIhlqDlA0eO0c3wBvQcmzx4w==
   
   fast-glob@^3.1.1:
     version "3.2.2"
@@ -1818,6 +1841,11 @@ Lockfile:
       iterall "^1.1.3"
       uuid "^3.1.0"
   
+  graphql-type-json@^0.3.2:
+    version "0.3.2"
+    resolved "https://registry.yarnpkg.com/graphql-type-json/-/graphql-type-json-0.3.2.tgz#f53a851dbfe07bd1c8157d24150064baab41e115"
+    integrity sha512-J+vjof74oMlCWXSvt0DOf2APEdZOCdubEvGDUAlqH//VBYcOYsGgRW7Xzorr44LvkjiuvecWc8fChxuZZbChtg==
+  
   graphql-upload@^8.0.0:
     version "8.1.0"
     resolved "https://registry.yarnpkg.com/graphql-upload/-/graphql-upload-8.1.0.tgz#6d0ab662db5677a68bfb1f2c870ab2544c14939a"
@@ -1861,7 +1889,7 @@ Lockfile:
     resolved "https://registry.yarnpkg.com/graphql/-/graphql-15.0.0.tgz#042a5eb5e2506a2e2111ce41eb446a8e570b8be9"
     integrity sha512-ZyVO1xIF9F+4cxfkdhOJINM+51B06Friuv4M66W7HzUOeFd+vNzUn4vtswYINPi6sysjf1M2Ri/rwZALqgwbaQ==
   
-  "graphql@^0.11.0 || ^0.12.0 || ^0.13.0 || ^14.0.0", graphql@^14.6.0:
+  "graphql@^0.11.0 || ^0.12.0 || ^0.13.0 || ^14.0.0", graphql@^14.5.3, graphql@^14.6.0:
     version "14.6.0"
     resolved "https://registry.yarnpkg.com/graphql/-/graphql-14.6.0.tgz#57822297111e874ea12f5cd4419616930cd83e49"
     integrity sha512-VKzfvHEKybTKjQVpTFrA5yUq2S9ihcZvfJAtsDBBCuV6wauPu1xl/f9ehgVf0FcEJJs4vz6ysb/ZMkGigQZseg==
@@ -2962,6 +2990,13 @@ Lockfile:
     version "2.0.0"
     resolved "https://registry.yarnpkg.com/prepend-http/-/prepend-http-2.0.0.tgz#e92434bfa5ea8c19f41cdfd401d741a3c819d897"
     integrity sha1-6SQ0v6XqjBn0HN/UAddBo8gZ2Jc=
+  
+  prettier-linter-helpers@^1.0.0:
+    version "1.0.0"
+    resolved "https://registry.yarnpkg.com/prettier-linter-helpers/-/prettier-linter-helpers-1.0.0.tgz#d23d41fe1375646de2d0104d3454a3008802cf7b"
+    integrity sha512-GbK2cP9nraSSUF9N2XwUwqfzlAFlMNYYl+ShE/V+H8a9uNl/oUqB1w2EL54Jh0OlyRSd8RfWYJ3coVS4TROP2w==
+    dependencies:
+      fast-diff "^1.1.2"
   
   prettier@^2.0.5:
     version "2.0.5"

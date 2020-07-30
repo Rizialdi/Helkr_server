@@ -87,13 +87,16 @@ exports.MutationAuthorizedCategories = extendType({
       type: 'Boolean',
       args: {
         id: stringArg({ nullable: true }),
-        referenceId: requiredStr({ required: true })
+        referenceId: requiredStr({})
       },
       resolve: async (_, { id, referenceId }, ctx) => {
         const userId = id ? id : getUserId(ctx);
         try {
           const authorizedcategories = await ctx.prisma.authorizedcategories.findOne(
-            { where: { userId }, select: { listofauthorizedcategories: true } }
+            {
+              where: { userId },
+              select: { listofauthorizedcategories: true }
+            }
           );
           if (!authorizedcategories) return false;
           const array: string[] = JSON.parse(
@@ -104,7 +107,9 @@ exports.MutationAuthorizedCategories = extendType({
           const newAuthorizedcategories = await ctx.prisma.authorizedcategories.update(
             {
               where: { userId },
-              data: { listofauthorizedcategories: JSON.stringify(newArray) }
+              data: {
+                listofauthorizedcategories: JSON.stringify(newArray)
+              }
             }
           );
           if (!newAuthorizedcategories) return false;

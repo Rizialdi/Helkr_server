@@ -79,7 +79,7 @@ type Mutation {
   addOffering(category: String!, description: String!, details: String!, referenceId: String!, type: String!): Boolean!
   addressUpdate(text: String!): Boolean!
   addVerificationpieces(id: String, listofpieces: String!, referenceId: String!): Boolean!
-  avatarUpload(file: String!): Boolean!
+  avatarUpload(file: uploadImageType): Boolean!
   candidateToOffering(id: String!): CandidateToOfferingSuccess!
   chooseCandidate(candidateId: String!, id: String!, preferreddays: [String!]!): Boolean!
   chooseEventDay(id: String!, timestamp: String!): Boolean!
@@ -120,7 +120,7 @@ input offeringWhereUniqueInput {
 
 type Query {
   allChatsAndMessages: [channel!]!
-  allOfferings(filters: [String!]): [offering!]!
+  allOfferings(filters: [String!]!): [offering!]!
   channel(id: String!): channel!
   channels: [channel!]!
   getAuthorizedCategories(id: String): authorizedcategories!
@@ -129,7 +129,7 @@ type Query {
   getUserInfo(numero: String!): AuthPayload!
   getUserStats(id: String!): Stats!
   getVerificationPieces(id: String): verificationpieces!
-  incompleteOfferings(filters: [String!]): [offering!]!
+  incompleteOfferings(filters: [String!]!): [offering!]!
   isCandidateTo: [offering!]!
   messages: [message!]!
   myIncompleteOffering: [offering!]!
@@ -156,7 +156,7 @@ type Subscription {
   newAvis(userId: String!): avis!
   newChannel(userId: String!): channel!
   newMessage(channelIds: [String!]!): message!
-  onOfferingAdded(tags: [String!]): offering!
+  onOfferingAdded(tags: [String!]!): offering!
   updateAppliedTo(userId: String!): updateAppliedToType!
   updatedEventDay(userId: String!): updateSelectedEventDay!
 }
@@ -169,6 +169,12 @@ type updateAppliedToType {
 type updateSelectedEventDay {
   eventday: String!
   offeringId: String!
+}
+
+input uploadImageType {
+  name: String!
+  type: String!
+  uri: String!
 }
 
 type utilisateur {

@@ -1,7 +1,7 @@
 import jwt, { Secret } from 'jsonwebtoken';
 import cloudinary from 'cloudinary';
 import fetch from 'node-fetch';
-
+import { Context, ProcessUpload } from './api/context';
 require('custom-env').env('prod');
 
 const {
@@ -21,22 +21,24 @@ cloudinary.v2.config({
   api_secret: CLOUDINARY_API_SECRET
 });
 
-const getUserId = (context: any) => {
+const getUserId = (context: Context): string => {
   const Authorization = context.request.get('Authorization');
   if (Authorization) {
     const token = Authorization.replace('Bearer ', '');
-    //@ts-ignore
-    const { userId } = jwt.verify(token, APP_SECRET_CODE as Secret);
+
+    const { userId } = jwt.verify(token, APP_SECRET_CODE as Secret) as {
+      userId: string;
+    };
     return userId;
   }
 
   throw new Error('Not authenticated');
 };
 
-const processUpload = async (upload: any) => {
+const processUpload: ProcessUpload = async upload => {
   const dataInBase64 = await upload.uri;
   let resultUrl = '';
-  const cloudinaryUpload = async (data: any) => {
+  const cloudinaryUpload = async (data: string): Promise<void> => {
     try {
       const results = await cloudinary.v2.uploader.upload(data, {
         upload_preset: CLOUDINARY_UPLOAD_PRESET,
@@ -52,7 +54,9 @@ const processUpload = async (upload: any) => {
   return resultUrl;
 };
 
-const authentication_step_one = async (numero: string) => {
+const authentication_step_one = async (
+  numero: string
+): Promise<{ id: string; status: string }> => {
   const opts = {
     //TODO change this number
     recipient: NUMERO ? NUMERO : numero,
@@ -74,7 +78,10 @@ const authentication_step_one = async (numero: string) => {
   return { id, status };
 };
 
-const authentication_step_two = async (id: number, token: string) => {
+const authentication_step_two = async (
+  id: number,
+  token: string
+): Promise<{ status: string; errors: string }> => {
   const response = await fetch(
     `${MESSAGEBIRD_BASE_URL}verify/${id}/?token=${token}`,
     {
@@ -89,10 +96,13 @@ const authentication_step_two = async (id: number, token: string) => {
   return { status, errors };
 };
 
+const addFunction = (a: number, b: number): number => a + b;
+
 export {
   APP_SECRET_CODE,
   getUserId,
   processUpload,
   authentication_step_one,
-  authentication_step_two
+  authentication_step_two,
+  addFunction
 };

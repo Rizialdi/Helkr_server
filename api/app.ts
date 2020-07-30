@@ -1,11 +1,10 @@
-import { PrismaClient } from '@prisma/client';
 import cors from 'cors';
 import bodyParser from 'body-parser';
 import { GraphQLServer } from 'graphql-yoga';
 import { createContext } from './context';
 import { schema } from './schema';
 
-const playground = process.env.NODE_ENV === 'dev' ? '/' : false;
+// const playground = process.env.NODE_ENV === 'dev' ? '/' : false;
 const port = process.env.PORT || '4000';
 
 // const prisma = new PrismaClient();

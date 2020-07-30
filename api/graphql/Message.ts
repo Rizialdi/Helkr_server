@@ -57,7 +57,9 @@ exports.MutationMessages = extendType({
             });
             if (!message) return false;
 
-            ctx.pubsub.publish(PUB_NEW_MESSAGE, { newMessage: message });
+            ctx.pubsub.publish(PUB_NEW_MESSAGE, {
+              newMessage: message
+            });
             return true;
           } catch (error) {
             throw new Error('La creation du message a echoue');
@@ -65,28 +67,32 @@ exports.MutationMessages = extendType({
         }
 
         // if no channelId is given, check if one already exist
-        const results = await ctx.prisma.channel.findMany({
-          where: {
-            AND: [
-              { users: { some: { id: userId } } },
-              { users: { some: { id: recipient } } }
-            ]
-          }
-        });
+        const results = recipient
+          ? await ctx.prisma.channel.findMany({
+              where: {
+                AND: [
+                  { users: { some: { id: userId } } },
+                  { users: { some: { id: recipient } } }
+                ]
+              }
+            })
+          : [];
 
         if (results[0]) {
           try {
-            const channelId = results[0].id;
+            const newChannelId = results[0].id;
             const message = await ctx.prisma.message.create({
               data: {
                 text,
                 sentBy: { connect: { id: userId } },
-                channel: { connect: { id: channelId } }
+                channel: { connect: { id: newChannelId } }
               }
             });
             if (!message) return false;
 
-            ctx.pubsub.publish(PUB_NEW_MESSAGE, { newMessage: message });
+            ctx.pubsub.publish(PUB_NEW_MESSAGE, {
+              newMessage: message
+            });
             return true;
           } catch (error) {
             throw new Error('La creation du message a echoue');
@@ -95,25 +101,34 @@ exports.MutationMessages = extendType({
 
         // default case, create a channel and continue
         try {
-          const channel = await ctx.prisma.channel.create({
-            data: {
-              users: { connect: [{ id: recipient }, { id: userId }] },
-              messages: {
-                create: {
-                  text,
-                  sentBy: {
-                    connect: { id: userId }
+          const channel = recipient
+            ? await ctx.prisma.channel.create({
+                data: {
+                  users: {
+                    connect: [{ id: recipient }, { id: userId }]
+                  },
+                  messages: {
+                    create: {
+                      text,
+                      sentBy: {
+                        connect: { id: userId }
+                      }
+                    }
+                  }
+                },
+                include: {
+                  messages: true,
+                  users: {
+                    select: {
+                      id: true,
+                      nom: true,
+                      prenom: true,
+                      avatar: true
+                    }
                   }
                 }
-              }
-            },
-            include: {
-              messages: true,
-              users: {
-                select: { id: true, nom: true, prenom: true, avatar: true }
-              }
-            }
-          });
+              })
+            : null;
 
           if (!channel) {
             throw new Error(
@@ -123,7 +138,9 @@ exports.MutationMessages = extendType({
 
           if (!channel) return false;
 
-          ctx.pubsub.publish(PUB_NEW_CHANNEL, { newChannel: channel });
+          ctx.pubsub.publish(PUB_NEW_CHANNEL, {
+            newChannel: channel
+          });
           return true;
         } catch (error) {
           throw new Error('La creation de Channel ou de message a echoue');
