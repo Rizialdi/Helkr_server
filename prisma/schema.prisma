@@ -100,6 +100,7 @@ model utilisateur {
   channels             channel[]             @relation(references: [id])
   verificationpieces   verificationpieces[]
   authorizedcategories authorizedcategories?
+  notificationstoken   notificationstoken?
 }
 
 model verificationpieces {
@@ -111,4 +112,11 @@ model verificationpieces {
   userId       String      @map("utilisateur") @unique
   utilisateur  utilisateur @relation(fields: [userId], references: [id])
   @@id([referenceid, userId, id])
+}
+
+model notificationstoken {
+  id          String       @id
+  token       String?
+  userid      String?      @unique
+  utilisateur utilisateur? @relation(fields: [userid], references: [id])
 }
