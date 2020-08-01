@@ -109,6 +109,11 @@ export interface NexusGenRootTypes {
     moyenne: number; // Float!
     userId: string; // String!
   }
+  notificationstoken: { // root type
+    id: string; // String!
+    token?: string | null; // String
+    userid?: string | null; // String
+  }
   offering: { // root type
     category: string; // String!
     completed: boolean; // Boolean!
@@ -192,6 +197,7 @@ export interface NexusGenFieldTypes {
     createMessage: boolean; // Boolean!
     deleteOffering: boolean; // Boolean!
     descriptionUpdate: boolean; // Boolean!
+    notificationsTokenUpdate: boolean; // Boolean!
     registerUser: NexusGenRootTypes['AuthPayload']; // AuthPayload!
     removeAuthorizedCategories: boolean; // Boolean!
     tagsUpdate: boolean; // Boolean!
@@ -200,6 +206,7 @@ export interface NexusGenFieldTypes {
   Query: { // field return type
     allChatsAndMessages: NexusGenRootTypes['channel'][]; // [channel!]!
     allOfferings: NexusGenRootTypes['offering'][]; // [offering!]!
+    allUsersToken: NexusGenRootTypes['notificationstoken'][]; // [notificationstoken!]!
     channel: NexusGenRootTypes['channel']; // channel!
     channels: NexusGenRootTypes['channel'][]; // [channel!]!
     getAuthorizedCategories: NexusGenRootTypes['authorizedcategories']; // authorizedcategories!
@@ -269,6 +276,12 @@ export interface NexusGenFieldTypes {
     moyenne: number; // Float!
     userId: string; // String!
     utilisateur: NexusGenRootTypes['utilisateur']; // utilisateur!
+  }
+  notificationstoken: { // field return type
+    id: string; // String!
+    token: string | null; // String
+    userid: string | null; // String
+    utilisateur: NexusGenRootTypes['utilisateur'] | null; // utilisateur
   }
   offering: { // field return type
     author: NexusGenRootTypes['utilisateur']; // utilisateur!
@@ -385,6 +398,9 @@ export interface NexusGenArgTypes {
     }
     descriptionUpdate: { // args
       text: string; // String!
+    }
+    notificationsTokenUpdate: { // args
+      token: string; // String!
     }
     registerUser: { // args
       nom: string; // String!
@@ -540,7 +556,7 @@ export interface NexusGenAbstractResolveReturnTypes {
 
 export interface NexusGenInheritedFields {}
 
-export type NexusGenObjectNames = "AuthPayload" | "CandidateToOfferingSuccess" | "Mutation" | "Query" | "Stats" | "Subscription" | "authorizedcategories" | "avis" | "channel" | "createChannel" | "message" | "moyenne" | "offering" | "updateAppliedToType" | "updateSelectedEventDay" | "utilisateur" | "verificationpieces";
+export type NexusGenObjectNames = "AuthPayload" | "CandidateToOfferingSuccess" | "Mutation" | "Query" | "Stats" | "Subscription" | "authorizedcategories" | "avis" | "channel" | "createChannel" | "message" | "moyenne" | "notificationstoken" | "offering" | "updateAppliedToType" | "updateSelectedEventDay" | "utilisateur" | "verificationpieces";
 
 export type NexusGenInputNames = "ReferenceidUserIdIdCompoundUniqueInput" | "avisWhereUniqueInput" | "channelWhereUniqueInput" | "messageWhereUniqueInput" | "offeringWhereUniqueInput" | "uploadImageType" | "utilisateurWhereUniqueInput" | "verificationpiecesWhereUniqueInput";
 

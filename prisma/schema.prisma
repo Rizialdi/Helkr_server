@@ -115,7 +115,7 @@ model verificationpieces {
 }
 
 model notificationstoken {
-  id          String       @id
+  id          String       @default(cuid()) @id
   token       String?
   userid      String?      @unique
   utilisateur utilisateur? @relation(fields: [userid], references: [id])

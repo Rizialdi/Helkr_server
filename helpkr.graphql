@@ -89,10 +89,18 @@ type Mutation {
   createMessage(channelId: String, recipient: String, text: String!): Boolean!
   deleteOffering(id: String!): Boolean!
   descriptionUpdate(text: String!): Boolean!
+  notificationsTokenUpdate(token: String!): Boolean!
   registerUser(nom: String!, numero: String!, prenom: String!): AuthPayload!
   removeAuthorizedCategories(id: String, referenceId: String!): Boolean!
   tagsUpdate(tags: [String!]!): Boolean!
   updateOffering(description: String!, id: String!): Boolean!
+}
+
+type notificationstoken {
+  id: String!
+  token: String
+  userid: String
+  utilisateur: utilisateur
 }
 
 type offering {
@@ -121,6 +129,7 @@ input offeringWhereUniqueInput {
 type Query {
   allChatsAndMessages: [channel!]!
   allOfferings(filters: [String!]!): [offering!]!
+  allUsersToken: [notificationstoken!]!
   channel(id: String!): channel!
   channels: [channel!]!
   getAuthorizedCategories(id: String): authorizedcategories!
