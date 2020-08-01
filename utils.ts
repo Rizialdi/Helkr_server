@@ -98,11 +98,40 @@ const authentication_step_two = async (
 
 const addFunction = (a: number, b: number): number => a + b;
 
+// Can use this function below, OR use Expo's Push Notification Tool-> https://expo.io/dashboard/notifications
+const sendPushNotification = async (
+  expoPushToken: string,
+  payload: stringOrObject[]
+) => {
+  if (!expoPushToken) return;
+  const [title, body, data] = payload;
+  const message = {
+    to: expoPushToken,
+    sound: 'default',
+    title,
+    body,
+    data: { data }
+  };
+
+  await fetch('https://exp.host/--/api/v2/push/send', {
+    method: 'POST',
+    headers: {
+      Accept: 'application/json',
+      'Accept-encoding': 'gzip, deflate',
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify(message)
+  });
+};
+
+type stringOrObject = string | object;
+
 export {
   APP_SECRET_CODE,
   getUserId,
   processUpload,
   authentication_step_one,
   authentication_step_two,
-  addFunction
+  addFunction,
+  sendPushNotification
 };

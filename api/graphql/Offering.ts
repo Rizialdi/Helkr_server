@@ -15,6 +15,7 @@ import {
 import { getUserId } from '../../utils';
 import { utilisateur } from '@prisma/client';
 import { GraphQLJSONObject } from 'graphql-type-json';
+import { sendPushNotification } from '../utils';
 
 export const requiredStr = (
   opts: core.ScalarArgConfig<string>
@@ -522,8 +523,18 @@ exports.SubscriptionUpdateEventDay = subscriptionField('updatedEventDay', {
       return updated.authorId === userId;
     }
   ),
-  resolve: ({ updated }) => {
-    return { offeringId: updated.id, eventday: updated.eventday };
+  resolve: async ({ updated }, __, ctx) => {
+    const user = await ctx.prisma.notificationstoken.findOne({
+      where: { userid: updated.authorId }
+    });
+    const payload = { offeringId: updated.id, eventday: updated.eventday };
+    if (user && user.token)
+      sendPushNotification(user.token, [
+        'Mise à jour sur votre annonce',
+        "L'agent a choisi une date pour la prestation",
+        payload
+      ]);
+    return payload;
   }
 });
 
