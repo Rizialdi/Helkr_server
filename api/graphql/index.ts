@@ -7,3 +7,4 @@ export * from './Channel';
 export * from './VerificationPiece';
 export * from './AuthorizedCategories';
 export * from './NotificationsToken';
+export * from './Tags';

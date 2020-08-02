@@ -110,7 +110,7 @@ const sendPushNotification = async (
     sound: 'default',
     title,
     body,
-    data: { data }
+    data
   };
 
   await fetch('https://exp.host/--/api/v2/push/send', {
@@ -124,7 +124,7 @@ const sendPushNotification = async (
   });
 };
 
-type stringOrObject = string | object;
+export type stringOrObject = string | object;
 
 export {
   APP_SECRET_CODE,

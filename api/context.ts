@@ -1,6 +1,6 @@
 import { PrismaClient } from '@prisma/client';
 import { PubSub } from 'graphql-yoga';
-import { processUpload } from '../utils';
+import { processUpload, sendPushNotification, stringOrObject } from '../utils';
 import { ReactNativeFile } from 'apollo-upload-client';
 
 const prisma = new PrismaClient();
@@ -11,11 +11,16 @@ export interface CustomRequest extends Request {
 }
 
 export type ProcessUpload = (upload: ReactNativeFile) => Promise<string>;
+export type SendPushNotification = (
+  expoPushToken: string,
+  payload: stringOrObject[]
+) => void;
 export interface Context {
   request: CustomRequest;
   prisma: PrismaClient;
   pubsub: PubSub;
   processUpload: ProcessUpload;
+  sendPushNotification: SendPushNotification;
 }
 
 export const createContext = ({
@@ -23,5 +28,5 @@ export const createContext = ({
 }: {
   request: CustomRequest;
 }): Context => {
-  return { request, prisma, pubsub, processUpload };
+  return { request, prisma, pubsub, processUpload, sendPushNotification };
 };

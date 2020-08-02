@@ -52,6 +52,13 @@ model moyenne {
   utilisateur utilisateur @relation(fields: [userId], references: [id])
 }
 
+model notificationstoken {
+  id          String       @default(cuid()) @id
+  token       String?
+  userid      String?      @unique
+  utilisateur utilisateur? @relation(fields: [userid], references: [id])
+}
+
 model offering {
   authorId            String        @map("author")
   category            String
@@ -86,7 +93,7 @@ model utilisateur {
   numero               String                @unique
   prenom               String
   professional         Boolean               @default(false)
-  tags                 String[]
+  tags                 tags?
   updatedAt            DateTime              @updatedAt
   verified             Boolean               @default(false)
   avisreceived         avis[]                @relation("avisreceived")
@@ -103,6 +110,13 @@ model utilisateur {
   notificationstoken   notificationstoken?
 }
 
+model tags {
+  id          String       @default(cuid()) @id
+  tags        String
+  userid      String?      @unique
+  utilisateur utilisateur? @relation(fields: [userid], references: [id])
+}
+
 model verificationpieces {
   createdAt    DateTime    @default(now())
   id           String      @default(cuid())
@@ -112,11 +126,4 @@ model verificationpieces {
   userId       String      @map("utilisateur") @unique
   utilisateur  utilisateur @relation(fields: [userId], references: [id])
   @@id([referenceid, userId, id])
-}
-
-model notificationstoken {
-  id          String       @default(cuid()) @id
-  token       String?
-  userid      String?      @unique
-  utilisateur utilisateur? @relation(fields: [userid], references: [id])
 }

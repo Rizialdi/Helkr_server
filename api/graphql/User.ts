@@ -7,7 +7,6 @@ import {
 } from '@nexus/schema';
 
 import { APP_SECRET_CODE, getUserId, addFunction } from '../../utils';
-import { requiredStr } from './Offering';
 import { avis } from '@prisma/client';
 
 exports.User = objectType({
@@ -18,7 +17,17 @@ exports.User = objectType({
     t.model.prenom();
     t.model.avatar();
     t.model.numero();
-    t.model.tags();
+    t.list.field('tags', {
+      nullable: true,
+      type: 'String',
+      resolve: async (parent, _, { prisma }) => {
+        const tags = await prisma.tags.findOne({
+          where: { userid: parent.id }
+        });
+        if (!tags || !tags.tags) return [];
+        return JSON.parse(tags.tags);
+      }
+    });
     t.model.address();
     t.model.description();
     t.model.professional();
@@ -266,26 +275,6 @@ exports.MutationUser = extendType({
           const user = await ctx.prisma.utilisateur.update({
             where: { id: userId },
             data: { address: text }
-          });
-          if (!user) return false;
-          return true;
-        } catch (error) {
-          throw new Error(error);
-        }
-      }
-    });
-    t.field('tagsUpdate', {
-      type: 'Boolean',
-      args: {
-        tags: requiredStr({ list: true })
-      },
-      resolve: async (_, { tags }, ctx) => {
-        const userId = getUserId(ctx);
-
-        try {
-          const user = await ctx.prisma.utilisateur.update({
-            where: { id: userId },
-            data: { tags: { set: tags } }
           });
           if (!user) return false;
           return true;

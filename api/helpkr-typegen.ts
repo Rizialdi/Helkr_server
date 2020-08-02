@@ -126,6 +126,11 @@ export interface NexusGenRootTypes {
     type: string; // String!
     updatedAt: any; // DateTime!
   }
+  tags: { // root type
+    id: string; // String!
+    tags: string; // String!
+    userid?: string | null; // String
+  }
   updateAppliedToType: { // root type
     id: string; // String!
     status: string; // String!
@@ -143,7 +148,6 @@ export interface NexusGenRootTypes {
     numero: string; // String!
     prenom: string; // String!
     professional: boolean; // Boolean!
-    tags: string[]; // [String!]!
     verified: boolean; // Boolean!
   }
   verificationpieces: { // root type
@@ -301,6 +305,12 @@ export interface NexusGenFieldTypes {
     type: string; // String!
     updatedAt: any; // DateTime!
   }
+  tags: { // field return type
+    id: string; // String!
+    tags: string; // String!
+    userid: string | null; // String
+    utilisateur: NexusGenRootTypes['utilisateur'] | null; // utilisateur
+  }
   updateAppliedToType: { // field return type
     id: string; // String!
     status: string; // String!
@@ -325,7 +335,7 @@ export interface NexusGenFieldTypes {
     offerings: NexusGenRootTypes['offering'][]; // [offering!]!
     prenom: string; // String!
     professional: boolean; // Boolean!
-    tags: string[]; // [String!]!
+    tags: string[] | null; // [String!]
     verificationpieces: NexusGenRootTypes['verificationpieces'][]; // [verificationpieces!]!
     verified: boolean; // Boolean!
   }
@@ -556,7 +566,7 @@ export interface NexusGenAbstractResolveReturnTypes {
 
 export interface NexusGenInheritedFields {}
 
-export type NexusGenObjectNames = "AuthPayload" | "CandidateToOfferingSuccess" | "Mutation" | "Query" | "Stats" | "Subscription" | "authorizedcategories" | "avis" | "channel" | "createChannel" | "message" | "moyenne" | "notificationstoken" | "offering" | "updateAppliedToType" | "updateSelectedEventDay" | "utilisateur" | "verificationpieces";
+export type NexusGenObjectNames = "AuthPayload" | "CandidateToOfferingSuccess" | "Mutation" | "Query" | "Stats" | "Subscription" | "authorizedcategories" | "avis" | "channel" | "createChannel" | "message" | "moyenne" | "notificationstoken" | "offering" | "tags" | "updateAppliedToType" | "updateSelectedEventDay" | "utilisateur" | "verificationpieces";
 
 export type NexusGenInputNames = "ReferenceidUserIdIdCompoundUniqueInput" | "avisWhereUniqueInput" | "channelWhereUniqueInput" | "messageWhereUniqueInput" | "offeringWhereUniqueInput" | "uploadImageType" | "utilisateurWhereUniqueInput" | "verificationpiecesWhereUniqueInput";
 

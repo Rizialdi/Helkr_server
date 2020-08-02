@@ -170,6 +170,13 @@ type Subscription {
   updatedEventDay(userId: String!): updateSelectedEventDay!
 }
 
+type tags {
+  id: String!
+  tags: String!
+  userid: String
+  utilisateur: utilisateur
+}
+
 type updateAppliedToType {
   id: String!
   status: String!
@@ -202,7 +209,7 @@ type utilisateur {
   offerings(after: offeringWhereUniqueInput, before: offeringWhereUniqueInput, first: Int, last: Int): [offering!]!
   prenom: String!
   professional: Boolean!
-  tags: [String!]!
+  tags: [String!]
   verificationpieces(after: verificationpiecesWhereUniqueInput, before: verificationpiecesWhereUniqueInput, first: Int, last: Int): [verificationpieces!]!
   verified: Boolean!
 }

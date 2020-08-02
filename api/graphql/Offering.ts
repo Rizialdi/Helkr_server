@@ -15,7 +15,7 @@ import {
 import { getUserId } from '../../utils';
 import { utilisateur } from '@prisma/client';
 import { GraphQLJSONObject } from 'graphql-type-json';
-import { sendPushNotification } from '../utils';
+import { sendPushNotification } from '../../utils';
 
 export const requiredStr = (
   opts: core.ScalarArgConfig<string>
@@ -311,6 +311,33 @@ exports.MutationOfferings = extendType({
             }
           });
 
+          const pushTokens = await ctx.prisma.tags.findMany({
+            where: { tags: { contains: type } },
+            include: {
+              utilisateur: {
+                include: { notificationstoken: { select: { token: true } } }
+              }
+            }
+          });
+
+          pushTokens &&
+            pushTokens.map(item => {
+              if (
+                !item ||
+                !item.utilisateur ||
+                !item.utilisateur.notificationstoken ||
+                !item.utilisateur.notificationstoken.token
+              )
+                return;
+
+              const token = item.utilisateur.notificationstoken.token;
+              ctx.sendPushNotification(token, [
+                addedOffering.type,
+                'Une offre correspondant à vos critères a été ajouté',
+                { screenToRedirect: 'Offres' }
+              ]);
+            });
+
           if (!addedOffering) return false;
           ctx.pubsub.publish(PUB_NEW_OFFERING, {
             addedOffering
@@ -353,7 +380,7 @@ exports.MutationOfferings = extendType({
         try {
           const data = await ctx.prisma.offering.findOne({
             where: { id },
-            select: { selectedCandidate: true }
+            select: { selectedCandidate: true, authorId: true }
           });
           const condition =
             data &&
@@ -367,6 +394,24 @@ exports.MutationOfferings = extendType({
             data: { eventday: timestamp }
           });
           if (!offering) return false;
+
+          if (data && data.authorId) {
+            const notificationToken = await ctx.prisma.notificationstoken.findOne(
+              {
+                where: { userid: data.authorId },
+                select: { token: true }
+              }
+            );
+
+            notificationToken &&
+              notificationToken.token &&
+              ctx.sendPushNotification(notificationToken.token, [
+                'Mise à jour sur une offre',
+                'Le prestataire vient de choisir une date de rendez-vous',
+                { screenToRedirect: 'Candidats', offeringId: offering.id }
+              ]);
+          }
+
           ctx.pubsub.publish(PUB_SELECTED_EVENT_DAY, {
             updated: offering
           });
@@ -397,6 +442,22 @@ exports.MutationOfferings = extendType({
           });
 
           if (!intermediate || !offering) return { success: false };
+
+          // Notify the author of a new candidate
+          const notificationToken = await ctx.prisma.notificationstoken.findOne(
+            {
+              where: { userid: intermediate.authorId },
+              select: { token: true }
+            }
+          );
+
+          notificationToken &&
+            notificationToken.token &&
+            ctx.sendPushNotification(notificationToken.token, [
+              'Mise à jour sur une offre',
+              'Un candidat vient de postuler à une de vos offres. Ne perdez plus de temps ⏱️.',
+              { screenToRedirect: 'Candidats', offeringId: offering.id }
+            ]);
 
           return { success: true };
         } catch (error) {
@@ -456,6 +517,56 @@ exports.MutationOfferings = extendType({
             },
             include: { candidates: { select: { id: true } } }
           });
+
+          if (!updated) return false;
+
+          if (offering && offering.authorId) {
+            // Notification for selected users
+            const notificationToken = await ctx.prisma.notificationstoken.findOne(
+              {
+                where: {
+                  userid: candidateId
+                },
+                select: { token: true }
+              }
+            );
+
+            notificationToken &&
+              notificationToken.token &&
+              ctx.sendPushNotification(notificationToken.token, [
+                'Mise à jour sur une candidature',
+                'Vous avez été choisi pour une mission',
+                {
+                  screenToRedirect: 'Postulées',
+                  offeringId: offering.id
+                }
+              ]);
+
+            // Notification for non-selected users
+            updated.candidates
+              .filter(i => i.id != candidateId)
+              .map(async candidate => {
+                const notificationToken = await ctx.prisma.notificationstoken.findOne(
+                  {
+                    where: {
+                      userid: candidate.id
+                    },
+                    select: { token: true }
+                  }
+                );
+
+                notificationToken &&
+                  notificationToken.token &&
+                  ctx.sendPushNotification(notificationToken.token, [
+                    'Mise à jour sur une candidature',
+                    'Vous avez été refusé pour une mission',
+                    {
+                      screenToRedirect: 'Postulées',
+                      offeringId: offering.id
+                    }
+                  ]);
+              });
+          }
 
           ctx.pubsub.publish(PUB_UPDATE_APPLIED_TO, {
             updated

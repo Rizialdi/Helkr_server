@@ -92,7 +92,9 @@ exports.MutationAvis = extendType({
 
 exports.SubscriptionAvis = subscriptionField('newAvis', {
   type: 'avis',
-  args: { userId: stringArg({ required: true }) },
+  args: {
+    userId: stringArg({ required: true })
+  },
   subscribe: withFilter(
     (_, __, { pubsub }) => pubsub.asyncIterator(PUB_NEW_AVIS),
     (payload, variables) => {
@@ -100,6 +102,7 @@ exports.SubscriptionAvis = subscriptionField('newAvis', {
     }
   ),
   resolve: payload => {
-    return payload.newAvis;
+    const { id, comment, createdAt, score, scorer } = payload.newAvis;
+    return { id, comment, createdAt, score, scorer };
   }
 });

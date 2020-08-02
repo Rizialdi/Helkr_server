@@ -45,6 +45,21 @@ exports.MutationMessages = extendType({
       resolve: async (_, { channelId, recipient, text }, ctx) => {
         const userId = getUserId(ctx);
         if (userId === recipient) return false;
+
+        const pushToken = await ctx.prisma.notificationstoken.findOne({
+          where: { userid: recipient },
+          select: { token: true }
+        });
+
+        const SendPushNotificationToRecipient = async () => {
+          pushToken &&
+            pushToken.token &&
+            ctx.sendPushNotification(pushToken.token, [
+              'Nouveau message',
+              'Vous avez reçu un nouveau message',
+              { screenToRedirect: 'Discussions' }
+            ]);
+        };
         // if a channelId is given, aka not delete
         if (channelId) {
           try {
@@ -57,6 +72,7 @@ exports.MutationMessages = extendType({
             });
             if (!message) return false;
 
+            SendPushNotificationToRecipient();
             ctx.pubsub.publish(PUB_NEW_MESSAGE, {
               newMessage: message
             });
@@ -90,6 +106,7 @@ exports.MutationMessages = extendType({
             });
             if (!message) return false;
 
+            SendPushNotificationToRecipient();
             ctx.pubsub.publish(PUB_NEW_MESSAGE, {
               newMessage: message
             });
@@ -130,17 +147,13 @@ exports.MutationMessages = extendType({
               })
             : null;
 
-          if (!channel) {
-            throw new Error(
-              'La creation de la chaine de communication a echoue'
-            );
-          }
-
           if (!channel) return false;
 
+          SendPushNotificationToRecipient();
           ctx.pubsub.publish(PUB_NEW_CHANNEL, {
             newChannel: channel
           });
+
           return true;
         } catch (error) {
           throw new Error('La creation de Channel ou de message a echoue');
