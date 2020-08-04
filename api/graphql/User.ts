@@ -113,15 +113,13 @@ exports.QueryUser = extendType({
     });
     t.field('userById', {
       type: 'utilisateur',
+      nullable: true,
       args: { id: stringArg({ required: true }) },
       resolve: async (_, { id }, { prisma }) => {
         try {
           const user = await prisma.utilisateur.findOne({
             where: { id }
           });
-          if (!user) {
-            throw new Error('Utilisateur non existant');
-          }
 
           return user;
         } catch (error) {

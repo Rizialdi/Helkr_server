@@ -145,7 +145,7 @@ type Query {
   myIncompleteOfferingWithCandidates: [offering!]!
   offeringById(id: String!): offering!
   offeringsUser(numero: String!): [offering!]!
-  userById(id: String!): utilisateur!
+  userById(id: String!): utilisateur
   users: [utilisateur!]!
 }
 

@@ -226,7 +226,7 @@ export interface NexusGenFieldTypes {
     myIncompleteOfferingWithCandidates: NexusGenRootTypes['offering'][]; // [offering!]!
     offeringById: NexusGenRootTypes['offering']; // offering!
     offeringsUser: NexusGenRootTypes['offering'][]; // [offering!]!
-    userById: NexusGenRootTypes['utilisateur']; // utilisateur!
+    userById: NexusGenRootTypes['utilisateur'] | null; // utilisateur
     users: NexusGenRootTypes['utilisateur'][]; // [utilisateur!]!
   }
   Stats: { // field return type
