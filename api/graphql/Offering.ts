@@ -326,7 +326,8 @@ exports.MutationOfferings = extendType({
                 !item ||
                 !item.utilisateur ||
                 !item.utilisateur.notificationstoken ||
-                !item.utilisateur.notificationstoken.token
+                !item.utilisateur.notificationstoken.token ||
+                item.utilisateur.id === userId
               )
                 return;
 
