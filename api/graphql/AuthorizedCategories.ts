@@ -35,11 +35,21 @@ exports.MutationAuthorizedCategories = extendType({
     t.field('addAuthorizedCategories', {
       type: 'Boolean',
       args: {
-        id: stringArg({ nullable: true }),
+        id: stringArg({ required: true }),
         authorizedcategory: stringArg({ required: true })
       },
       resolve: async (_, { id, authorizedcategory }, ctx) => {
-        const userId = id ? id : getUserId(ctx);
+        const userId = id;
+
+        // Function for updating status code on sent pieces
+        const updateStatus = async (referenceid: string) => {
+          const res = await ctx.prisma.verificationpieces.updateMany({
+            where: { AND: [{ userId }, { referenceid }] },
+            data: { status: 'accepte' }
+          });
+          if (!res) return;
+          return res;
+        };
 
         const authorizedcategories = await ctx.prisma.authorizedcategories.findOne(
           {
@@ -47,6 +57,24 @@ exports.MutationAuthorizedCategories = extendType({
             select: { listofauthorizedcategories: true }
           }
         );
+
+        const notificationToken = await ctx.prisma.notificationstoken.findOne({
+          where: {
+            userid: userId
+          },
+          select: { token: true }
+        });
+
+        notificationToken &&
+          notificationToken.token &&
+          ctx.sendPushNotification(notificationToken.token, [
+            'Validation de profil',
+            'Votre profil a été validé pour une nouvelle catégorie',
+            {
+              screenToRedirect: 'Reload'
+            }
+          ]);
+
         if (
           authorizedcategories &&
           authorizedcategories.listofauthorizedcategories
@@ -69,6 +97,10 @@ exports.MutationAuthorizedCategories = extendType({
           });
 
           if (!data) return false;
+
+          const statusUpdated = await updateStatus(authorizedcategory);
+
+          if (!statusUpdated) return false;
           return true;
         }
 
@@ -80,17 +112,31 @@ exports.MutationAuthorizedCategories = extendType({
         });
 
         if (!newAuth) return false;
+
+        const statusUpdated = await updateStatus(authorizedcategory);
+
+        if (!statusUpdated) return false;
         return true;
       }
     });
     t.field('removeAuthorizedCategories', {
       type: 'Boolean',
       args: {
-        id: stringArg({ nullable: true }),
+        id: stringArg({ required: true }),
         referenceId: requiredStr({})
       },
       resolve: async (_, { id, referenceId }, ctx) => {
-        const userId = id ? id : getUserId(ctx);
+        const userId = id;
+
+        const updateStatus = async (referenceid: string) => {
+          const res = await ctx.prisma.verificationpieces.updateMany({
+            where: { AND: [{ userId }, { referenceid }] },
+            data: { status: 'refuse' }
+          });
+          if (!res) return;
+          return res;
+        };
+
         try {
           const authorizedcategories = await ctx.prisma.authorizedcategories.findOne(
             {
@@ -113,6 +159,25 @@ exports.MutationAuthorizedCategories = extendType({
             }
           );
           if (!newAuthorizedcategories) return false;
+          const statusUpdated = await updateStatus(referenceId);
+          if (!statusUpdated) return false;
+          const notificationToken = await ctx.prisma.notificationstoken.findOne(
+            {
+              where: {
+                userid: userId
+              },
+              select: { token: true }
+            }
+          );
+          notificationToken &&
+            notificationToken.token &&
+            ctx.sendPushNotification(notificationToken.token, [
+              "Suppression d'une autorisation",
+              "Une autorisation à une catégorie vient d'être supprimée de votre profil",
+              {
+                screenToRedirect: 'Reload'
+              }
+            ]);
           return true;
         } catch (error) {
           throw new Error(`Remove of authorized category impossible, ${error}`);

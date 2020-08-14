@@ -1,6 +1,7 @@
 import { objectType, extendType, stringArg } from '@nexus/schema';
 import { getUserId } from '../../utils';
 import { ReactNativeFile } from 'apollo-upload-client';
+import { requiredStr } from './Offering';
 
 exports.VerificationPiece = objectType({
   name: 'verificationpieces',
@@ -115,6 +116,50 @@ exports.Mutation = extendType({
           return true;
         } catch (error) {
           throw new Error(`${error}`);
+        }
+      }
+    });
+    t.field('statusChangeToDenyAuthorization', {
+      type: 'Boolean',
+      args: {
+        id: stringArg({ required: true }),
+        referenceId: requiredStr({})
+      },
+      resolve: async (_, { id, referenceId }, ctx) => {
+        const userId = id;
+
+        const updateStatus = async (referenceid: string) => {
+          const res = await ctx.prisma.verificationpieces.updateMany({
+            where: { AND: [{ userId }, { referenceid }] },
+            data: { status: 'refuse' }
+          });
+          if (!res) return;
+          return res;
+        };
+
+        try {
+          const statusUpdated = await updateStatus(referenceId);
+          if (!statusUpdated) return false;
+          const notificationToken = await ctx.prisma.notificationstoken.findOne(
+            {
+              where: {
+                userid: userId
+              },
+              select: { token: true }
+            }
+          );
+          notificationToken &&
+            notificationToken.token &&
+            ctx.sendPushNotification(notificationToken.token, [
+              'Refus à une catégorie',
+              "Votre profil n'a pas pu être validé pour une catégorie",
+              {
+                screenToRedirect: 'Reload'
+              }
+            ]);
+          return true;
+        } catch (error) {
+          throw new Error(`Profil status denial impossible, ${error}`);
         }
       }
     });

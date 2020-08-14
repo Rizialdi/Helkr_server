@@ -204,6 +204,7 @@ export interface NexusGenFieldTypes {
     notificationsTokenUpdate: boolean; // Boolean!
     registerUser: NexusGenRootTypes['AuthPayload']; // AuthPayload!
     removeAuthorizedCategories: boolean; // Boolean!
+    statusChangeToDenyAuthorization: boolean; // Boolean!
     tagsUpdate: boolean; // Boolean!
     updateOffering: boolean; // Boolean!
   }
@@ -353,7 +354,7 @@ export interface NexusGenArgTypes {
   Mutation: {
     addAuthorizedCategories: { // args
       authorizedcategory: string; // String!
-      id?: string | null; // String
+      id: string; // String!
     }
     addOffering: { // args
       category: string; // String!
@@ -418,7 +419,11 @@ export interface NexusGenArgTypes {
       prenom: string; // String!
     }
     removeAuthorizedCategories: { // args
-      id?: string | null; // String
+      id: string; // String!
+      referenceId: string; // String!
+    }
+    statusChangeToDenyAuthorization: { // args
+      id: string; // String!
       referenceId: string; // String!
     }
     tagsUpdate: { // args
