@@ -635,17 +635,8 @@ exports.SubscriptionUpdateEventDay = subscriptionField('updatedEventDay', {
       return updated.authorId === userId;
     }
   ),
-  resolve: async ({ updated }, __, ctx) => {
-    const user = await ctx.prisma.notificationstoken.findOne({
-      where: { userid: updated.authorId }
-    });
+  resolve: async ({ updated }, __) => {
     const payload = { offeringId: updated.id, eventday: updated.eventday };
-    if (user && user.token)
-      sendPushNotification(user.token, [
-        'Mise à jour sur votre annonce',
-        "L'agent a choisi une date pour la prestation",
-        payload
-      ]);
     return payload;
   }
 });
