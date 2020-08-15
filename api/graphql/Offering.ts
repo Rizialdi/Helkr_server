@@ -15,7 +15,6 @@ import {
 import { getUserId } from '../../utils';
 import { utilisateur } from '@prisma/client';
 import { GraphQLJSONObject } from 'graphql-type-json';
-import { sendPushNotification } from '../../utils';
 
 export const requiredStr = (
   opts: core.ScalarArgConfig<string>
