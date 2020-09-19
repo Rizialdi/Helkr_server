@@ -7,7 +7,7 @@ import {
 } from '@nexus/schema';
 
 import { APP_SECRET_CODE, getUserId, addFunction } from '../../utils';
-import { avis } from '@prisma/client';
+import { avis, utilisateur } from '@prisma/client';
 
 exports.User = objectType({
   name: 'utilisateur',
@@ -136,7 +136,11 @@ exports.QueryUser = extendType({
             where: { numero }
           });
           if (!user) {
-            throw new Error('Utilisateur non existant');
+            return {
+              token: 'NoUser',
+              // to prevent error when returning a non-user
+              user: { nom: 'John', prenom: 'Doe' } as utilisateur
+            };
           }
 
           const token: string = jwt.sign(

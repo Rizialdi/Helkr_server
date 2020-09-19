@@ -15,7 +15,7 @@
     "generate:prisma": "prisma generate",
     "postinstall": "npm -s run generate",
     "start": "yarn dev",
-    "dev": "ts-node-dev --watch --no-notify --transpileOnly --respawn api/app.ts"
+    "dev": "ts-node-dev --watch --no-notify --transpile-only --respawn api/app.ts"
   },
   "dependencies": {
     "@nexus/schema": "^0.14.0",

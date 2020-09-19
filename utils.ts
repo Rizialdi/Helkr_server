@@ -2,7 +2,7 @@ import jwt, { Secret } from 'jsonwebtoken';
 import cloudinary from 'cloudinary';
 import fetch from 'node-fetch';
 import { Context, ProcessUpload } from './api/context';
-require('custom-env').env('prod');
+require('custom-env').env('dev');
 
 const {
   CLOUDINARY_CLOUD_NAME,
@@ -11,8 +11,7 @@ const {
   CLOUDINARY_UPLOAD_PRESET,
   APP_SECRET_CODE,
   MESSAGEBIRD_BASE_URL,
-  MESSAGEBIRD_API_KEY,
-  NUMERO
+  MESSAGEBIRD_API_KEY
 } = process.env;
 
 cloudinary.v2.config({
@@ -57,10 +56,12 @@ const processUpload: ProcessUpload = async upload => {
 const authentication_step_one = async (
   numero: string
 ): Promise<{ id: string; status: string }> => {
+  // make 00337 to 337
+  const slicedNumero = numero.slice(2);
   const opts = {
     //TODO change this number
-    recipient: NUMERO ? NUMERO : numero,
-    originator: 'HelpKr App',
+    recipient: slicedNumero,
+    originator: 'HelKr App',
     timeout: 60,
     template:
       'Votre code de vérification est %token. Veuillez ne pas le communiquer à une tierce entité.'
@@ -79,9 +80,9 @@ const authentication_step_one = async (
 };
 
 const authentication_step_two = async (
-  id: number,
+  id: string,
   token: string
-): Promise<{ status: string; errors: string }> => {
+): Promise<{ success: boolean }> => {
   const response = await fetch(
     `${MESSAGEBIRD_BASE_URL}verify/${id}/?token=${token}`,
     {
@@ -92,8 +93,11 @@ const authentication_step_two = async (
       }
     }
   );
-  const { status, errors } = await response.json();
-  return { status, errors };
+
+  const { status = '', errors = '' } = await response.json();
+  if (errors || status != 'verified') return { success: false };
+
+  return { success: true };
 };
 
 const addFunction = (a: number, b: number): number => a + b;

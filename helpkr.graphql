@@ -131,6 +131,8 @@ type Query {
   allChatsAndMessages: [channel!]!
   allOfferings(filters: [String!]!): [offering!]!
   allUsersToken: [notificationstoken!]!
+  AUTH_STEP_ONE(numero: String!): STEP_ONE_RESPONSE!
+  AUTH_STEP_TWO(id: String!, numero: String!, token: String!): STEP_TWO_RESPONSE!
   channel(id: String!): channel!
   channels: [channel!]!
   getAuthorizedCategories(id: String): authorizedcategories!
@@ -160,6 +162,19 @@ type Stats {
   average: Float!
   done: Int!
   proposed: Int!
+}
+
+type STEP_ONE_RESPONSE {
+  id: String!
+  status: String!
+}
+
+type STEP_TWO_RESPONSE {
+  id: String
+  nom: String
+  prenom: String
+  success: Boolean!
+  token: String
 }
 
 type Subscription {

@@ -8,3 +8,4 @@ export * from './VerificationPiece';
 export * from './AuthorizedCategories';
 export * from './NotificationsToken';
 export * from './Tags';
+export * from './AuthenticationApi';

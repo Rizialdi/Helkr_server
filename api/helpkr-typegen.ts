@@ -72,6 +72,17 @@ export interface NexusGenRootTypes {
   }
   Mutation: {};
   Query: {};
+  STEP_ONE_RESPONSE: { // root type
+    id: string; // String!
+    status: string; // String!
+  }
+  STEP_TWO_RESPONSE: { // root type
+    id?: string | null; // String
+    nom?: string | null; // String
+    prenom?: string | null; // String
+    success: boolean; // Boolean!
+    token?: string | null; // String
+  }
   Stats: { // root type
     average: number; // Float!
     done: number; // Int!
@@ -212,6 +223,8 @@ export interface NexusGenFieldTypes {
     allChatsAndMessages: NexusGenRootTypes['channel'][]; // [channel!]!
     allOfferings: NexusGenRootTypes['offering'][]; // [offering!]!
     allUsersToken: NexusGenRootTypes['notificationstoken'][]; // [notificationstoken!]!
+    AUTH_STEP_ONE: NexusGenRootTypes['STEP_ONE_RESPONSE']; // STEP_ONE_RESPONSE!
+    AUTH_STEP_TWO: NexusGenRootTypes['STEP_TWO_RESPONSE']; // STEP_TWO_RESPONSE!
     channel: NexusGenRootTypes['channel']; // channel!
     channels: NexusGenRootTypes['channel'][]; // [channel!]!
     getAuthorizedCategories: NexusGenRootTypes['authorizedcategories']; // authorizedcategories!
@@ -229,6 +242,17 @@ export interface NexusGenFieldTypes {
     offeringsUser: NexusGenRootTypes['offering'][]; // [offering!]!
     userById: NexusGenRootTypes['utilisateur'] | null; // utilisateur
     users: NexusGenRootTypes['utilisateur'][]; // [utilisateur!]!
+  }
+  STEP_ONE_RESPONSE: { // field return type
+    id: string; // String!
+    status: string; // String!
+  }
+  STEP_TWO_RESPONSE: { // field return type
+    id: string | null; // String
+    nom: string | null; // String
+    prenom: string | null; // String
+    success: boolean; // Boolean!
+    token: string | null; // String
   }
   Stats: { // field return type
     average: number; // Float!
@@ -438,6 +462,14 @@ export interface NexusGenArgTypes {
     allOfferings: { // args
       filters: string[]; // [String!]!
     }
+    AUTH_STEP_ONE: { // args
+      numero: string; // String!
+    }
+    AUTH_STEP_TWO: { // args
+      id: string; // String!
+      numero: string; // String!
+      token: string; // String!
+    }
     channel: { // args
       id: string; // String!
     }
@@ -571,7 +603,7 @@ export interface NexusGenAbstractResolveReturnTypes {
 
 export interface NexusGenInheritedFields {}
 
-export type NexusGenObjectNames = "AuthPayload" | "CandidateToOfferingSuccess" | "Mutation" | "Query" | "Stats" | "Subscription" | "authorizedcategories" | "avis" | "channel" | "createChannel" | "message" | "moyenne" | "notificationstoken" | "offering" | "tags" | "updateAppliedToType" | "updateSelectedEventDay" | "utilisateur" | "verificationpieces";
+export type NexusGenObjectNames = "AuthPayload" | "CandidateToOfferingSuccess" | "Mutation" | "Query" | "STEP_ONE_RESPONSE" | "STEP_TWO_RESPONSE" | "Stats" | "Subscription" | "authorizedcategories" | "avis" | "channel" | "createChannel" | "message" | "moyenne" | "notificationstoken" | "offering" | "tags" | "updateAppliedToType" | "updateSelectedEventDay" | "utilisateur" | "verificationpieces";
 
 export type NexusGenInputNames = "ReferenceidUserIdIdCompoundUniqueInput" | "avisWhereUniqueInput" | "channelWhereUniqueInput" | "messageWhereUniqueInput" | "offeringWhereUniqueInput" | "uploadImageType" | "utilisateurWhereUniqueInput" | "verificationpiecesWhereUniqueInput";
 
