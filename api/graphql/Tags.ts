@@ -12,6 +12,14 @@ exports.Tags = objectType({
   }
 });
 
+exports.AddJobberTagResponse = objectType({
+  name: 'AddJobberTagResponse',
+  definition(t) {
+    t.boolean('max');
+    t.boolean('added');
+  }
+});
+
 exports.MutationTags = extendType({
   type: 'Mutation',
   definition(t) {
@@ -34,6 +42,51 @@ exports.MutationTags = extendType({
           });
           if (!tagz) return false;
           return true;
+        } catch (error) {
+          throw new Error(error);
+        }
+      }
+    });
+    t.field('tagsAddJobber', {
+      type: 'AddJobberTagResponse',
+      args: {
+        tag: requiredStr({})
+      },
+      resolve: async (_, { tag }, ctx) => {
+        const userId = getUserId(ctx);
+
+        try {
+          const result = await ctx.prisma.tags.findOne({
+            where: { userid: userId }
+          });
+
+          const parsedValue: string[] = JSON.parse(
+            result && result.tags ? result.tags : '[]'
+          );
+
+          if (parsedValue.length > 3) return { max: true, added: false };
+
+          const tagz = await ctx.prisma.tags.upsert({
+            create: {
+              tags: JSON.stringify([tag]),
+              utilisateur: { connect: { id: userId } }
+            },
+            update: {
+              tags: JSON.stringify([
+                ...new Set([
+                  tag,
+                  ...(JSON.parse(
+                    result && result.tags ? result.tags : '[]'
+                  ) as string[])
+                ])
+              ])
+            },
+            where: { userid: userId }
+          });
+
+          if (!tagz) return { max: false, added: false };
+
+          return { max: false, added: true };
         } catch (error) {
           throw new Error(error);
         }

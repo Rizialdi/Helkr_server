@@ -2,6 +2,11 @@
 ### Do not make changes to this file directly
 
 
+type AddJobberTagResponse {
+  added: Boolean!
+  max: Boolean!
+}
+
 type authorizedcategories {
   id: String!
   listofauthorizedcategories: Json
@@ -93,6 +98,7 @@ type Mutation {
   registerUser(nom: String!, numero: String!, prenom: String!): AuthPayload!
   removeAuthorizedCategories(id: String!, referenceId: String!): Boolean!
   statusChangeToDenyAuthorization(id: String!, referenceId: String!): Boolean!
+  tagsAddJobber(tag: String!): AddJobberTagResponse!
   tagsUpdate(tags: [String!]!): Boolean!
   updateOffering(description: String!, id: String!): Boolean!
 }

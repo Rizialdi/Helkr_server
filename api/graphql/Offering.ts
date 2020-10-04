@@ -110,7 +110,7 @@ exports.QueryOfferings = extendType({
                   completed: { equals: false }
                 },
                 {
-                  type: {
+                  referenceid: {
                     in: filters as string[]
                   }
                 },

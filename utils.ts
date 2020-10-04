@@ -61,7 +61,7 @@ const authentication_step_one = async (
   const opts = {
     //TODO change this number
     recipient: slicedNumero,
-    originator: 'HelKr App',
+    originator: 'Helkr App',
     timeout: 60,
     template:
       'Votre code de vérification est %token. Veuillez ne pas le communiquer à une tierce entité.'

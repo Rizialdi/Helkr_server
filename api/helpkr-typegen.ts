@@ -63,6 +63,10 @@ export interface NexusGenEnums {
 }
 
 export interface NexusGenRootTypes {
+  AddJobberTagResponse: { // root type
+    added: boolean; // Boolean!
+    max: boolean; // Boolean!
+  }
   AuthPayload: { // root type
     token: string; // String!
     user: NexusGenRootTypes['utilisateur']; // utilisateur!
@@ -190,6 +194,10 @@ export interface NexusGenAllTypes extends NexusGenRootTypes {
 }
 
 export interface NexusGenFieldTypes {
+  AddJobberTagResponse: { // field return type
+    added: boolean; // Boolean!
+    max: boolean; // Boolean!
+  }
   AuthPayload: { // field return type
     token: string; // String!
     user: NexusGenRootTypes['utilisateur']; // utilisateur!
@@ -216,6 +224,7 @@ export interface NexusGenFieldTypes {
     registerUser: NexusGenRootTypes['AuthPayload']; // AuthPayload!
     removeAuthorizedCategories: boolean; // Boolean!
     statusChangeToDenyAuthorization: boolean; // Boolean!
+    tagsAddJobber: NexusGenRootTypes['AddJobberTagResponse']; // AddJobberTagResponse!
     tagsUpdate: boolean; // Boolean!
     updateOffering: boolean; // Boolean!
   }
@@ -450,6 +459,9 @@ export interface NexusGenArgTypes {
       id: string; // String!
       referenceId: string; // String!
     }
+    tagsAddJobber: { // args
+      tag: string; // String!
+    }
     tagsUpdate: { // args
       tags: string[]; // [String!]!
     }
@@ -603,7 +615,7 @@ export interface NexusGenAbstractResolveReturnTypes {
 
 export interface NexusGenInheritedFields {}
 
-export type NexusGenObjectNames = "AuthPayload" | "CandidateToOfferingSuccess" | "Mutation" | "Query" | "STEP_ONE_RESPONSE" | "STEP_TWO_RESPONSE" | "Stats" | "Subscription" | "authorizedcategories" | "avis" | "channel" | "createChannel" | "message" | "moyenne" | "notificationstoken" | "offering" | "tags" | "updateAppliedToType" | "updateSelectedEventDay" | "utilisateur" | "verificationpieces";
+export type NexusGenObjectNames = "AddJobberTagResponse" | "AuthPayload" | "CandidateToOfferingSuccess" | "Mutation" | "Query" | "STEP_ONE_RESPONSE" | "STEP_TWO_RESPONSE" | "Stats" | "Subscription" | "authorizedcategories" | "avis" | "channel" | "createChannel" | "message" | "moyenne" | "notificationstoken" | "offering" | "tags" | "updateAppliedToType" | "updateSelectedEventDay" | "utilisateur" | "verificationpieces";
 
 export type NexusGenInputNames = "ReferenceidUserIdIdCompoundUniqueInput" | "avisWhereUniqueInput" | "channelWhereUniqueInput" | "messageWhereUniqueInput" | "offeringWhereUniqueInput" | "uploadImageType" | "utilisateurWhereUniqueInput" | "verificationpiecesWhereUniqueInput";
 
