@@ -8,16 +8,16 @@ datasource db {
 }
 
 model authorizedcategories {
-  id                         String       @default(cuid()) @id
+  id                         String       @id @default(cuid())
   listofauthorizedcategories Json?
-  userId                     String?      @map("utilisateur") @unique
+  userId                     String?      @unique @map("utilisateur")
   utilisateur                utilisateur? @relation(fields: [userId], references: [id])
 }
 
 model avis {
   comment    String
   createdAt  DateTime    @default(now())
-  id         String      @default(cuid()) @id
+  id         String      @id @default(cuid())
   offeringId String      @map("offering")
   score      Int
   scoredId   String      @map("scored")
@@ -29,7 +29,7 @@ model avis {
 
 model channel {
   createdAt DateTime      @default(now())
-  id        String        @default(cuid()) @id
+  id        String        @id @default(cuid())
   messages  message[]
   users     utilisateur[] @relation(references: [id])
 }
@@ -37,7 +37,7 @@ model channel {
 model message {
   channelId String?      @map("channel")
   createdAt DateTime     @default(now())
-  id        String       @default(cuid()) @id
+  id        String       @id @default(cuid())
   sentById  String?      @map("sentBy")
   text      String
   channel   channel?     @relation(fields: [channelId], references: [id])
@@ -45,7 +45,7 @@ model message {
 }
 
 model moyenne {
-  id          String      @default(cuid()) @id
+  id          String      @id @default(cuid())
   moyenne     Float
   realMoyenne Float
   userId      String      @map("utilisateur")
@@ -53,65 +53,67 @@ model moyenne {
 }
 
 model notificationstoken {
-  id          String       @default(cuid()) @id
+  id          String       @id @default(cuid())
   token       String?
   userid      String?      @unique
   utilisateur utilisateur? @relation(fields: [userid], references: [id])
 }
 
 model offering {
-  authorId            String        @map("author")
-  category            String
-  completed           Boolean       @default(false)
-  completedById       String?       @map("completedBy")
-  createdAt           DateTime      @default(now())
-  description         String
-  details             Json
-  eventday            String?
-  id                  String        @default(cuid()) @id
-  preferreddays       String[]
-  referenceid         String?
-  selectedCandidateId String?       @map("selectedCandidate")
-  type                String
-  updatedAt           DateTime      @updatedAt
-  author              utilisateur   @relation("offering_authorToutilisateur", fields: [authorId], references: [id])
-  completedBy         utilisateur?  @relation("offering_completedByToutilisateur", fields: [completedById], references: [id])
-  selectedCandidate   utilisateur?  @relation("offering_selectedCandidateToutilisateur", fields: [selectedCandidateId], references: [id])
-  avis                avis[]
-  candidates          utilisateur[] @relation("appliedoffering", references: [id])
+  authorId              String                  @map("author")
+  category              String
+  completed             Boolean                 @default(false)
+  completedById         String?                 @map("completedBy")
+  createdAt             DateTime                @default(now())
+  description           String
+  details               Json
+  eventday              String?
+  id                    String                  @id @default(cuid())
+  preferreddays         String[]
+  referenceid           String?
+  selectedCandidateId   String?                 @map("selectedCandidate")
+  type                  String
+  updatedAt             DateTime                @updatedAt
+  author                utilisateur             @relation("offering_authorToutilisateur", fields: [authorId], references: [id])
+  completedBy           utilisateur?            @relation("offering_completedByToutilisateur", fields: [completedById], references: [id])
+  selectedCandidate     utilisateur?            @relation("offering_selectedCandidateToutilisateur", fields: [selectedCandidateId], references: [id])
+  avis                  avis[]
+  candidates            utilisateur[]           @relation("appliedoffering", references: [id])
+  propositiontooffering propositiontooffering[]
 }
 
 model utilisateur {
-  address              String?
-  avatar               String?
-  createdAt            DateTime              @default(now())
-  description          String?
-  id                   String                @default(cuid()) @id
-  jobauthorization     String?
-  mobilemoneyaccount   String?
-  nom                  String
-  numero               String                @unique
-  prenom               String
-  professional         Boolean               @default(false)
-  tags                 tags?
-  updatedAt            DateTime              @updatedAt
-  verified             Boolean               @default(false)
-  avisreceived         avis[]                @relation("avisreceived")
-  avisgave             avis[]                @relation("avisgave")
-  messages             message[]
-  moyenne              moyenne?
-  offerings            offering[]            @relation("offering_authorToutilisateur")
-  completedofferings   offering[]            @relation("offering_completedByToutilisateur")
-  acceptedToOffering   offering[]            @relation("offering_selectedCandidateToutilisateur")
-  appliedTo            offering[]            @relation("appliedoffering", references: [id])
-  channels             channel[]             @relation(references: [id])
-  verificationpieces   verificationpieces[]
-  authorizedcategories authorizedcategories?
-  notificationstoken   notificationstoken?
+  address               String?
+  avatar                String?
+  createdAt             DateTime                @default(now())
+  description           String?
+  id                    String                  @id @default(cuid())
+  jobauthorization      String?
+  mobilemoneyaccount    String?
+  nom                   String
+  numero                String                  @unique
+  prenom                String
+  professional          Boolean                 @default(false)
+  tags                  tags?
+  updatedAt             DateTime                @updatedAt
+  verified              Boolean                 @default(false)
+  avisreceived          avis[]                  @relation("avisreceived")
+  avisgave              avis[]                  @relation("avisgave")
+  messages              message[]
+  moyenne               moyenne?
+  offerings             offering[]              @relation("offering_authorToutilisateur")
+  completedofferings    offering[]              @relation("offering_completedByToutilisateur")
+  acceptedToOffering    offering[]              @relation("offering_selectedCandidateToutilisateur")
+  appliedTo             offering[]              @relation("appliedoffering", references: [id])
+  channels              channel[]               @relation(references: [id])
+  verificationpieces    verificationpieces[]
+  authorizedcategories  authorizedcategories?
+  notificationstoken    notificationstoken?
+  propositiontooffering propositiontooffering[]
 }
 
 model tags {
-  id          String       @default(cuid()) @id
+  id          String       @id @default(cuid())
   tags        String
   userid      String?      @unique
   utilisateur utilisateur? @relation(fields: [userid], references: [id])
@@ -123,7 +125,19 @@ model verificationpieces {
   listofpieces Json?
   referenceid  String
   status       String?     @default("enattente")
-  userId       String      @map("utilisateur") @unique
+  userId       String      @unique @map("utilisateur")
   utilisateur  utilisateur @relation(fields: [userId], references: [id])
+
   @@id([referenceid, userId, id])
+}
+
+model propositiontooffering {
+  message       String
+  priceRange    String
+  offeringId    String
+  utilisateurId String
+  offering      offering    @relation(fields: [offeringId], references: [id])
+  utilisateur   utilisateur @relation(fields: [utilisateurId], references: [id])
+
+  @@id([offeringId, utilisateurId])
 }

@@ -85,7 +85,7 @@ type Mutation {
   addressUpdate(text: String!): Boolean!
   addVerificationpieces(id: String, listofpieces: String!, referenceId: String!): Boolean!
   avatarUpload(file: uploadImageType): Boolean!
-  candidateToOffering(id: String!): CandidateToOfferingSuccess!
+  candidateToOffering(id: String!, message: String!, priceRange: String!): CandidateToOfferingSuccess!
   chooseCandidate(candidateId: String!, id: String!, preferreddays: [String!]!): Boolean!
   chooseEventDay(id: String!, timestamp: String!): Boolean!
   completeOffering(completedById: String!, id: String!): Boolean!
@@ -133,6 +133,13 @@ input offeringWhereUniqueInput {
   id: String
 }
 
+type propositionToOffering {
+  candidateUsername: String!
+  descriptionPrestataire: String
+  message: String!
+  priceRange: String!
+}
+
 type Query {
   allChatsAndMessages: [channel!]!
   allOfferings(filters: [String!]!): [offering!]!
@@ -154,6 +161,7 @@ type Query {
   myIncompleteOfferingWithCandidates: [offering!]!
   offeringById(id: String!): offering!
   offeringsUser(numero: String!): [offering!]!
+  propositionToOfferingDetails(offeringId: String!, userId: String!): propositionToOffering!
   userById(id: String!): utilisateur
   users: [utilisateur!]!
 }

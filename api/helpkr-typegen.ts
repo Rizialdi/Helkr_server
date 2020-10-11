@@ -141,6 +141,12 @@ export interface NexusGenRootTypes {
     type: string; // String!
     updatedAt: any; // DateTime!
   }
+  propositionToOffering: { // root type
+    candidateUsername: string; // String!
+    descriptionPrestataire?: string | null; // String
+    message: string; // String!
+    priceRange: string; // String!
+  }
   tags: { // root type
     id: string; // String!
     tags: string; // String!
@@ -249,6 +255,7 @@ export interface NexusGenFieldTypes {
     myIncompleteOfferingWithCandidates: NexusGenRootTypes['offering'][]; // [offering!]!
     offeringById: NexusGenRootTypes['offering']; // offering!
     offeringsUser: NexusGenRootTypes['offering'][]; // [offering!]!
+    propositionToOfferingDetails: NexusGenRootTypes['propositionToOffering']; // propositionToOffering!
     userById: NexusGenRootTypes['utilisateur'] | null; // utilisateur
     users: NexusGenRootTypes['utilisateur'][]; // [utilisateur!]!
   }
@@ -339,6 +346,12 @@ export interface NexusGenFieldTypes {
     type: string; // String!
     updatedAt: any; // DateTime!
   }
+  propositionToOffering: { // field return type
+    candidateUsername: string; // String!
+    descriptionPrestataire: string | null; // String
+    message: string; // String!
+    priceRange: string; // String!
+  }
   tags: { // field return type
     id: string; // String!
     tags: string; // String!
@@ -409,6 +422,8 @@ export interface NexusGenArgTypes {
     }
     candidateToOffering: { // args
       id: string; // String!
+      message: string; // String!
+      priceRange: string; // String!
     }
     chooseCandidate: { // args
       candidateId: string; // String!
@@ -511,6 +526,10 @@ export interface NexusGenArgTypes {
     }
     offeringsUser: { // args
       numero: string; // String!
+    }
+    propositionToOfferingDetails: { // args
+      offeringId: string; // String!
+      userId: string; // String!
     }
     userById: { // args
       id: string; // String!
@@ -615,7 +634,7 @@ export interface NexusGenAbstractResolveReturnTypes {
 
 export interface NexusGenInheritedFields {}
 
-export type NexusGenObjectNames = "AddJobberTagResponse" | "AuthPayload" | "CandidateToOfferingSuccess" | "Mutation" | "Query" | "STEP_ONE_RESPONSE" | "STEP_TWO_RESPONSE" | "Stats" | "Subscription" | "authorizedcategories" | "avis" | "channel" | "createChannel" | "message" | "moyenne" | "notificationstoken" | "offering" | "tags" | "updateAppliedToType" | "updateSelectedEventDay" | "utilisateur" | "verificationpieces";
+export type NexusGenObjectNames = "AddJobberTagResponse" | "AuthPayload" | "CandidateToOfferingSuccess" | "Mutation" | "Query" | "STEP_ONE_RESPONSE" | "STEP_TWO_RESPONSE" | "Stats" | "Subscription" | "authorizedcategories" | "avis" | "channel" | "createChannel" | "message" | "moyenne" | "notificationstoken" | "offering" | "propositionToOffering" | "tags" | "updateAppliedToType" | "updateSelectedEventDay" | "utilisateur" | "verificationpieces";
 
 export type NexusGenInputNames = "ReferenceidUserIdIdCompoundUniqueInput" | "avisWhereUniqueInput" | "channelWhereUniqueInput" | "messageWhereUniqueInput" | "offeringWhereUniqueInput" | "uploadImageType" | "utilisateurWhereUniqueInput" | "verificationpiecesWhereUniqueInput";
 

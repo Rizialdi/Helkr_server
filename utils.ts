@@ -106,7 +106,7 @@ const addFunction = (a: number, b: number): number => a + b;
 const sendPushNotification = async (
   expoPushToken: string,
   payload: stringOrObject[]
-) => {
+): Promise<void> => {
   if (!expoPushToken) return;
   const [title, body, data] = payload;
   const message = {

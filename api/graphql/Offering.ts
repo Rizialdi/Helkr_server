@@ -277,6 +277,49 @@ exports.QueryOfferings = extendType({
         }
       }
     });
+    t.field('propositionToOfferingDetails', {
+      type: 'propositionToOffering',
+      args: {
+        userId: stringArg({ required: true }),
+        offeringId: stringArg({ required: true })
+      },
+      resolve: async (_, { userId, offeringId }, ctx) => {
+        try {
+          const proposition = await ctx.prisma.propositiontooffering.findOne({
+            where: {
+              offeringId_utilisateurId: { offeringId, utilisateurId: userId }
+            }
+          });
+
+          const user = await ctx.prisma.utilisateur.findOne({
+            where: { id: userId }
+          });
+
+          if (!user || !proposition) {
+            return {
+              message: '',
+              priceRange: '',
+              candidateUsername: '',
+              descriptionPrestataire: ''
+            };
+          }
+
+          return {
+            message: proposition.message,
+            priceRange: proposition.priceRange,
+            candidateUsername: `${user.prenom} ${user.nom.charAt(0)}.`,
+            descriptionPrestataire: user.description
+          };
+        } catch (error) {
+          return {
+            message: '',
+            priceRange: '',
+            candidateUsername: '',
+            descriptionPrestataire: ''
+          };
+        }
+      }
+    });
   }
 });
 
@@ -424,9 +467,11 @@ exports.MutationOfferings = extendType({
     t.field('candidateToOffering', {
       type: 'CandidateToOfferingSuccess',
       args: {
-        id: stringArg({ required: true })
+        id: stringArg({ required: true }),
+        message: stringArg({ required: true }),
+        priceRange: stringArg({ required: true })
       },
-      resolve: async (_, { id }, ctx) => {
+      resolve: async (_, { id, message, priceRange }, ctx) => {
         const userId = getUserId(ctx);
         try {
           const intermediate = await ctx.prisma.offering.findOne({
@@ -436,9 +481,30 @@ exports.MutationOfferings = extendType({
           if (intermediate && userId === intermediate.authorId)
             return { success: false };
 
+          if (!intermediate) return { success: false };
+
+          const proposition = await ctx.prisma.propositiontooffering.create({
+            data: {
+              message,
+              priceRange,
+              utilisateur: { connect: { id: userId } },
+              offering: { connect: { id: intermediate.id } }
+            }
+          });
+
           const offering = await ctx.prisma.offering.update({
             where: { id },
-            data: { candidates: { connect: { id: userId } } }
+            data: {
+              candidates: { connect: { id: userId } },
+              propositiontooffering: {
+                connect: {
+                  offeringId_utilisateurId: {
+                    offeringId: proposition.offeringId,
+                    utilisateurId: proposition.utilisateurId
+                  }
+                }
+              }
+            }
           });
 
           if (!intermediate || !offering) return { success: false };
@@ -690,5 +756,15 @@ exports.CandidateToOfferingSuccess = objectType({
   name: 'CandidateToOfferingSuccess',
   definition(t) {
     t.boolean('success');
+  }
+});
+
+exports.PropositionToOffering = objectType({
+  name: 'propositionToOffering',
+  definition(t) {
+    t.string('message');
+    t.string('priceRange');
+    t.string('candidateUsername');
+    t.string('descriptionPrestataire', { nullable: true });
   }
 });
