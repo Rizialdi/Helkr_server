@@ -95,7 +95,7 @@ type Mutation {
   deleteOffering(id: String!): Boolean!
   descriptionUpdate(text: String!): Boolean!
   notificationsTokenUpdate(token: String!): Boolean!
-  registerUser(nom: String!, numero: String!, prenom: String!): AuthPayload!
+  registerUser(address: String!, nom: String!, numero: String!, prenom: String!): AuthPayload!
   removeAuthorizedCategories(id: String!, referenceId: String!): Boolean!
   statusChangeToDenyAuthorization(id: String!, referenceId: String!): Boolean!
   tagsAddJobber(tag: String!): AddJobberTagResponse!

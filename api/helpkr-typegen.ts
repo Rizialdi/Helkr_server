@@ -462,6 +462,7 @@ export interface NexusGenArgTypes {
       token: string; // String!
     }
     registerUser: { // args
+      address: string; // String!
       nom: string; // String!
       numero: string; // String!
       prenom: string; // String!

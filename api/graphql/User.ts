@@ -203,14 +203,16 @@ exports.MutationUser = extendType({
       args: {
         nom: stringArg({ required: true }),
         prenom: stringArg({ required: true }),
-        numero: stringArg({ required: true })
+        numero: stringArg({ required: true }),
+        address: stringArg({ required: true })
       },
-      resolve: async (_, { nom, prenom, numero }, { prisma }) => {
+      resolve: async (_, { nom, prenom, numero, address }, { prisma }) => {
         const user = await prisma.utilisateur.create({
           data: {
             nom,
             prenom,
             numero,
+            address: address.toLowerCase(),
             authorizedcategories: {
               create: { listofauthorizedcategories: '' }
             }
