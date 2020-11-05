@@ -37,40 +37,20 @@ type CandidateToOfferingSuccess {
   success: Boolean!
 }
 
-type channel {
+scalar DateTime
+
+type demande {
   createdAt: DateTime!
   id: String!
-  messages(after: messageWhereUniqueInput, before: messageWhereUniqueInput, first: Int, last: Int): [message!]!
-  users(after: utilisateurWhereUniqueInput, before: utilisateurWhereUniqueInput, first: Int, last: Int): [utilisateur!]!
+  message: String!
+  receivedById: String
+  sentBy: utilisateur
+  sentById: String
 }
-
-input channelWhereUniqueInput {
-  id: String
-}
-
-type createChannel {
-  channel: channel!
-  success: Boolean!
-}
-
-scalar DateTime
 
 scalar Json
 
 scalar JSON
-
-type message {
-  channel: channel
-  channelId: String
-  createdAt: DateTime!
-  id: String!
-  sentById: String
-  text: String!
-}
-
-input messageWhereUniqueInput {
-  id: String
-}
 
 type moyenne {
   id: String!
@@ -90,8 +70,7 @@ type Mutation {
   chooseEventDay(id: String!, timestamp: String!): Boolean!
   completeOffering(completedById: String!, id: String!): Boolean!
   createAvis(comment: String!, offeringId: String!, score: Int!, scoredId: String!): Boolean!
-  createChannel(recipient: String!): createChannel!
-  createMessage(channelId: String, recipient: String, text: String!): Boolean!
+  createDemande(message: String!, recipient: String!): Boolean!
   deleteOffering(id: String!): Boolean!
   descriptionUpdate(text: String!): Boolean!
   notificationsTokenUpdate(token: String!): Boolean!
@@ -141,13 +120,13 @@ type propositionToOffering {
 }
 
 type Query {
-  allChatsAndMessages: [channel!]!
   allOfferings(filters: [String!]!): [offering!]!
   allUsersToken: [notificationstoken!]!
   AUTH_STEP_ONE(numero: String!): STEP_ONE_RESPONSE!
   AUTH_STEP_TWO(id: String!, numero: String!, token: String!): STEP_TWO_RESPONSE!
-  channel(id: String!): channel!
-  channels: [channel!]!
+  demandes: [demande!]!
+  demandesenvoyees: [demande!]!
+  demandesrecues: [demande!]!
   getAuthorizedCategories(id: String): authorizedcategories!
   getAvisUser(userId: String!): [avis!]!
   getSendVerificationPiecesReferenceIdsAndStatus(id: String): String!
@@ -156,7 +135,6 @@ type Query {
   getVerificationPieces(id: String): verificationpieces!
   incompleteOfferings(filters: [String!]!): [offering!]!
   isCandidateTo: [offering!]!
-  messages: [message!]!
   myIncompleteOffering: [offering!]!
   myIncompleteOfferingWithCandidates: [offering!]!
   offeringById(id: String!): offering!
@@ -193,8 +171,7 @@ type STEP_TWO_RESPONSE {
 
 type Subscription {
   newAvis(userId: String!): avis!
-  newChannel(userId: String!): channel!
-  newMessage(channelIds: [String!]!): message!
+  newDemande(recipientId: String!): demande!
   onOfferingAdded(tags: [String!]!): offering!
   updateAppliedTo(userId: String!): updateAppliedToType!
   updatedEventDay(userId: String!): updateSelectedEventDay!
@@ -228,11 +205,9 @@ type utilisateur {
   avatar: String
   avisgave(after: avisWhereUniqueInput, before: avisWhereUniqueInput, first: Int, last: Int): [avis!]!
   avisreceived(after: avisWhereUniqueInput, before: avisWhereUniqueInput, first: Int, last: Int): [avis!]!
-  channels(after: channelWhereUniqueInput, before: channelWhereUniqueInput, first: Int, last: Int): [channel!]!
   completedofferings(after: offeringWhereUniqueInput, before: offeringWhereUniqueInput, first: Int, last: Int): [offering!]!
   description: String
   id: String!
-  messages(after: messageWhereUniqueInput, before: messageWhereUniqueInput, first: Int, last: Int): [message!]!
   moyenne: Int!
   nom: String!
   numero: String!

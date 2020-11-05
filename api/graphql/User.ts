@@ -49,22 +49,6 @@ exports.User = objectType({
         });
       }
     });
-    t.model.channels({
-      type: 'channel',
-      resolve: (parent, _, { prisma }) => {
-        return prisma.channel.findMany({
-          where: { users: { some: { id: parent.id } } }
-        });
-      }
-    });
-    t.model.messages({
-      type: 'message',
-      resolve: (parent, _, { prisma }) => {
-        return prisma.message.findMany({
-          where: { sentBy: { id: parent.id } }
-        });
-      }
-    });
     t.model.avisreceived({
       type: 'avis',
       resolve: (parent, _, { prisma }) => {

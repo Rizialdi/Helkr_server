@@ -27,21 +27,14 @@ model avis {
   scorer     utilisateur @relation("avisgave", fields: [scorerId], references: [id])
 }
 
-model channel {
-  createdAt DateTime      @default(now())
-  id        String        @id @default(cuid())
-  messages  message[]
-  users     utilisateur[] @relation(references: [id])
-}
-
-model message {
-  channelId String?      @map("channel")
-  createdAt DateTime     @default(now())
-  id        String       @id @default(cuid())
-  sentById  String?      @map("sentBy")
-  text      String
-  channel   channel?     @relation(fields: [channelId], references: [id])
-  sentBy    utilisateur? @relation(fields: [sentById], references: [id])
+model demande {
+  id           String       @id @default(cuid())
+  sentById     String?      @map("sentBy")
+  receivedById String?      @map("receivedBy")
+  message      String
+  createdAt    DateTime     @default(now())
+  sentBy       utilisateur? @relation("sentByField", fields: [sentById], references: [id])
+  receivedBy   utilisateur? @relation("receivedByField", fields: [receivedById], references: [id])
 }
 
 model moyenne {
@@ -99,13 +92,13 @@ model utilisateur {
   verified              Boolean                 @default(false)
   avisreceived          avis[]                  @relation("avisreceived")
   avisgave              avis[]                  @relation("avisgave")
-  messages              message[]
+  demandesenvoyees      demande[]               @relation("sentByField")
+  demandesrecues        demande[]               @relation("receivedByField")
   moyenne               moyenne?
   offerings             offering[]              @relation("offering_authorToutilisateur")
   completedofferings    offering[]              @relation("offering_completedByToutilisateur")
   acceptedToOffering    offering[]              @relation("offering_selectedCandidateToutilisateur")
   appliedTo             offering[]              @relation("appliedoffering", references: [id])
-  channels              channel[]               @relation(references: [id])
   verificationpieces    verificationpieces[]
   authorizedcategories  authorizedcategories?
   notificationstoken    notificationstoken?

@@ -35,12 +35,6 @@ export interface NexusGenInputs {
   avisWhereUniqueInput: { // input type
     id?: string | null; // String
   }
-  channelWhereUniqueInput: { // input type
-    id?: string | null; // String
-  }
-  messageWhereUniqueInput: { // input type
-    id?: string | null; // String
-  }
   offeringWhereUniqueInput: { // input type
     id?: string | null; // String
   }
@@ -104,20 +98,12 @@ export interface NexusGenRootTypes {
     id: string; // String!
     score: number; // Int!
   }
-  channel: { // root type
+  demande: { // root type
     createdAt: any; // DateTime!
     id: string; // String!
-  }
-  createChannel: { // root type
-    channel: NexusGenRootTypes['channel']; // channel!
-    success: boolean; // Boolean!
-  }
-  message: { // root type
-    channelId?: string | null; // String
-    createdAt: any; // DateTime!
-    id: string; // String!
+    message: string; // String!
+    receivedById?: string | null; // String
     sentById?: string | null; // String
-    text: string; // String!
   }
   moyenne: { // root type
     id: string; // String!
@@ -191,8 +177,6 @@ export interface NexusGenRootTypes {
 export interface NexusGenAllTypes extends NexusGenRootTypes {
   ReferenceidUserIdIdCompoundUniqueInput: NexusGenInputs['ReferenceidUserIdIdCompoundUniqueInput'];
   avisWhereUniqueInput: NexusGenInputs['avisWhereUniqueInput'];
-  channelWhereUniqueInput: NexusGenInputs['channelWhereUniqueInput'];
-  messageWhereUniqueInput: NexusGenInputs['messageWhereUniqueInput'];
   offeringWhereUniqueInput: NexusGenInputs['offeringWhereUniqueInput'];
   uploadImageType: NexusGenInputs['uploadImageType'];
   utilisateurWhereUniqueInput: NexusGenInputs['utilisateurWhereUniqueInput'];
@@ -222,8 +206,7 @@ export interface NexusGenFieldTypes {
     chooseEventDay: boolean; // Boolean!
     completeOffering: boolean; // Boolean!
     createAvis: boolean; // Boolean!
-    createChannel: NexusGenRootTypes['createChannel']; // createChannel!
-    createMessage: boolean; // Boolean!
+    createDemande: boolean; // Boolean!
     deleteOffering: boolean; // Boolean!
     descriptionUpdate: boolean; // Boolean!
     notificationsTokenUpdate: boolean; // Boolean!
@@ -235,13 +218,13 @@ export interface NexusGenFieldTypes {
     updateOffering: boolean; // Boolean!
   }
   Query: { // field return type
-    allChatsAndMessages: NexusGenRootTypes['channel'][]; // [channel!]!
     allOfferings: NexusGenRootTypes['offering'][]; // [offering!]!
     allUsersToken: NexusGenRootTypes['notificationstoken'][]; // [notificationstoken!]!
     AUTH_STEP_ONE: NexusGenRootTypes['STEP_ONE_RESPONSE']; // STEP_ONE_RESPONSE!
     AUTH_STEP_TWO: NexusGenRootTypes['STEP_TWO_RESPONSE']; // STEP_TWO_RESPONSE!
-    channel: NexusGenRootTypes['channel']; // channel!
-    channels: NexusGenRootTypes['channel'][]; // [channel!]!
+    demandes: NexusGenRootTypes['demande'][]; // [demande!]!
+    demandesenvoyees: NexusGenRootTypes['demande'][]; // [demande!]!
+    demandesrecues: NexusGenRootTypes['demande'][]; // [demande!]!
     getAuthorizedCategories: NexusGenRootTypes['authorizedcategories']; // authorizedcategories!
     getAvisUser: NexusGenRootTypes['avis'][]; // [avis!]!
     getSendVerificationPiecesReferenceIdsAndStatus: string; // String!
@@ -250,7 +233,6 @@ export interface NexusGenFieldTypes {
     getVerificationPieces: NexusGenRootTypes['verificationpieces']; // verificationpieces!
     incompleteOfferings: NexusGenRootTypes['offering'][]; // [offering!]!
     isCandidateTo: NexusGenRootTypes['offering'][]; // [offering!]!
-    messages: NexusGenRootTypes['message'][]; // [message!]!
     myIncompleteOffering: NexusGenRootTypes['offering'][]; // [offering!]!
     myIncompleteOfferingWithCandidates: NexusGenRootTypes['offering'][]; // [offering!]!
     offeringById: NexusGenRootTypes['offering']; // offering!
@@ -277,8 +259,7 @@ export interface NexusGenFieldTypes {
   }
   Subscription: { // field return type
     newAvis: NexusGenRootTypes['avis']; // avis!
-    newChannel: NexusGenRootTypes['channel']; // channel!
-    newMessage: NexusGenRootTypes['message']; // message!
+    newDemande: NexusGenRootTypes['demande']; // demande!
     onOfferingAdded: NexusGenRootTypes['offering']; // offering!
     updateAppliedTo: NexusGenRootTypes['updateAppliedToType']; // updateAppliedToType!
     updatedEventDay: NexusGenRootTypes['updateSelectedEventDay']; // updateSelectedEventDay!
@@ -298,23 +279,13 @@ export interface NexusGenFieldTypes {
     scored: NexusGenRootTypes['utilisateur']; // utilisateur!
     scorer: NexusGenRootTypes['utilisateur']; // utilisateur!
   }
-  channel: { // field return type
+  demande: { // field return type
     createdAt: any; // DateTime!
     id: string; // String!
-    messages: NexusGenRootTypes['message'][]; // [message!]!
-    users: NexusGenRootTypes['utilisateur'][]; // [utilisateur!]!
-  }
-  createChannel: { // field return type
-    channel: NexusGenRootTypes['channel']; // channel!
-    success: boolean; // Boolean!
-  }
-  message: { // field return type
-    channel: NexusGenRootTypes['channel'] | null; // channel
-    channelId: string | null; // String
-    createdAt: any; // DateTime!
-    id: string; // String!
+    message: string; // String!
+    receivedById: string | null; // String
+    sentBy: NexusGenRootTypes['utilisateur'] | null; // utilisateur
     sentById: string | null; // String
-    text: string; // String!
   }
   moyenne: { // field return type
     id: string; // String!
@@ -371,11 +342,9 @@ export interface NexusGenFieldTypes {
     avatar: string | null; // String
     avisgave: NexusGenRootTypes['avis'][]; // [avis!]!
     avisreceived: NexusGenRootTypes['avis'][]; // [avis!]!
-    channels: NexusGenRootTypes['channel'][]; // [channel!]!
     completedofferings: NexusGenRootTypes['offering'][]; // [offering!]!
     description: string | null; // String
     id: string; // String!
-    messages: NexusGenRootTypes['message'][]; // [message!]!
     moyenne: number; // Int!
     nom: string; // String!
     numero: string; // String!
@@ -444,13 +413,9 @@ export interface NexusGenArgTypes {
       score: number; // Int!
       scoredId: string; // String!
     }
-    createChannel: { // args
+    createDemande: { // args
+      message: string; // String!
       recipient: string; // String!
-    }
-    createMessage: { // args
-      channelId?: string | null; // String
-      recipient?: string | null; // String
-      text: string; // String!
     }
     deleteOffering: { // args
       id: string; // String!
@@ -498,9 +463,6 @@ export interface NexusGenArgTypes {
       numero: string; // String!
       token: string; // String!
     }
-    channel: { // args
-      id: string; // String!
-    }
     getAuthorizedCategories: { // args
       id?: string | null; // String
     }
@@ -540,11 +502,8 @@ export interface NexusGenArgTypes {
     newAvis: { // args
       userId: string; // String!
     }
-    newChannel: { // args
-      userId: string; // String!
-    }
-    newMessage: { // args
-      channelIds: string[]; // [String!]!
+    newDemande: { // args
+      recipientId: string; // String!
     }
     onOfferingAdded: { // args
       tags: string[]; // [String!]!
@@ -554,20 +513,6 @@ export interface NexusGenArgTypes {
     }
     updatedEventDay: { // args
       userId: string; // String!
-    }
-  }
-  channel: {
-    messages: { // args
-      after?: NexusGenInputs['messageWhereUniqueInput'] | null; // messageWhereUniqueInput
-      before?: NexusGenInputs['messageWhereUniqueInput'] | null; // messageWhereUniqueInput
-      first?: number | null; // Int
-      last?: number | null; // Int
-    }
-    users: { // args
-      after?: NexusGenInputs['utilisateurWhereUniqueInput'] | null; // utilisateurWhereUniqueInput
-      before?: NexusGenInputs['utilisateurWhereUniqueInput'] | null; // utilisateurWhereUniqueInput
-      first?: number | null; // Int
-      last?: number | null; // Int
     }
   }
   offering: {
@@ -597,21 +542,9 @@ export interface NexusGenArgTypes {
       first?: number | null; // Int
       last?: number | null; // Int
     }
-    channels: { // args
-      after?: NexusGenInputs['channelWhereUniqueInput'] | null; // channelWhereUniqueInput
-      before?: NexusGenInputs['channelWhereUniqueInput'] | null; // channelWhereUniqueInput
-      first?: number | null; // Int
-      last?: number | null; // Int
-    }
     completedofferings: { // args
       after?: NexusGenInputs['offeringWhereUniqueInput'] | null; // offeringWhereUniqueInput
       before?: NexusGenInputs['offeringWhereUniqueInput'] | null; // offeringWhereUniqueInput
-      first?: number | null; // Int
-      last?: number | null; // Int
-    }
-    messages: { // args
-      after?: NexusGenInputs['messageWhereUniqueInput'] | null; // messageWhereUniqueInput
-      before?: NexusGenInputs['messageWhereUniqueInput'] | null; // messageWhereUniqueInput
       first?: number | null; // Int
       last?: number | null; // Int
     }
@@ -635,9 +568,9 @@ export interface NexusGenAbstractResolveReturnTypes {
 
 export interface NexusGenInheritedFields {}
 
-export type NexusGenObjectNames = "AddJobberTagResponse" | "AuthPayload" | "CandidateToOfferingSuccess" | "Mutation" | "Query" | "STEP_ONE_RESPONSE" | "STEP_TWO_RESPONSE" | "Stats" | "Subscription" | "authorizedcategories" | "avis" | "channel" | "createChannel" | "message" | "moyenne" | "notificationstoken" | "offering" | "propositionToOffering" | "tags" | "updateAppliedToType" | "updateSelectedEventDay" | "utilisateur" | "verificationpieces";
+export type NexusGenObjectNames = "AddJobberTagResponse" | "AuthPayload" | "CandidateToOfferingSuccess" | "Mutation" | "Query" | "STEP_ONE_RESPONSE" | "STEP_TWO_RESPONSE" | "Stats" | "Subscription" | "authorizedcategories" | "avis" | "demande" | "moyenne" | "notificationstoken" | "offering" | "propositionToOffering" | "tags" | "updateAppliedToType" | "updateSelectedEventDay" | "utilisateur" | "verificationpieces";
 
-export type NexusGenInputNames = "ReferenceidUserIdIdCompoundUniqueInput" | "avisWhereUniqueInput" | "channelWhereUniqueInput" | "messageWhereUniqueInput" | "offeringWhereUniqueInput" | "uploadImageType" | "utilisateurWhereUniqueInput" | "verificationpiecesWhereUniqueInput";
+export type NexusGenInputNames = "ReferenceidUserIdIdCompoundUniqueInput" | "avisWhereUniqueInput" | "offeringWhereUniqueInput" | "uploadImageType" | "utilisateurWhereUniqueInput" | "verificationpiecesWhereUniqueInput";
 
 export type NexusGenEnumNames = never;
 
