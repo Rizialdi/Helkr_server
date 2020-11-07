@@ -71,6 +71,7 @@ type Mutation {
   completeOffering(completedById: String!, id: String!): Boolean!
   createAvis(comment: String!, offeringId: String!, score: Int!, scoredId: String!): Boolean!
   createDemande(message: String!, recipient: String!): Boolean!
+  deleteDemande(id: String!): Boolean!
   deleteOffering(id: String!): Boolean!
   descriptionUpdate(text: String!): Boolean!
   notificationsTokenUpdate(token: String!): Boolean!

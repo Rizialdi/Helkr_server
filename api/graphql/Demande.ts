@@ -7,6 +7,7 @@ import {
   subscriptionField
 } from '@nexus/schema';
 import { getUserId } from '../../utils';
+import { requiredStr } from './Offering';
 
 exports.Demande = objectType({
   name: 'demande',
@@ -119,6 +120,29 @@ exports.MutationDemandes = extendType({
         } catch (error) {
           throw new Error('La creation de la demande a echoue');
         }
+      }
+    });
+    t.field('deleteDemande', {
+      type: 'Boolean',
+      args: {
+        id: requiredStr({})
+      },
+      resolve: async (_, { id }, ctx) => {
+        const userId = getUserId(ctx);
+
+        if (!id) return false;
+        const demande = await ctx.prisma.demande.findOne({ where: { id } });
+
+        if (!demande) return false;
+        if (userId != demande.receivedById) return false;
+
+        const deletedDemande = await ctx.prisma.demande.delete({
+          where: { id }
+        });
+
+        if (!deletedDemande) return false;
+
+        return true;
       }
     });
   }

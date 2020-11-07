@@ -207,6 +207,7 @@ export interface NexusGenFieldTypes {
     completeOffering: boolean; // Boolean!
     createAvis: boolean; // Boolean!
     createDemande: boolean; // Boolean!
+    deleteDemande: boolean; // Boolean!
     deleteOffering: boolean; // Boolean!
     descriptionUpdate: boolean; // Boolean!
     notificationsTokenUpdate: boolean; // Boolean!
@@ -416,6 +417,9 @@ export interface NexusGenArgTypes {
     createDemande: { // args
       message: string; // String!
       recipient: string; // String!
+    }
+    deleteDemande: { // args
+      id: string; // String!
     }
     deleteOffering: { // args
       id: string; // String!
