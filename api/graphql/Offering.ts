@@ -103,6 +103,15 @@ exports.QueryOfferings = extendType({
         const userId = getUserId(ctx);
 
         if (!filters) return [];
+
+        const userInfos = await ctx.prisma.utilisateur.findOne({
+          where: { id: userId },
+          select: { address: true }
+        });
+
+        const userAddress =
+          userInfos && userInfos.address ? userInfos.address : '';
+
         const where = filters
           ? {
               AND: [
@@ -119,7 +128,16 @@ exports.QueryOfferings = extendType({
                     every: { id: { notIn: [userId] } }
                   }
                 },
-                { author: { id: { notIn: [userId] } } }
+                {
+                  author: {
+                    AND: [
+                      {
+                        id: { notIn: [userId] }
+                      },
+                      { address: { equals: userAddress } }
+                    ]
+                  }
+                }
               ]
             }
           : {};
@@ -327,7 +345,7 @@ exports.MutationOfferings = extendType({
   type: 'Mutation',
   definition(t) {
     t.field('addOffering', {
-      type: 'Boolean',
+      type: 'JSON',
       args: {
         type: stringArg({ required: true }),
         category: stringArg({ required: true }),
@@ -340,8 +358,44 @@ exports.MutationOfferings = extendType({
         { type, category, description, details, referenceId },
         ctx
       ) => {
-        const userId = getUserId(ctx);
         try {
+          const userId = getUserId(ctx);
+          // look up the user address / location / city
+          const user = await ctx.prisma.utilisateur.findOne({
+            where: { id: userId },
+            select: { address: true }
+          });
+
+          const userLocation = user && user.address ? user.address : '';
+
+          if (!userLocation)
+            return {
+              status: false,
+              message:
+                "Votre adresse n'est pas renseignée. Veuillez la renseigner et réessayer"
+            };
+
+          const giggersAround = await ctx.prisma.tags.findMany({
+            where: {
+              AND: {
+                tags: { contains: referenceId },
+                utilisateur: { address: { contains: userLocation } }
+              }
+            },
+            include: {
+              utilisateur: {
+                include: { notificationstoken: { select: { token: true } } }
+              }
+            }
+          });
+
+          if (!(giggersAround.length > 0))
+            return {
+              status: false,
+              message:
+                "Il n'y a jusqu'a présent, aucun prestataire pour cette catégorie dans votre secteur.  Veuillez réessayer plus tard."
+            };
+
           const addedOffering = await ctx.prisma.offering.create({
             data: {
               type,
@@ -353,17 +407,8 @@ exports.MutationOfferings = extendType({
             }
           });
 
-          const pushTokens = await ctx.prisma.tags.findMany({
-            where: { tags: { contains: type } },
-            include: {
-              utilisateur: {
-                include: { notificationstoken: { select: { token: true } } }
-              }
-            }
-          });
-
-          pushTokens &&
-            pushTokens.map(item => {
+          giggersAround &&
+            giggersAround.map(item => {
               if (
                 !item ||
                 !item.utilisateur ||
@@ -381,11 +426,16 @@ exports.MutationOfferings = extendType({
               ]);
             });
 
-          if (!addedOffering) return false;
+          if (!addedOffering)
+            return {
+              status: false,
+              message:
+                "Une erreur s'est produite lors de la création de la mission. Veuillez réessayer plus tard."
+            };
           ctx.pubsub.publish(PUB_NEW_OFFERING, {
             addedOffering
           });
-          return true;
+          return { status: true, message: '' };
         } catch (error) {
           throw new Error('creation de Offre impossible');
         }

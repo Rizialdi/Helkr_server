@@ -197,7 +197,7 @@ export interface NexusGenFieldTypes {
   }
   Mutation: { // field return type
     addAuthorizedCategories: boolean; // Boolean!
-    addOffering: boolean; // Boolean!
+    addOffering: any; // JSON!
     addressUpdate: boolean; // Boolean!
     addVerificationpieces: boolean; // Boolean!
     avatarUpload: boolean; // Boolean!

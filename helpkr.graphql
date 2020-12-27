@@ -61,7 +61,7 @@ type moyenne {
 
 type Mutation {
   addAuthorizedCategories(authorizedcategory: String!, id: String!): Boolean!
-  addOffering(category: String!, description: String!, details: String!, referenceId: String!, type: String!): Boolean!
+  addOffering(category: String!, description: String!, details: String!, referenceId: String!, type: String!): JSON!
   addressUpdate(text: String!): Boolean!
   addVerificationpieces(id: String, listofpieces: String!, referenceId: String!): Boolean!
   avatarUpload(file: uploadImageType): Boolean!
