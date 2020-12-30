@@ -63,12 +63,22 @@ export interface NexusGenRootTypes {
   }
   AuthPayload: { // root type
     token: string; // String!
-    user: NexusGenRootTypes['utilisateur']; // utilisateur!
+    user?: NexusGenRootTypes['utilisateur'] | null; // utilisateur
   }
   CandidateToOfferingSuccess: { // root type
     success: boolean; // Boolean!
   }
   Mutation: {};
+  OfferingAugmented: { // root type
+    endCursor: string; // String!
+    hasNext: boolean; // Boolean!
+    offerings?: NexusGenRootTypes['offering'][] | null; // [offering!]
+  }
+  PayLoad: { // root type
+    endCursor: string; // String!
+    hasNext: boolean; // Boolean!
+    users?: NexusGenRootTypes['utilisateur'][] | null; // [utilisateur!]
+  }
   Query: {};
   STEP_ONE_RESPONSE: { // root type
     id: string; // String!
@@ -190,7 +200,7 @@ export interface NexusGenFieldTypes {
   }
   AuthPayload: { // field return type
     token: string; // String!
-    user: NexusGenRootTypes['utilisateur']; // utilisateur!
+    user: NexusGenRootTypes['utilisateur'] | null; // utilisateur
   }
   CandidateToOfferingSuccess: { // field return type
     success: boolean; // Boolean!
@@ -218,6 +228,16 @@ export interface NexusGenFieldTypes {
     tagsUpdate: boolean; // Boolean!
     updateOffering: boolean; // Boolean!
   }
+  OfferingAugmented: { // field return type
+    endCursor: string; // String!
+    hasNext: boolean; // Boolean!
+    offerings: NexusGenRootTypes['offering'][] | null; // [offering!]
+  }
+  PayLoad: { // field return type
+    endCursor: string; // String!
+    hasNext: boolean; // Boolean!
+    users: NexusGenRootTypes['utilisateur'][] | null; // [utilisateur!]
+  }
   Query: { // field return type
     allOfferings: NexusGenRootTypes['offering'][]; // [offering!]!
     allUsersToken: NexusGenRootTypes['notificationstoken'][]; // [notificationstoken!]!
@@ -232,15 +252,16 @@ export interface NexusGenFieldTypes {
     getUserInfo: NexusGenRootTypes['AuthPayload']; // AuthPayload!
     getUserStats: NexusGenRootTypes['Stats']; // Stats!
     getVerificationPieces: NexusGenRootTypes['verificationpieces']; // verificationpieces!
-    incompleteOfferings: NexusGenRootTypes['offering'][]; // [offering!]!
-    isCandidateTo: NexusGenRootTypes['offering'][]; // [offering!]!
-    myIncompleteOffering: NexusGenRootTypes['offering'][]; // [offering!]!
-    myIncompleteOfferingWithCandidates: NexusGenRootTypes['offering'][]; // [offering!]!
+    incompleteOfferings: NexusGenRootTypes['OfferingAugmented']; // OfferingAugmented!
+    isCandidateTo: NexusGenRootTypes['OfferingAugmented']; // OfferingAugmented!
+    myIncompleteOffering: NexusGenRootTypes['OfferingAugmented']; // OfferingAugmented!
+    myIncompleteOfferingWithCandidates: NexusGenRootTypes['OfferingAugmented']; // OfferingAugmented!
     offeringById: NexusGenRootTypes['offering']; // offering!
     offeringsUser: NexusGenRootTypes['offering'][]; // [offering!]!
     propositionToOfferingDetails: NexusGenRootTypes['propositionToOffering']; // propositionToOffering!
     userById: NexusGenRootTypes['utilisateur'] | null; // utilisateur
     users: NexusGenRootTypes['utilisateur'][]; // [utilisateur!]!
+    usersPagination: NexusGenRootTypes['PayLoad'] | null; // PayLoad
   }
   STEP_ONE_RESPONSE: { // field return type
     id: string; // String!
@@ -487,6 +508,20 @@ export interface NexusGenArgTypes {
     }
     incompleteOfferings: { // args
       filters: string[]; // [String!]!
+      lastCursorId?: string | null; // String
+      take: number; // Int!
+    }
+    isCandidateTo: { // args
+      lastCursorId?: string | null; // String
+      take: number; // Int!
+    }
+    myIncompleteOffering: { // args
+      lastCursorId?: string | null; // String
+      take: number; // Int!
+    }
+    myIncompleteOfferingWithCandidates: { // args
+      lastCursorId?: string | null; // String
+      take: number; // Int!
     }
     offeringById: { // args
       id: string; // String!
@@ -500,6 +535,10 @@ export interface NexusGenArgTypes {
     }
     userById: { // args
       id: string; // String!
+    }
+    usersPagination: { // args
+      lastCursorId?: string | null; // String
+      take: number; // Int!
     }
   }
   Subscription: {
@@ -572,7 +611,7 @@ export interface NexusGenAbstractResolveReturnTypes {
 
 export interface NexusGenInheritedFields {}
 
-export type NexusGenObjectNames = "AddJobberTagResponse" | "AuthPayload" | "CandidateToOfferingSuccess" | "Mutation" | "Query" | "STEP_ONE_RESPONSE" | "STEP_TWO_RESPONSE" | "Stats" | "Subscription" | "authorizedcategories" | "avis" | "demande" | "moyenne" | "notificationstoken" | "offering" | "propositionToOffering" | "tags" | "updateAppliedToType" | "updateSelectedEventDay" | "utilisateur" | "verificationpieces";
+export type NexusGenObjectNames = "AddJobberTagResponse" | "AuthPayload" | "CandidateToOfferingSuccess" | "Mutation" | "OfferingAugmented" | "PayLoad" | "Query" | "STEP_ONE_RESPONSE" | "STEP_TWO_RESPONSE" | "Stats" | "Subscription" | "authorizedcategories" | "avis" | "demande" | "moyenne" | "notificationstoken" | "offering" | "propositionToOffering" | "tags" | "updateAppliedToType" | "updateSelectedEventDay" | "utilisateur" | "verificationpieces";
 
 export type NexusGenInputNames = "ReferenceidUserIdIdCompoundUniqueInput" | "avisWhereUniqueInput" | "offeringWhereUniqueInput" | "uploadImageType" | "utilisateurWhereUniqueInput" | "verificationpiecesWhereUniqueInput";
 

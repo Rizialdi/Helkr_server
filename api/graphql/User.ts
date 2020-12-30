@@ -3,6 +3,7 @@ import {
   extendType,
   objectType,
   stringArg,
+  intArg,
   inputObjectType
 } from '@nexus/schema';
 
@@ -90,6 +91,49 @@ exports.QueryUser = extendType({
         try {
           const users = await ctx.prisma.utilisateur.findMany();
           return users;
+        } catch (error) {
+          throw new Error('Utilisateurs non existant');
+        }
+      }
+    });
+    t.field('usersPagination', {
+      type: 'PayLoad',
+      nullable: true,
+      args: {
+        take: intArg({ required: true }),
+        lastCursorId: stringArg({ required: false })
+      },
+      resolve: async (_, { take, lastCursorId }, ctx) => {
+        try {
+          const users = lastCursorId
+            ? await ctx.prisma.utilisateur.findMany({
+                take: take + 1,
+                skip: 1,
+                cursor: { id: lastCursorId },
+                orderBy: { createdAt: 'desc' }
+              })
+            : await ctx.prisma.utilisateur.findMany({
+                take: take + 1,
+                orderBy: { createdAt: 'desc' }
+              });
+
+          const lastIndexId =
+            users && users.length > take
+              ? users[users.length - 2].id
+              : users.length <= take
+              ? users[users.length - 1].id
+              : '';
+
+          return {
+            hasNext: users.length > take,
+            endCursor: lastIndexId,
+            users:
+              users && users.length > take
+                ? users.slice(0, -1)
+                : users.length <= take
+                ? users
+                : null
+          };
         } catch (error) {
           throw new Error('Utilisateurs non existant');
         }
@@ -278,7 +322,16 @@ exports.AuthPayload = objectType({
   name: 'AuthPayload',
   definition(t) {
     t.string('token');
-    t.field('user', { type: 'utilisateur' });
+    t.field('user', { type: 'utilisateur', nullable: true });
+  }
+});
+
+exports.PayLoad = objectType({
+  name: 'PayLoad',
+  definition(t) {
+    t.boolean('hasNext');
+    t.string('endCursor');
+    t.list.field('users', { type: 'utilisateur', nullable: true });
   }
 });
 

@@ -16,7 +16,7 @@ type authorizedcategories {
 
 type AuthPayload {
   token: String!
-  user: utilisateur!
+  user: utilisateur
 }
 
 type avis {
@@ -109,8 +109,20 @@ type offering {
   updatedAt: DateTime!
 }
 
+type OfferingAugmented {
+  endCursor: String!
+  hasNext: Boolean!
+  offerings: [offering!]
+}
+
 input offeringWhereUniqueInput {
   id: String
+}
+
+type PayLoad {
+  endCursor: String!
+  hasNext: Boolean!
+  users: [utilisateur!]
 }
 
 type propositionToOffering {
@@ -134,15 +146,16 @@ type Query {
   getUserInfo(numero: String!): AuthPayload!
   getUserStats(id: String!): Stats!
   getVerificationPieces(id: String): verificationpieces!
-  incompleteOfferings(filters: [String!]!): [offering!]!
-  isCandidateTo: [offering!]!
-  myIncompleteOffering: [offering!]!
-  myIncompleteOfferingWithCandidates: [offering!]!
+  incompleteOfferings(filters: [String!]!, lastCursorId: String, take: Int!): OfferingAugmented!
+  isCandidateTo(lastCursorId: String, take: Int!): OfferingAugmented!
+  myIncompleteOffering(lastCursorId: String, take: Int!): OfferingAugmented!
+  myIncompleteOfferingWithCandidates(lastCursorId: String, take: Int!): OfferingAugmented!
   offeringById(id: String!): offering!
   offeringsUser(numero: String!): [offering!]!
   propositionToOfferingDetails(offeringId: String!, userId: String!): propositionToOffering!
   userById(id: String!): utilisateur
   users: [utilisateur!]!
+  usersPagination(lastCursorId: String, take: Int!): PayLoad
 }
 
 input ReferenceidUserIdIdCompoundUniqueInput {

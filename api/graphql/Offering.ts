@@ -10,7 +10,8 @@ import {
   stringArg,
   subscriptionField,
   core,
-  scalarType
+  scalarType,
+  intArg
 } from '@nexus/schema';
 import { getUserId } from '../../utils';
 import { utilisateur } from '@prisma/client';
@@ -96,13 +97,23 @@ exports.QueryOfferings = extendType({
         return offerings;
       }
     });
-    t.list.field('incompleteOfferings', {
-      type: 'offering',
-      args: { filters: requiredStr({ list: true }) },
-      resolve: async (_, { filters }, ctx) => {
+    t.field('incompleteOfferings', {
+      type: 'OfferingAugmented',
+      args: {
+        take: intArg({ required: true }),
+        lastCursorId: stringArg({ required: false }),
+        filters: requiredStr({ list: true })
+      },
+      resolve: async (_, { take, lastCursorId, filters }, ctx) => {
         const userId = getUserId(ctx);
 
-        if (!filters) return [];
+        if (!filters) {
+          return {
+            hasNext: false,
+            endCursor: '',
+            offerings: null
+          };
+        }
 
         const userInfos = await ctx.prisma.utilisateur.findOne({
           where: { id: userId },
@@ -112,42 +123,65 @@ exports.QueryOfferings = extendType({
         const userAddress =
           userInfos && userInfos.address ? userInfos.address : '';
 
-        const where = filters
-          ? {
-              AND: [
-                {
-                  completed: { equals: false }
-                },
-                {
-                  referenceid: {
-                    in: filters as string[]
-                  }
-                },
-                {
-                  candidates: {
-                    every: { id: { notIn: [userId] } }
-                  }
-                },
-                {
-                  author: {
-                    AND: [
-                      {
-                        id: { notIn: [userId] }
-                      },
-                      { address: { equals: userAddress } }
-                    ]
-                  }
-                }
-              ]
+        const where = {
+          AND: [
+            {
+              completed: { equals: false }
+            },
+            {
+              referenceid: {
+                in: filters as string[]
+              }
+            },
+            {
+              candidates: {
+                every: { id: { notIn: [userId] } }
+              }
+            },
+            {
+              author: {
+                AND: [
+                  {
+                    id: { notIn: [userId] }
+                  },
+                  { address: { equals: userAddress } }
+                ]
+              }
             }
-          : {};
+          ]
+        };
 
-        const offerings = await ctx.prisma.offering.findMany({
-          orderBy: { createdAt: 'desc' },
-          where
-        });
-        if (!offerings) return [];
-        return offerings;
+        const offerings = lastCursorId
+          ? await ctx.prisma.offering.findMany({
+              orderBy: { createdAt: 'desc' },
+              where,
+              skip: 1,
+              take: take + 1,
+              cursor: { id: lastCursorId }
+            })
+          : await ctx.prisma.offering.findMany({
+              orderBy: { createdAt: 'desc' },
+              where,
+              take: take + 1
+            });
+
+        const lastIndexId =
+          offerings && offerings.length > take
+            ? offerings[offerings.length - 2].id
+            : offerings.length <= take
+            ? offerings[offerings.length - 1].id
+            : '';
+
+        return {
+          hasNext: offerings.length > take,
+          endCursor: lastIndexId,
+          offerings:
+            offerings && offerings.length > take
+              ? offerings.slice(0, -1)
+              : offerings.length <= take
+              ? offerings
+              : null
+        };
       }
     });
     t.field('offeringById', {
@@ -167,9 +201,13 @@ exports.QueryOfferings = extendType({
         }
       }
     });
-    t.list.field('isCandidateTo', {
-      type: 'offering',
-      resolve: async (_, __, ctx) => {
+    t.field('isCandidateTo', {
+      type: 'OfferingAugmented',
+      args: {
+        take: intArg({ required: true }),
+        lastCursorId: stringArg({ required: false })
+      },
+      resolve: async (_, { take, lastCursorId }, ctx) => {
         const userId = getUserId(ctx);
 
         const where = {
@@ -184,13 +222,28 @@ exports.QueryOfferings = extendType({
         };
 
         try {
-          const offerings = await ctx.prisma.offering.findMany({
-            orderBy: { createdAt: 'desc' },
-            where,
-            include: { selectedCandidate: true }
-          });
+          const offerings = lastCursorId
+            ? await ctx.prisma.offering.findMany({
+                orderBy: { createdAt: 'desc' },
+                where,
+                skip: 1,
+                take: take + 1,
+                cursor: { id: lastCursorId },
+                include: { selectedCandidate: true }
+              })
+            : await ctx.prisma.offering.findMany({
+                orderBy: { createdAt: 'desc' },
+                where,
+                take: take + 1,
+                include: { selectedCandidate: true }
+              });
 
-          if (!offerings) return [];
+          const lastIndexId =
+            offerings && offerings.length > take
+              ? offerings[offerings.length - 2].id
+              : offerings.length <= take
+              ? offerings[offerings.length - 1].id
+              : '';
 
           const data = offerings.map(offering => {
             if (!offering.selectedCandidate) {
@@ -206,15 +259,29 @@ exports.QueryOfferings = extendType({
               return { ...offering, status: 'refusée' };
             }
           });
-          return data;
+
+          return {
+            hasNext: offerings.length > take,
+            endCursor: lastIndexId,
+            offerings:
+              data && data.length > take
+                ? data.slice(0, -1)
+                : data.length <= take
+                ? data
+                : null
+          };
         } catch (error) {
           throw new Error(`Erreur fetching offering status ${error}`);
         }
       }
     });
-    t.list.field('myIncompleteOffering', {
-      type: 'offering',
-      resolve: async (_, __, ctx) => {
+    t.field('myIncompleteOffering', {
+      type: 'OfferingAugmented',
+      args: {
+        take: intArg({ required: true }),
+        lastCursorId: stringArg({ required: false })
+      },
+      resolve: async (_, { take, lastCursorId }, ctx) => {
         const userId = getUserId(ctx);
 
         const where = {
@@ -232,23 +299,51 @@ exports.QueryOfferings = extendType({
         };
 
         try {
-          const offerings = await ctx.prisma.offering.findMany({
-            where,
-            orderBy: { createdAt: 'desc' },
-            include: { candidates: true }
-          });
+          const offerings = lastCursorId
+            ? await ctx.prisma.offering.findMany({
+                where,
+                skip: 1,
+                take: take + 1,
+                cursor: { id: lastCursorId },
+                orderBy: { createdAt: 'desc' },
+                include: { candidates: true }
+              })
+            : await ctx.prisma.offering.findMany({
+                where,
+                take: take + 1,
+                orderBy: { createdAt: 'desc' },
+                include: { candidates: true }
+              });
 
-          if (!offerings) return [];
+          const lastIndexId =
+            offerings && offerings.length > take
+              ? offerings[offerings.length - 2].id
+              : offerings.length <= take
+              ? offerings[offerings.length - 1].id
+              : '';
 
-          return offerings;
+          return {
+            hasNext: offerings.length > take,
+            endCursor: lastIndexId,
+            offerings:
+              offerings && offerings.length > take
+                ? offerings.slice(0, -1)
+                : offerings.length <= take
+                ? offerings
+                : null
+          };
         } catch (error) {
           throw new Error(`Erreur fetching offering status ${error}`);
         }
       }
     });
-    t.list.field('myIncompleteOfferingWithCandidates', {
-      type: 'offering',
-      resolve: async (_, __, ctx) => {
+    t.field('myIncompleteOfferingWithCandidates', {
+      type: 'OfferingAugmented',
+      args: {
+        take: intArg({ required: true }),
+        lastCursorId: stringArg({ required: false })
+      },
+      resolve: async (_, { take, lastCursorId }, ctx) => {
         const userId = getUserId(ctx);
 
         const where = {
@@ -265,15 +360,32 @@ exports.QueryOfferings = extendType({
         };
 
         try {
-          const offerings = await ctx.prisma.offering.findMany({
-            where,
-            orderBy: { createdAt: 'desc' },
-            include: {
-              candidates: true
-            }
-          });
+          const offerings = lastCursorId
+            ? await ctx.prisma.offering.findMany({
+                where,
+                skip: 1,
+                take: take + 1,
+                cursor: { id: lastCursorId },
+                orderBy: { createdAt: 'desc' },
+                include: {
+                  candidates: true
+                }
+              })
+            : await ctx.prisma.offering.findMany({
+                where,
+                take: take + 1,
+                orderBy: { createdAt: 'desc' },
+                include: {
+                  candidates: true
+                }
+              });
 
-          if (!offerings) return [];
+          const lastIndexId =
+            offerings && offerings.length > take
+              ? offerings[offerings.length - 2].id
+              : offerings.length <= take
+              ? offerings[offerings.length - 1].id
+              : '';
 
           const data = offerings.map(offering => {
             if (!offering.selectedCandidateId) {
@@ -289,7 +401,17 @@ exports.QueryOfferings = extendType({
             }
             return { ...offering, status: '' };
           });
-          return data;
+
+          return {
+            hasNext: offerings.length > take,
+            endCursor: lastIndexId,
+            offerings:
+              data && data.length > take
+                ? data.slice(0, -1)
+                : data.length <= take
+                ? data
+                : null
+          };
         } catch (error) {
           throw new Error(`Erreur fetching offering status ${error}`);
         }
@@ -393,7 +515,7 @@ exports.MutationOfferings = extendType({
             return {
               status: false,
               message:
-                "Il n'y a jusqu'a présent, aucun prestataire pour cette catégorie dans votre secteur.  Veuillez réessayer plus tard."
+                "Il n'y a jusqu'a présent, aucun prestataire pour cette catégorie dans votre secteur. Veuillez réessayer plus tard."
             };
 
           const addedOffering = await ctx.prisma.offering.create({
@@ -816,5 +938,14 @@ exports.PropositionToOffering = objectType({
     t.string('priceRange');
     t.string('candidateUsername');
     t.string('descriptionPrestataire', { nullable: true });
+  }
+});
+
+exports.OfferingAugmented = objectType({
+  name: 'OfferingAugmented',
+  definition(t) {
+    t.boolean('hasNext');
+    t.string('endCursor');
+    t.list.field('offerings', { type: 'offering', nullable: true });
   }
 });
